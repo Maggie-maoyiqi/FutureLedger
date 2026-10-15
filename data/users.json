@@ -1,0 +1,14 @@
+[
+  {
+    "id": "test_user",
+    "username": "test_user",
+    "display_name": "模拟用户",
+    "timezone": "Asia/Shanghai"
+  },
+  {
+    "id": "isolation_user",
+    "username": "isolation_user",
+    "display_name": "隔离测试用户",
+    "timezone": "Asia/Shanghai"
+  }
+]

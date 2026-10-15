@@ -1,0 +1,29 @@
+[
+  {
+    "id": "acc_daily",
+    "user_id": "test_user",
+    "tail4": "1001",
+    "currency": "CNY",
+    "opening_balance_cents": 19658873,
+    "balance_cents": 900000,
+    "as_of": "2026-10-01T00:00:00+08:00"
+  },
+  {
+    "id": "acc_savings",
+    "user_id": "test_user",
+    "tail4": "1002",
+    "currency": "CNY",
+    "opening_balance_cents": 3003801,
+    "balance_cents": 500000,
+    "as_of": "2026-10-01T00:00:00+08:00"
+  },
+  {
+    "id": "acc_other",
+    "user_id": "isolation_user",
+    "tail4": "9001",
+    "currency": "CNY",
+    "opening_balance_cents": 57477210,
+    "balance_cents": 700000,
+    "as_of": "2026-10-01T00:00:00+08:00"
+  }
+]

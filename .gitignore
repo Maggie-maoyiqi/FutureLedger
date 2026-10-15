@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.next/
+.DS_Store
+data/*.sqlite*
+benchmark/results.local.json

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "mandate_1",
+    "user_id": "test_user",
+    "account_id": "acc_daily",
+    "merchant": "模拟云盘",
+    "amount_cents": 3000,
+    "period": "monthly",
+    "next_due": "2026-10-08",
+    "status": "ACTIVE",
+    "can_cancel": true
+  },
+  {
+    "id": "mandate_2",
+    "user_id": "test_user",
+    "account_id": "acc_daily",
+    "merchant": "模拟视频",
+    "amount_cents": 6800,
+    "period": "monthly",
+    "next_due": "2026-10-10",
+    "status": "ACTIVE",
+    "can_cancel": true
+  },
+  {
+    "id": "mandate_3",
+    "user_id": "test_user",
+    "account_id": "acc_daily",
+    "merchant": "模拟音乐",
+    "amount_cents": 1800,
+    "period": "monthly",
+    "next_due": "2026-10-18",
+    "status": "ACTIVE",
+    "can_cancel": true
+  },
+  {
+    "id": "mandate_4",
+    "user_id": "test_user",
+    "account_id": "acc_daily",
+    "merchant": "模拟健身",
+    "amount_cents": 9900,
+    "period": "monthly",
+    "next_due": "2026-10-25",
+    "status": "ACTIVE",
+    "can_cancel": false
+  }
+]

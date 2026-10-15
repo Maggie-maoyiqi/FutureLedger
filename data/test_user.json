@@ -1,0 +1,17 @@
+{
+  "user_id": "test_user",
+  "snapshot_at": "2026-10-01T00:00:00+08:00",
+  "primary_account_id": "acc_daily",
+  "min_balance_cents": 300000,
+  "protected_mandate_ids": [
+    "mandate_1"
+  ],
+  "salary_assumption_cents": 800000,
+  "salary_day": 12,
+  "daily_budget_cents": 8000,
+  "goal": {
+    "name": "电脑",
+    "amount_cents": 600000
+  },
+  "note": "合成数据；无可用登录密码，金额与真实用户无关；规划默认只用主账户"
+}

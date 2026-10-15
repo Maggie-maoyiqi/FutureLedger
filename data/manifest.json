@@ -1,0 +1,23 @@
+{
+  "seed": 20261015,
+  "version": 1,
+  "history_start": "2024-10-01",
+  "history_end": "2026-09-30",
+  "as_of": "2026-10-01T00:00:00+08:00",
+  "row_count": 3839,
+  "test_user_rows": 3109,
+  "raw_import_rows": 3963,
+  "duplicates": 124,
+  "analysis_cases": 180,
+  "cashflow_cases": 30,
+  "files": {
+    "accounts.json": "76cb2d8408a80401057488c5aab9dc146cb664d7248a49758aed8f93a21a696f",
+    "demo_scenario.json": "509d336e6db68f080dc0e50b7364e08e255fdb005e72b96f19720565cb9fb466",
+    "mandates.json": "bec353704789768ad6ed401803b3d4b1c8b2fdc37a9afaf6f29010b1e9a9773b",
+    "raw_imports.jsonl": "e7a328708dc8c31e39562eea22ffbeefe60abbdca23da4d6709e063519a9348a",
+    "recipients.json": "e7f9c10fb090d333c91471ea3ee24a75dcb71bf1de661c28bfc0382d4463bdaa",
+    "test_user.json": "be38199550548e9164b49c21673a4dd2b27af7b6b5cd238842efeea3a2f20e39",
+    "transactions.csv": "8adfb4362207bdfd24d5f3af8fed4b049a1d9aaa8b33c4d702e34e9b3489ca95",
+    "users.json": "3b55cd66c039a4c30a9a62b073b45a52f816a69ca59f7c69f5bdad86dadd0107"
+  }
+}

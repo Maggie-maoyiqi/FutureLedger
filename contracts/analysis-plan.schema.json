@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FutureLedger offline AnalysisPlan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "dataset_id", "semantic_version", "metric", "start", "end_exclusive", "filters", "group_by", "limit"],
+  "properties": {
+    "kind": {"const": "analysis"},
+    "dataset_id": {"const": "personal_ledger"},
+    "semantic_version": {"const": 1},
+    "metric": {"enum": ["gross_expense", "refund", "net_expense"]},
+    "start": {"type": "string", "format": "date"},
+    "end_exclusive": {"type": "string", "format": "date"},
+    "filters": {"type": "object", "additionalProperties": false, "required": ["category"], "properties": {"category": {"enum": ["餐饮", "交通", "购物", "娱乐", "订阅", "房租", "医疗", "其他", "工资", "转账"]}}},
+    "group_by": {"type": "null"},
+    "limit": {"type": "integer", "minimum": 1, "maximum": 100}
+  }
+}

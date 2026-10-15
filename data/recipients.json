@@ -1,0 +1,47 @@
+[
+  {
+    "id": "rec_1",
+    "user_id": "test_user",
+    "name": "模拟母亲",
+    "alias": "妈妈",
+    "tail4": "2001",
+    "verified": true,
+    "bank_ref": "MOCK-RECIPIENT-1"
+  },
+  {
+    "id": "rec_2",
+    "user_id": "test_user",
+    "name": "模拟房东",
+    "alias": "房东",
+    "tail4": "2002",
+    "verified": true,
+    "bank_ref": "MOCK-RECIPIENT-2"
+  },
+  {
+    "id": "rec_3",
+    "user_id": "test_user",
+    "name": "张伟",
+    "alias": "同学",
+    "tail4": "2003",
+    "verified": true,
+    "bank_ref": "MOCK-RECIPIENT-3"
+  },
+  {
+    "id": "rec_4",
+    "user_id": "test_user",
+    "name": "张伟",
+    "alias": "同事",
+    "tail4": "2004",
+    "verified": true,
+    "bank_ref": "MOCK-RECIPIENT-4"
+  },
+  {
+    "id": "rec_5",
+    "user_id": "test_user",
+    "name": "模拟电脑收款方",
+    "alias": "电脑",
+    "tail4": "2005",
+    "verified": false,
+    "bank_ref": "MOCK-RECIPIENT-5"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "dataset_id": "personal_ledger",
+  "semantic_version": 1,
+  "currency": "CNY",
+  "money_unit": "integer_cent",
+  "timezone": "Asia/Shanghai",
+  "status_filter": "POSTED",
+  "metrics": {
+    "gross_expense": {"label": "支出", "kind": "expense", "direction": "OUT", "aggregate": "sum(amount_cents)"},
+    "refund": {"label": "退款", "kind": "refund", "direction": "IN", "aggregate": "sum(amount_cents)", "date_policy": "refund_posting_date"},
+    "net_expense": {"label": "净支出", "formula": "gross_expense - refund"}
+  },
+  "dimensions": {"category": ["餐饮", "交通", "购物", "娱乐", "订阅", "房租", "医疗", "其他", "工资", "转账"]},
+  "joins": [],
+  "scope": "authenticated subject, never model-supplied user_id",
+  "chart_rules": {"single_value": "metric_card", "ranking": "bar", "monthly": "line", "detail": "table"},
+  "reference_implementation": "only single metric/category/date scalar queries implemented; other charts and income/count metrics remain design scope"
+}

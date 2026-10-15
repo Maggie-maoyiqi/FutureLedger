@@ -1,0 +1,33 @@
+{
+  "start_date": "2026-10-01",
+  "days": 30,
+  "opening_balance_cents": 900000,
+  "floor_cents": 300000,
+  "goal_cents": 600000,
+  "daily_budget_cents": 8000,
+  "events": [
+    {
+      "day": 5,
+      "signed_cents": -350000,
+      "source": "房租"
+    },
+    {
+      "day": 8,
+      "signed_cents": -3000,
+      "source": "云盘",
+      "protected": true
+    },
+    {
+      "day": 10,
+      "signed_cents": -6800,
+      "source": "视频"
+    },
+    {
+      "day": 12,
+      "signed_cents": 800000,
+      "source": "预计工资",
+      "assumption": true
+    }
+  ],
+  "note": "独立标准场景，不自动叠加历史识别出的其他订阅；第1天至第30天均扣每日预算，余额为日终值，月初9000为主账户余额"
+}

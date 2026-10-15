@@ -1,0 +1,8084 @@
+[
+  {
+    "id": "analysis_001",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 195482,
+      "evidence_ids": [
+        "tx_001899",
+        "tx_001904",
+        "tx_001906",
+        "tx_001908",
+        "tx_001912",
+        "tx_001913",
+        "tx_001914",
+        "tx_001915",
+        "tx_001916",
+        "tx_001919",
+        "tx_001921",
+        "tx_001926",
+        "tx_001927",
+        "tx_001930",
+        "tx_001942",
+        "tx_001943",
+        "tx_001955",
+        "tx_001956",
+        "tx_001957",
+        "tx_001960",
+        "tx_001964",
+        "tx_001966",
+        "tx_001970",
+        "tx_001975",
+        "tx_001977",
+        "tx_001979",
+        "tx_001984",
+        "tx_001985",
+        "tx_001996",
+        "tx_001997",
+        "tx_002005",
+        "tx_002007",
+        "tx_002008",
+        "tx_002009",
+        "tx_002010",
+        "tx_002012",
+        "tx_002013",
+        "tx_002016",
+        "tx_002019",
+        "tx_002023",
+        "tx_002028",
+        "tx_002029",
+        "tx_002030",
+        "tx_002031",
+        "tx_002032",
+        "tx_002043",
+        "tx_002044",
+        "tx_002051"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_002",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_003",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 195482,
+      "evidence_ids": [
+        "tx_001899",
+        "tx_001904",
+        "tx_001906",
+        "tx_001908",
+        "tx_001912",
+        "tx_001913",
+        "tx_001914",
+        "tx_001915",
+        "tx_001916",
+        "tx_001919",
+        "tx_001921",
+        "tx_001926",
+        "tx_001927",
+        "tx_001930",
+        "tx_001942",
+        "tx_001943",
+        "tx_001955",
+        "tx_001956",
+        "tx_001957",
+        "tx_001960",
+        "tx_001964",
+        "tx_001966",
+        "tx_001970",
+        "tx_001975",
+        "tx_001977",
+        "tx_001979",
+        "tx_001984",
+        "tx_001985",
+        "tx_001996",
+        "tx_001997",
+        "tx_002005",
+        "tx_002007",
+        "tx_002008",
+        "tx_002009",
+        "tx_002010",
+        "tx_002012",
+        "tx_002013",
+        "tx_002016",
+        "tx_002019",
+        "tx_002023",
+        "tx_002028",
+        "tx_002029",
+        "tx_002030",
+        "tx_002031",
+        "tx_002032",
+        "tx_002043",
+        "tx_002044",
+        "tx_002051"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_004",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 125221,
+      "evidence_ids": [
+        "tx_001897",
+        "tx_001918",
+        "tx_001920",
+        "tx_001928",
+        "tx_001933",
+        "tx_001949",
+        "tx_001950",
+        "tx_001952",
+        "tx_001953",
+        "tx_001961",
+        "tx_001962",
+        "tx_001963",
+        "tx_001969",
+        "tx_001973",
+        "tx_001980",
+        "tx_001982",
+        "tx_001987",
+        "tx_001993",
+        "tx_001994",
+        "tx_001998",
+        "tx_002001",
+        "tx_002015",
+        "tx_002022",
+        "tx_002037",
+        "tx_002049",
+        "tx_002050"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_005",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_006",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 125221,
+      "evidence_ids": [
+        "tx_001897",
+        "tx_001918",
+        "tx_001920",
+        "tx_001928",
+        "tx_001933",
+        "tx_001949",
+        "tx_001950",
+        "tx_001952",
+        "tx_001953",
+        "tx_001961",
+        "tx_001962",
+        "tx_001963",
+        "tx_001969",
+        "tx_001973",
+        "tx_001980",
+        "tx_001982",
+        "tx_001987",
+        "tx_001993",
+        "tx_001994",
+        "tx_001998",
+        "tx_002001",
+        "tx_002015",
+        "tx_002022",
+        "tx_002037",
+        "tx_002049",
+        "tx_002050"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_007",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 506994,
+      "evidence_ids": [
+        "tx_001896",
+        "tx_001898",
+        "tx_001901",
+        "tx_001903",
+        "tx_001907",
+        "tx_001911",
+        "tx_001924",
+        "tx_001934",
+        "tx_001936",
+        "tx_001937",
+        "tx_001941",
+        "tx_001945",
+        "tx_001946",
+        "tx_001967",
+        "tx_001971",
+        "tx_001981",
+        "tx_001989",
+        "tx_002002",
+        "tx_002021",
+        "tx_002025",
+        "tx_002035",
+        "tx_002038",
+        "tx_002039",
+        "tx_002046",
+        "tx_002047",
+        "tx_002048"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_008",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 25077,
+      "evidence_ids": [
+        "tx_003794",
+        "tx_003795",
+        "tx_003796",
+        "tx_003797"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_009",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 481917,
+      "evidence_ids": [
+        "tx_001896",
+        "tx_001898",
+        "tx_001901",
+        "tx_001903",
+        "tx_001907",
+        "tx_001911",
+        "tx_001924",
+        "tx_001934",
+        "tx_001936",
+        "tx_001937",
+        "tx_001941",
+        "tx_001945",
+        "tx_001946",
+        "tx_001967",
+        "tx_001971",
+        "tx_001981",
+        "tx_001989",
+        "tx_002002",
+        "tx_002021",
+        "tx_002025",
+        "tx_002035",
+        "tx_002038",
+        "tx_002039",
+        "tx_002046",
+        "tx_002047",
+        "tx_002048",
+        "tx_003794",
+        "tx_003795",
+        "tx_003796",
+        "tx_003797"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_010",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 185775,
+      "evidence_ids": [
+        "tx_001909",
+        "tx_001931",
+        "tx_001974",
+        "tx_001976",
+        "tx_001986",
+        "tx_002004",
+        "tx_002036",
+        "tx_002041",
+        "tx_002042"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_011",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_012",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 185775,
+      "evidence_ids": [
+        "tx_001909",
+        "tx_001931",
+        "tx_001974",
+        "tx_001976",
+        "tx_001986",
+        "tx_002004",
+        "tx_002036",
+        "tx_002041",
+        "tx_002042"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_013",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_001939",
+        "tx_001947",
+        "tx_001990"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_014",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_015",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-10的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-10-01",
+      "end_exclusive": "2025-11-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_001939",
+        "tx_001947",
+        "tx_001990"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_016",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 135261,
+      "evidence_ids": [
+        "tx_002055",
+        "tx_002060",
+        "tx_002063",
+        "tx_002066",
+        "tx_002067",
+        "tx_002069",
+        "tx_002072",
+        "tx_002077",
+        "tx_002084",
+        "tx_002085",
+        "tx_002088",
+        "tx_002100",
+        "tx_002101",
+        "tx_002107",
+        "tx_002109",
+        "tx_002110",
+        "tx_002114",
+        "tx_002115",
+        "tx_002123",
+        "tx_002126",
+        "tx_002130",
+        "tx_002132",
+        "tx_002139",
+        "tx_002140",
+        "tx_002143",
+        "tx_002146",
+        "tx_002151",
+        "tx_002160",
+        "tx_002161",
+        "tx_002166",
+        "tx_002169",
+        "tx_002178",
+        "tx_002182",
+        "tx_002184",
+        "tx_002186",
+        "tx_002187"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_017",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_018",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 135261,
+      "evidence_ids": [
+        "tx_002055",
+        "tx_002060",
+        "tx_002063",
+        "tx_002066",
+        "tx_002067",
+        "tx_002069",
+        "tx_002072",
+        "tx_002077",
+        "tx_002084",
+        "tx_002085",
+        "tx_002088",
+        "tx_002100",
+        "tx_002101",
+        "tx_002107",
+        "tx_002109",
+        "tx_002110",
+        "tx_002114",
+        "tx_002115",
+        "tx_002123",
+        "tx_002126",
+        "tx_002130",
+        "tx_002132",
+        "tx_002139",
+        "tx_002140",
+        "tx_002143",
+        "tx_002146",
+        "tx_002151",
+        "tx_002160",
+        "tx_002161",
+        "tx_002166",
+        "tx_002169",
+        "tx_002178",
+        "tx_002182",
+        "tx_002184",
+        "tx_002186",
+        "tx_002187"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_019",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 85911,
+      "evidence_ids": [
+        "tx_002064",
+        "tx_002070",
+        "tx_002071",
+        "tx_002075",
+        "tx_002080",
+        "tx_002098",
+        "tx_002118",
+        "tx_002122",
+        "tx_002141",
+        "tx_002142",
+        "tx_002152",
+        "tx_002165",
+        "tx_002173",
+        "tx_002175",
+        "tx_002176",
+        "tx_002183",
+        "tx_002190",
+        "tx_002193"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_020",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_021",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 85911,
+      "evidence_ids": [
+        "tx_002064",
+        "tx_002070",
+        "tx_002071",
+        "tx_002075",
+        "tx_002080",
+        "tx_002098",
+        "tx_002118",
+        "tx_002122",
+        "tx_002141",
+        "tx_002142",
+        "tx_002152",
+        "tx_002165",
+        "tx_002173",
+        "tx_002175",
+        "tx_002176",
+        "tx_002183",
+        "tx_002190",
+        "tx_002193"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_022",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 486608,
+      "evidence_ids": [
+        "tx_002053",
+        "tx_002058",
+        "tx_002059",
+        "tx_002062",
+        "tx_002079",
+        "tx_002082",
+        "tx_002083",
+        "tx_002086",
+        "tx_002089",
+        "tx_002095",
+        "tx_002096",
+        "tx_002106",
+        "tx_002113",
+        "tx_002124",
+        "tx_002127",
+        "tx_002128",
+        "tx_002131",
+        "tx_002135",
+        "tx_002147",
+        "tx_002153",
+        "tx_002157",
+        "tx_002167",
+        "tx_002177",
+        "tx_002179",
+        "tx_002191",
+        "tx_002192",
+        "tx_002195"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_023",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 42791,
+      "evidence_ids": [
+        "tx_003798",
+        "tx_003799",
+        "tx_003800",
+        "tx_003801"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_024",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 443817,
+      "evidence_ids": [
+        "tx_002053",
+        "tx_002058",
+        "tx_002059",
+        "tx_002062",
+        "tx_002079",
+        "tx_002082",
+        "tx_002083",
+        "tx_002086",
+        "tx_002089",
+        "tx_002095",
+        "tx_002096",
+        "tx_002106",
+        "tx_002113",
+        "tx_002124",
+        "tx_002127",
+        "tx_002128",
+        "tx_002131",
+        "tx_002135",
+        "tx_002147",
+        "tx_002153",
+        "tx_002157",
+        "tx_002167",
+        "tx_002177",
+        "tx_002179",
+        "tx_002191",
+        "tx_002192",
+        "tx_002195",
+        "tx_003798",
+        "tx_003799",
+        "tx_003800",
+        "tx_003801"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_025",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 367677,
+      "evidence_ids": [
+        "tx_002092",
+        "tx_002102",
+        "tx_002117",
+        "tx_002119",
+        "tx_002138",
+        "tx_002145",
+        "tx_002148",
+        "tx_002154",
+        "tx_002156",
+        "tx_002158",
+        "tx_002163",
+        "tx_002164",
+        "tx_002171",
+        "tx_002181",
+        "tx_002189",
+        "tx_002196"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_026",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_027",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 367677,
+      "evidence_ids": [
+        "tx_002092",
+        "tx_002102",
+        "tx_002117",
+        "tx_002119",
+        "tx_002138",
+        "tx_002145",
+        "tx_002148",
+        "tx_002154",
+        "tx_002156",
+        "tx_002158",
+        "tx_002163",
+        "tx_002164",
+        "tx_002171",
+        "tx_002181",
+        "tx_002189",
+        "tx_002196"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_028",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002093",
+        "tx_002104",
+        "tx_002136"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_029",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_030",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-11的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-11-01",
+      "end_exclusive": "2025-12-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002093",
+        "tx_002104",
+        "tx_002136"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_031",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 222561,
+      "evidence_ids": [
+        "tx_002198",
+        "tx_002199",
+        "tx_002200",
+        "tx_002205",
+        "tx_002207",
+        "tx_002211",
+        "tx_002212",
+        "tx_002223",
+        "tx_002229",
+        "tx_002232",
+        "tx_002234",
+        "tx_002236",
+        "tx_002239",
+        "tx_002242",
+        "tx_002243",
+        "tx_002244",
+        "tx_002250",
+        "tx_002252",
+        "tx_002261",
+        "tx_002262",
+        "tx_002270",
+        "tx_002271",
+        "tx_002275",
+        "tx_002276",
+        "tx_002278",
+        "tx_002280",
+        "tx_002282",
+        "tx_002285",
+        "tx_002290",
+        "tx_002291",
+        "tx_002293",
+        "tx_002298",
+        "tx_002301",
+        "tx_002306",
+        "tx_002308",
+        "tx_002310",
+        "tx_002320",
+        "tx_002333",
+        "tx_002336",
+        "tx_002340",
+        "tx_002348",
+        "tx_002352",
+        "tx_002354",
+        "tx_002355",
+        "tx_002357"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_032",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_033",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 222561,
+      "evidence_ids": [
+        "tx_002198",
+        "tx_002199",
+        "tx_002200",
+        "tx_002205",
+        "tx_002207",
+        "tx_002211",
+        "tx_002212",
+        "tx_002223",
+        "tx_002229",
+        "tx_002232",
+        "tx_002234",
+        "tx_002236",
+        "tx_002239",
+        "tx_002242",
+        "tx_002243",
+        "tx_002244",
+        "tx_002250",
+        "tx_002252",
+        "tx_002261",
+        "tx_002262",
+        "tx_002270",
+        "tx_002271",
+        "tx_002275",
+        "tx_002276",
+        "tx_002278",
+        "tx_002280",
+        "tx_002282",
+        "tx_002285",
+        "tx_002290",
+        "tx_002291",
+        "tx_002293",
+        "tx_002298",
+        "tx_002301",
+        "tx_002306",
+        "tx_002308",
+        "tx_002310",
+        "tx_002320",
+        "tx_002333",
+        "tx_002336",
+        "tx_002340",
+        "tx_002348",
+        "tx_002352",
+        "tx_002354",
+        "tx_002355",
+        "tx_002357"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_034",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 174536,
+      "evidence_ids": [
+        "tx_002201",
+        "tx_002202",
+        "tx_002206",
+        "tx_002208",
+        "tx_002215",
+        "tx_002216",
+        "tx_002219",
+        "tx_002221",
+        "tx_002222",
+        "tx_002225",
+        "tx_002231",
+        "tx_002235",
+        "tx_002238",
+        "tx_002247",
+        "tx_002249",
+        "tx_002251",
+        "tx_002257",
+        "tx_002263",
+        "tx_002266",
+        "tx_002272",
+        "tx_002279",
+        "tx_002300",
+        "tx_002307",
+        "tx_002312",
+        "tx_002321",
+        "tx_002322",
+        "tx_002323",
+        "tx_002324",
+        "tx_002327",
+        "tx_002330",
+        "tx_002334",
+        "tx_002343",
+        "tx_002346",
+        "tx_002349",
+        "tx_002350"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_035",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_036",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 174536,
+      "evidence_ids": [
+        "tx_002201",
+        "tx_002202",
+        "tx_002206",
+        "tx_002208",
+        "tx_002215",
+        "tx_002216",
+        "tx_002219",
+        "tx_002221",
+        "tx_002222",
+        "tx_002225",
+        "tx_002231",
+        "tx_002235",
+        "tx_002238",
+        "tx_002247",
+        "tx_002249",
+        "tx_002251",
+        "tx_002257",
+        "tx_002263",
+        "tx_002266",
+        "tx_002272",
+        "tx_002279",
+        "tx_002300",
+        "tx_002307",
+        "tx_002312",
+        "tx_002321",
+        "tx_002322",
+        "tx_002323",
+        "tx_002324",
+        "tx_002327",
+        "tx_002330",
+        "tx_002334",
+        "tx_002343",
+        "tx_002346",
+        "tx_002349",
+        "tx_002350"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_037",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 502811,
+      "evidence_ids": [
+        "tx_002203",
+        "tx_002209",
+        "tx_002213",
+        "tx_002248",
+        "tx_002256",
+        "tx_002260",
+        "tx_002267",
+        "tx_002273",
+        "tx_002283",
+        "tx_002287",
+        "tx_002288",
+        "tx_002296",
+        "tx_002303",
+        "tx_002311",
+        "tx_002313",
+        "tx_002316",
+        "tx_002329",
+        "tx_002332",
+        "tx_002356"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_038",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 37963,
+      "evidence_ids": [
+        "tx_003802",
+        "tx_003803",
+        "tx_003804"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_039",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 464848,
+      "evidence_ids": [
+        "tx_002203",
+        "tx_002209",
+        "tx_002213",
+        "tx_002248",
+        "tx_002256",
+        "tx_002260",
+        "tx_002267",
+        "tx_002273",
+        "tx_002283",
+        "tx_002287",
+        "tx_002288",
+        "tx_002296",
+        "tx_002303",
+        "tx_002311",
+        "tx_002313",
+        "tx_002316",
+        "tx_002329",
+        "tx_002332",
+        "tx_002356",
+        "tx_003802",
+        "tx_003803",
+        "tx_003804"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_040",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 353565,
+      "evidence_ids": [
+        "tx_002214",
+        "tx_002224",
+        "tx_002228",
+        "tx_002230",
+        "tx_002255",
+        "tx_002259",
+        "tx_002277",
+        "tx_002286",
+        "tx_002318",
+        "tx_002326",
+        "tx_002337",
+        "tx_002339",
+        "tx_002344",
+        "tx_002347",
+        "tx_002353"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_041",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_042",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 353565,
+      "evidence_ids": [
+        "tx_002214",
+        "tx_002224",
+        "tx_002228",
+        "tx_002230",
+        "tx_002255",
+        "tx_002259",
+        "tx_002277",
+        "tx_002286",
+        "tx_002318",
+        "tx_002326",
+        "tx_002337",
+        "tx_002339",
+        "tx_002344",
+        "tx_002347",
+        "tx_002353"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_043",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002240",
+        "tx_002253",
+        "tx_002294"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_044",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_045",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2025-12的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2025-12-01",
+      "end_exclusive": "2026-01-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002240",
+        "tx_002253",
+        "tx_002294"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_046",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 211392,
+      "evidence_ids": [
+        "tx_002359",
+        "tx_002362",
+        "tx_002365",
+        "tx_002367",
+        "tx_002368",
+        "tx_002373",
+        "tx_002374",
+        "tx_002376",
+        "tx_002377",
+        "tx_002381",
+        "tx_002382",
+        "tx_002388",
+        "tx_002390",
+        "tx_002393",
+        "tx_002395",
+        "tx_002397",
+        "tx_002398",
+        "tx_002401",
+        "tx_002406",
+        "tx_002409",
+        "tx_002410",
+        "tx_002411",
+        "tx_002412",
+        "tx_002418",
+        "tx_002422",
+        "tx_002424",
+        "tx_002426",
+        "tx_002427",
+        "tx_002430",
+        "tx_002431",
+        "tx_002433",
+        "tx_002435",
+        "tx_002441",
+        "tx_002442",
+        "tx_002453",
+        "tx_002454",
+        "tx_002464",
+        "tx_002465",
+        "tx_002469",
+        "tx_002470",
+        "tx_002473",
+        "tx_002474",
+        "tx_002480",
+        "tx_002487",
+        "tx_002489",
+        "tx_002490",
+        "tx_002492",
+        "tx_002494",
+        "tx_002498",
+        "tx_002501",
+        "tx_002502"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_047",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_048",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 211392,
+      "evidence_ids": [
+        "tx_002359",
+        "tx_002362",
+        "tx_002365",
+        "tx_002367",
+        "tx_002368",
+        "tx_002373",
+        "tx_002374",
+        "tx_002376",
+        "tx_002377",
+        "tx_002381",
+        "tx_002382",
+        "tx_002388",
+        "tx_002390",
+        "tx_002393",
+        "tx_002395",
+        "tx_002397",
+        "tx_002398",
+        "tx_002401",
+        "tx_002406",
+        "tx_002409",
+        "tx_002410",
+        "tx_002411",
+        "tx_002412",
+        "tx_002418",
+        "tx_002422",
+        "tx_002424",
+        "tx_002426",
+        "tx_002427",
+        "tx_002430",
+        "tx_002431",
+        "tx_002433",
+        "tx_002435",
+        "tx_002441",
+        "tx_002442",
+        "tx_002453",
+        "tx_002454",
+        "tx_002464",
+        "tx_002465",
+        "tx_002469",
+        "tx_002470",
+        "tx_002473",
+        "tx_002474",
+        "tx_002480",
+        "tx_002487",
+        "tx_002489",
+        "tx_002490",
+        "tx_002492",
+        "tx_002494",
+        "tx_002498",
+        "tx_002501",
+        "tx_002502"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_049",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 107384,
+      "evidence_ids": [
+        "tx_002369",
+        "tx_002370",
+        "tx_002385",
+        "tx_002389",
+        "tx_002394",
+        "tx_002400",
+        "tx_002420",
+        "tx_002425",
+        "tx_002436",
+        "tx_002440",
+        "tx_002443",
+        "tx_002444",
+        "tx_002448",
+        "tx_002449",
+        "tx_002451",
+        "tx_002458",
+        "tx_002461",
+        "tx_002462",
+        "tx_002471",
+        "tx_002482",
+        "tx_002483",
+        "tx_002484",
+        "tx_002486",
+        "tx_002493",
+        "tx_002496",
+        "tx_002504",
+        "tx_002505",
+        "tx_002506"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_050",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_051",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 107384,
+      "evidence_ids": [
+        "tx_002369",
+        "tx_002370",
+        "tx_002385",
+        "tx_002389",
+        "tx_002394",
+        "tx_002400",
+        "tx_002420",
+        "tx_002425",
+        "tx_002436",
+        "tx_002440",
+        "tx_002443",
+        "tx_002444",
+        "tx_002448",
+        "tx_002449",
+        "tx_002451",
+        "tx_002458",
+        "tx_002461",
+        "tx_002462",
+        "tx_002471",
+        "tx_002482",
+        "tx_002483",
+        "tx_002484",
+        "tx_002486",
+        "tx_002493",
+        "tx_002496",
+        "tx_002504",
+        "tx_002505",
+        "tx_002506"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_052",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 316998,
+      "evidence_ids": [
+        "tx_002372",
+        "tx_002378",
+        "tx_002407",
+        "tx_002413",
+        "tx_002421",
+        "tx_002428",
+        "tx_002434",
+        "tx_002437",
+        "tx_002447",
+        "tx_002450",
+        "tx_002467",
+        "tx_002476",
+        "tx_002477",
+        "tx_002497",
+        "tx_002500"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_053",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 15717,
+      "evidence_ids": [
+        "tx_003805",
+        "tx_003806"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_054",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 301281,
+      "evidence_ids": [
+        "tx_002372",
+        "tx_002378",
+        "tx_002407",
+        "tx_002413",
+        "tx_002421",
+        "tx_002428",
+        "tx_002434",
+        "tx_002437",
+        "tx_002447",
+        "tx_002450",
+        "tx_002467",
+        "tx_002476",
+        "tx_002477",
+        "tx_002497",
+        "tx_002500",
+        "tx_003805",
+        "tx_003806"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_055",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 111783,
+      "evidence_ids": [
+        "tx_002361",
+        "tx_002383",
+        "tx_002402",
+        "tx_002414",
+        "tx_002417",
+        "tx_002460"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_056",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_057",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 111783,
+      "evidence_ids": [
+        "tx_002361",
+        "tx_002383",
+        "tx_002402",
+        "tx_002414",
+        "tx_002417",
+        "tx_002460"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_058",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002391",
+        "tx_002403",
+        "tx_002445"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_059",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_060",
+    "split": "dev",
+    "user_id": "test_user",
+    "question": "2026-01的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-01-01",
+      "end_exclusive": "2026-02-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002391",
+        "tx_002403",
+        "tx_002445"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_061",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 207739,
+      "evidence_ids": [
+        "tx_002514",
+        "tx_002517",
+        "tx_002519",
+        "tx_002521",
+        "tx_002527",
+        "tx_002535",
+        "tx_002537",
+        "tx_002544",
+        "tx_002546",
+        "tx_002552",
+        "tx_002557",
+        "tx_002560",
+        "tx_002567",
+        "tx_002570",
+        "tx_002577",
+        "tx_002582",
+        "tx_002590",
+        "tx_002592",
+        "tx_002596",
+        "tx_002597",
+        "tx_002599",
+        "tx_002600",
+        "tx_002601",
+        "tx_002605",
+        "tx_002608",
+        "tx_002610",
+        "tx_002617",
+        "tx_002622",
+        "tx_002623",
+        "tx_002624",
+        "tx_002629",
+        "tx_002634",
+        "tx_002635",
+        "tx_002637",
+        "tx_002644",
+        "tx_002650",
+        "tx_002651",
+        "tx_002653",
+        "tx_002654",
+        "tx_002656",
+        "tx_002658"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_062",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_063",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 207739,
+      "evidence_ids": [
+        "tx_002514",
+        "tx_002517",
+        "tx_002519",
+        "tx_002521",
+        "tx_002527",
+        "tx_002535",
+        "tx_002537",
+        "tx_002544",
+        "tx_002546",
+        "tx_002552",
+        "tx_002557",
+        "tx_002560",
+        "tx_002567",
+        "tx_002570",
+        "tx_002577",
+        "tx_002582",
+        "tx_002590",
+        "tx_002592",
+        "tx_002596",
+        "tx_002597",
+        "tx_002599",
+        "tx_002600",
+        "tx_002601",
+        "tx_002605",
+        "tx_002608",
+        "tx_002610",
+        "tx_002617",
+        "tx_002622",
+        "tx_002623",
+        "tx_002624",
+        "tx_002629",
+        "tx_002634",
+        "tx_002635",
+        "tx_002637",
+        "tx_002644",
+        "tx_002650",
+        "tx_002651",
+        "tx_002653",
+        "tx_002654",
+        "tx_002656",
+        "tx_002658"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_064",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117972,
+      "evidence_ids": [
+        "tx_002509",
+        "tx_002510",
+        "tx_002515",
+        "tx_002523",
+        "tx_002528",
+        "tx_002539",
+        "tx_002548",
+        "tx_002553",
+        "tx_002564",
+        "tx_002568",
+        "tx_002571",
+        "tx_002572",
+        "tx_002586",
+        "tx_002604",
+        "tx_002611",
+        "tx_002612",
+        "tx_002614",
+        "tx_002615",
+        "tx_002616",
+        "tx_002620",
+        "tx_002631",
+        "tx_002636",
+        "tx_002640",
+        "tx_002642",
+        "tx_002648"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_065",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_066",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117972,
+      "evidence_ids": [
+        "tx_002509",
+        "tx_002510",
+        "tx_002515",
+        "tx_002523",
+        "tx_002528",
+        "tx_002539",
+        "tx_002548",
+        "tx_002553",
+        "tx_002564",
+        "tx_002568",
+        "tx_002571",
+        "tx_002572",
+        "tx_002586",
+        "tx_002604",
+        "tx_002611",
+        "tx_002612",
+        "tx_002614",
+        "tx_002615",
+        "tx_002616",
+        "tx_002620",
+        "tx_002631",
+        "tx_002636",
+        "tx_002640",
+        "tx_002642",
+        "tx_002648"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_067",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 559984,
+      "evidence_ids": [
+        "tx_002508",
+        "tx_002511",
+        "tx_002512",
+        "tx_002529",
+        "tx_002530",
+        "tx_002531",
+        "tx_002532",
+        "tx_002536",
+        "tx_002542",
+        "tx_002547",
+        "tx_002549",
+        "tx_002554",
+        "tx_002558",
+        "tx_002559",
+        "tx_002574",
+        "tx_002580",
+        "tx_002584",
+        "tx_002585",
+        "tx_002587",
+        "tx_002603",
+        "tx_002626",
+        "tx_002627",
+        "tx_002630",
+        "tx_002632",
+        "tx_002639",
+        "tx_002643",
+        "tx_002647"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_068",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 21914,
+      "evidence_ids": [
+        "tx_003807",
+        "tx_003808",
+        "tx_003809"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_069",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 538070,
+      "evidence_ids": [
+        "tx_002508",
+        "tx_002511",
+        "tx_002512",
+        "tx_002529",
+        "tx_002530",
+        "tx_002531",
+        "tx_002532",
+        "tx_002536",
+        "tx_002542",
+        "tx_002547",
+        "tx_002549",
+        "tx_002554",
+        "tx_002558",
+        "tx_002559",
+        "tx_002574",
+        "tx_002580",
+        "tx_002584",
+        "tx_002585",
+        "tx_002587",
+        "tx_002603",
+        "tx_002626",
+        "tx_002627",
+        "tx_002630",
+        "tx_002632",
+        "tx_002639",
+        "tx_002643",
+        "tx_002647",
+        "tx_003807",
+        "tx_003808",
+        "tx_003809"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_070",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 196336,
+      "evidence_ids": [
+        "tx_002522",
+        "tx_002525",
+        "tx_002565",
+        "tx_002566",
+        "tx_002573",
+        "tx_002581",
+        "tx_002589",
+        "tx_002593",
+        "tx_002641"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_071",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_072",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 196336,
+      "evidence_ids": [
+        "tx_002522",
+        "tx_002525",
+        "tx_002565",
+        "tx_002566",
+        "tx_002573",
+        "tx_002581",
+        "tx_002589",
+        "tx_002593",
+        "tx_002641"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_073",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002550",
+        "tx_002561",
+        "tx_002606"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_074",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_075",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-02的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-02-01",
+      "end_exclusive": "2026-03-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002550",
+        "tx_002561",
+        "tx_002606"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_076",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 244974,
+      "evidence_ids": [
+        "tx_002663",
+        "tx_002664",
+        "tx_002667",
+        "tx_002668",
+        "tx_002671",
+        "tx_002678",
+        "tx_002679",
+        "tx_002685",
+        "tx_002687",
+        "tx_002688",
+        "tx_002690",
+        "tx_002694",
+        "tx_002699",
+        "tx_002702",
+        "tx_002704",
+        "tx_002705",
+        "tx_002706",
+        "tx_002708",
+        "tx_002713",
+        "tx_002717",
+        "tx_002720",
+        "tx_002721",
+        "tx_002722",
+        "tx_002725",
+        "tx_002726",
+        "tx_002729",
+        "tx_002731",
+        "tx_002737",
+        "tx_002744",
+        "tx_002745",
+        "tx_002749",
+        "tx_002753",
+        "tx_002755",
+        "tx_002756",
+        "tx_002760",
+        "tx_002765",
+        "tx_002768",
+        "tx_002771",
+        "tx_002772",
+        "tx_002774",
+        "tx_002776",
+        "tx_002778",
+        "tx_002781",
+        "tx_002786",
+        "tx_002789",
+        "tx_002792",
+        "tx_002793",
+        "tx_002794",
+        "tx_002797",
+        "tx_002798",
+        "tx_002803"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_077",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_078",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 244974,
+      "evidence_ids": [
+        "tx_002663",
+        "tx_002664",
+        "tx_002667",
+        "tx_002668",
+        "tx_002671",
+        "tx_002678",
+        "tx_002679",
+        "tx_002685",
+        "tx_002687",
+        "tx_002688",
+        "tx_002690",
+        "tx_002694",
+        "tx_002699",
+        "tx_002702",
+        "tx_002704",
+        "tx_002705",
+        "tx_002706",
+        "tx_002708",
+        "tx_002713",
+        "tx_002717",
+        "tx_002720",
+        "tx_002721",
+        "tx_002722",
+        "tx_002725",
+        "tx_002726",
+        "tx_002729",
+        "tx_002731",
+        "tx_002737",
+        "tx_002744",
+        "tx_002745",
+        "tx_002749",
+        "tx_002753",
+        "tx_002755",
+        "tx_002756",
+        "tx_002760",
+        "tx_002765",
+        "tx_002768",
+        "tx_002771",
+        "tx_002772",
+        "tx_002774",
+        "tx_002776",
+        "tx_002778",
+        "tx_002781",
+        "tx_002786",
+        "tx_002789",
+        "tx_002792",
+        "tx_002793",
+        "tx_002794",
+        "tx_002797",
+        "tx_002798",
+        "tx_002803"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_079",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 103350,
+      "evidence_ids": [
+        "tx_002669",
+        "tx_002672",
+        "tx_002673",
+        "tx_002676",
+        "tx_002681",
+        "tx_002689",
+        "tx_002691",
+        "tx_002698",
+        "tx_002701",
+        "tx_002728",
+        "tx_002735",
+        "tx_002739",
+        "tx_002743",
+        "tx_002748",
+        "tx_002762",
+        "tx_002767",
+        "tx_002775",
+        "tx_002782",
+        "tx_002785",
+        "tx_002790",
+        "tx_002799",
+        "tx_002810"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_080",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_081",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 103350,
+      "evidence_ids": [
+        "tx_002669",
+        "tx_002672",
+        "tx_002673",
+        "tx_002676",
+        "tx_002681",
+        "tx_002689",
+        "tx_002691",
+        "tx_002698",
+        "tx_002701",
+        "tx_002728",
+        "tx_002735",
+        "tx_002739",
+        "tx_002743",
+        "tx_002748",
+        "tx_002762",
+        "tx_002767",
+        "tx_002775",
+        "tx_002782",
+        "tx_002785",
+        "tx_002790",
+        "tx_002799",
+        "tx_002810"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_082",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 504943,
+      "evidence_ids": [
+        "tx_002661",
+        "tx_002666",
+        "tx_002674",
+        "tx_002677",
+        "tx_002680",
+        "tx_002693",
+        "tx_002700",
+        "tx_002707",
+        "tx_002709",
+        "tx_002714",
+        "tx_002732",
+        "tx_002736",
+        "tx_002738",
+        "tx_002741",
+        "tx_002747",
+        "tx_002752",
+        "tx_002764",
+        "tx_002770",
+        "tx_002777",
+        "tx_002780",
+        "tx_002783",
+        "tx_002802",
+        "tx_002809"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_083",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 55520,
+      "evidence_ids": [
+        "tx_003810",
+        "tx_003811",
+        "tx_003812",
+        "tx_003813"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_084",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 449423,
+      "evidence_ids": [
+        "tx_002661",
+        "tx_002666",
+        "tx_002674",
+        "tx_002677",
+        "tx_002680",
+        "tx_002693",
+        "tx_002700",
+        "tx_002707",
+        "tx_002709",
+        "tx_002714",
+        "tx_002732",
+        "tx_002736",
+        "tx_002738",
+        "tx_002741",
+        "tx_002747",
+        "tx_002752",
+        "tx_002764",
+        "tx_002770",
+        "tx_002777",
+        "tx_002780",
+        "tx_002783",
+        "tx_002802",
+        "tx_002809",
+        "tx_003810",
+        "tx_003811",
+        "tx_003812",
+        "tx_003813"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_085",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 155137,
+      "evidence_ids": [
+        "tx_002684",
+        "tx_002695",
+        "tx_002712",
+        "tx_002723",
+        "tx_002759",
+        "tx_002795",
+        "tx_002801",
+        "tx_002807"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_086",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_087",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 155137,
+      "evidence_ids": [
+        "tx_002684",
+        "tx_002695",
+        "tx_002712",
+        "tx_002723",
+        "tx_002759",
+        "tx_002795",
+        "tx_002801",
+        "tx_002807"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_088",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002696",
+        "tx_002710",
+        "tx_002750"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_089",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_090",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-03的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-03-01",
+      "end_exclusive": "2026-04-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002696",
+        "tx_002710",
+        "tx_002750"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_091",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 142316,
+      "evidence_ids": [
+        "tx_002813",
+        "tx_002817",
+        "tx_002820",
+        "tx_002822",
+        "tx_002826",
+        "tx_002829",
+        "tx_002830",
+        "tx_002832",
+        "tx_002840",
+        "tx_002843",
+        "tx_002845",
+        "tx_002849",
+        "tx_002863",
+        "tx_002868",
+        "tx_002875",
+        "tx_002876",
+        "tx_002880",
+        "tx_002891",
+        "tx_002893",
+        "tx_002897",
+        "tx_002902",
+        "tx_002903",
+        "tx_002905",
+        "tx_002911",
+        "tx_002914",
+        "tx_002917",
+        "tx_002920",
+        "tx_002922",
+        "tx_002923",
+        "tx_002930",
+        "tx_002933",
+        "tx_002935",
+        "tx_002943"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_092",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_093",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 142316,
+      "evidence_ids": [
+        "tx_002813",
+        "tx_002817",
+        "tx_002820",
+        "tx_002822",
+        "tx_002826",
+        "tx_002829",
+        "tx_002830",
+        "tx_002832",
+        "tx_002840",
+        "tx_002843",
+        "tx_002845",
+        "tx_002849",
+        "tx_002863",
+        "tx_002868",
+        "tx_002875",
+        "tx_002876",
+        "tx_002880",
+        "tx_002891",
+        "tx_002893",
+        "tx_002897",
+        "tx_002902",
+        "tx_002903",
+        "tx_002905",
+        "tx_002911",
+        "tx_002914",
+        "tx_002917",
+        "tx_002920",
+        "tx_002922",
+        "tx_002923",
+        "tx_002930",
+        "tx_002933",
+        "tx_002935",
+        "tx_002943"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_094",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 106270,
+      "evidence_ids": [
+        "tx_002823",
+        "tx_002825",
+        "tx_002835",
+        "tx_002837",
+        "tx_002848",
+        "tx_002851",
+        "tx_002859",
+        "tx_002860",
+        "tx_002869",
+        "tx_002871",
+        "tx_002872",
+        "tx_002873",
+        "tx_002877",
+        "tx_002885",
+        "tx_002889",
+        "tx_002890",
+        "tx_002909",
+        "tx_002910",
+        "tx_002926",
+        "tx_002927",
+        "tx_002929",
+        "tx_002936"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_095",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_096",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 106270,
+      "evidence_ids": [
+        "tx_002823",
+        "tx_002825",
+        "tx_002835",
+        "tx_002837",
+        "tx_002848",
+        "tx_002851",
+        "tx_002859",
+        "tx_002860",
+        "tx_002869",
+        "tx_002871",
+        "tx_002872",
+        "tx_002873",
+        "tx_002877",
+        "tx_002885",
+        "tx_002889",
+        "tx_002890",
+        "tx_002909",
+        "tx_002910",
+        "tx_002926",
+        "tx_002927",
+        "tx_002929",
+        "tx_002936"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_097",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 385186,
+      "evidence_ids": [
+        "tx_002814",
+        "tx_002816",
+        "tx_002819",
+        "tx_002852",
+        "tx_002858",
+        "tx_002882",
+        "tx_002883",
+        "tx_002886",
+        "tx_002895",
+        "tx_002896",
+        "tx_002900",
+        "tx_002907",
+        "tx_002916",
+        "tx_002919",
+        "tx_002921",
+        "tx_002925",
+        "tx_002931",
+        "tx_002939",
+        "tx_002940"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_098",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 33187,
+      "evidence_ids": [
+        "tx_003814",
+        "tx_003815"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_099",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 351999,
+      "evidence_ids": [
+        "tx_002814",
+        "tx_002816",
+        "tx_002819",
+        "tx_002852",
+        "tx_002858",
+        "tx_002882",
+        "tx_002883",
+        "tx_002886",
+        "tx_002895",
+        "tx_002896",
+        "tx_002900",
+        "tx_002907",
+        "tx_002916",
+        "tx_002919",
+        "tx_002921",
+        "tx_002925",
+        "tx_002931",
+        "tx_002939",
+        "tx_002940",
+        "tx_003814",
+        "tx_003815"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_100",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 431742,
+      "evidence_ids": [
+        "tx_002831",
+        "tx_002833",
+        "tx_002836",
+        "tx_002839",
+        "tx_002844",
+        "tx_002846",
+        "tx_002855",
+        "tx_002856",
+        "tx_002866",
+        "tx_002879",
+        "tx_002884",
+        "tx_002892",
+        "tx_002901",
+        "tx_002906",
+        "tx_002915",
+        "tx_002938",
+        "tx_002941",
+        "tx_002945"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_101",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_102",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 431742,
+      "evidence_ids": [
+        "tx_002831",
+        "tx_002833",
+        "tx_002836",
+        "tx_002839",
+        "tx_002844",
+        "tx_002846",
+        "tx_002855",
+        "tx_002856",
+        "tx_002866",
+        "tx_002879",
+        "tx_002884",
+        "tx_002892",
+        "tx_002901",
+        "tx_002906",
+        "tx_002915",
+        "tx_002938",
+        "tx_002941",
+        "tx_002945"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_103",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002841",
+        "tx_002853",
+        "tx_002887"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_104",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_105",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-04的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-04-01",
+      "end_exclusive": "2026-05-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002841",
+        "tx_002853",
+        "tx_002887"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_106",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 286819,
+      "evidence_ids": [
+        "tx_002949",
+        "tx_002951",
+        "tx_002956",
+        "tx_002960",
+        "tx_002962",
+        "tx_002966",
+        "tx_002970",
+        "tx_002973",
+        "tx_002974",
+        "tx_002975",
+        "tx_002979",
+        "tx_002980",
+        "tx_002981",
+        "tx_002985",
+        "tx_002987",
+        "tx_002989",
+        "tx_002991",
+        "tx_002992",
+        "tx_002993",
+        "tx_002999",
+        "tx_003006",
+        "tx_003008",
+        "tx_003011",
+        "tx_003012",
+        "tx_003013",
+        "tx_003016",
+        "tx_003018",
+        "tx_003021",
+        "tx_003025",
+        "tx_003026",
+        "tx_003029",
+        "tx_003032",
+        "tx_003033",
+        "tx_003034",
+        "tx_003038",
+        "tx_003043",
+        "tx_003044",
+        "tx_003045",
+        "tx_003051",
+        "tx_003053",
+        "tx_003056",
+        "tx_003057",
+        "tx_003058",
+        "tx_003064",
+        "tx_003072",
+        "tx_003075",
+        "tx_003077",
+        "tx_003081",
+        "tx_003083",
+        "tx_003085",
+        "tx_003086",
+        "tx_003087",
+        "tx_003089",
+        "tx_003093",
+        "tx_003096",
+        "tx_003098",
+        "tx_003100",
+        "tx_003101",
+        "tx_003105",
+        "tx_003107",
+        "tx_003109",
+        "tx_003113"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_107",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_108",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 286819,
+      "evidence_ids": [
+        "tx_002949",
+        "tx_002951",
+        "tx_002956",
+        "tx_002960",
+        "tx_002962",
+        "tx_002966",
+        "tx_002970",
+        "tx_002973",
+        "tx_002974",
+        "tx_002975",
+        "tx_002979",
+        "tx_002980",
+        "tx_002981",
+        "tx_002985",
+        "tx_002987",
+        "tx_002989",
+        "tx_002991",
+        "tx_002992",
+        "tx_002993",
+        "tx_002999",
+        "tx_003006",
+        "tx_003008",
+        "tx_003011",
+        "tx_003012",
+        "tx_003013",
+        "tx_003016",
+        "tx_003018",
+        "tx_003021",
+        "tx_003025",
+        "tx_003026",
+        "tx_003029",
+        "tx_003032",
+        "tx_003033",
+        "tx_003034",
+        "tx_003038",
+        "tx_003043",
+        "tx_003044",
+        "tx_003045",
+        "tx_003051",
+        "tx_003053",
+        "tx_003056",
+        "tx_003057",
+        "tx_003058",
+        "tx_003064",
+        "tx_003072",
+        "tx_003075",
+        "tx_003077",
+        "tx_003081",
+        "tx_003083",
+        "tx_003085",
+        "tx_003086",
+        "tx_003087",
+        "tx_003089",
+        "tx_003093",
+        "tx_003096",
+        "tx_003098",
+        "tx_003100",
+        "tx_003101",
+        "tx_003105",
+        "tx_003107",
+        "tx_003109",
+        "tx_003113"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_109",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 110071,
+      "evidence_ids": [
+        "tx_002954",
+        "tx_002957",
+        "tx_002958",
+        "tx_002963",
+        "tx_002967",
+        "tx_002988",
+        "tx_002997",
+        "tx_003000",
+        "tx_003001",
+        "tx_003003",
+        "tx_003023",
+        "tx_003024",
+        "tx_003035",
+        "tx_003036",
+        "tx_003039",
+        "tx_003040",
+        "tx_003046",
+        "tx_003055",
+        "tx_003065",
+        "tx_003068",
+        "tx_003069",
+        "tx_003080",
+        "tx_003090",
+        "tx_003092",
+        "tx_003099",
+        "tx_003103",
+        "tx_003106",
+        "tx_003112"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_110",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_111",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 110071,
+      "evidence_ids": [
+        "tx_002954",
+        "tx_002957",
+        "tx_002958",
+        "tx_002963",
+        "tx_002967",
+        "tx_002988",
+        "tx_002997",
+        "tx_003000",
+        "tx_003001",
+        "tx_003003",
+        "tx_003023",
+        "tx_003024",
+        "tx_003035",
+        "tx_003036",
+        "tx_003039",
+        "tx_003040",
+        "tx_003046",
+        "tx_003055",
+        "tx_003065",
+        "tx_003068",
+        "tx_003069",
+        "tx_003080",
+        "tx_003090",
+        "tx_003092",
+        "tx_003099",
+        "tx_003103",
+        "tx_003106",
+        "tx_003112"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_112",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 498746,
+      "evidence_ids": [
+        "tx_002947",
+        "tx_002948",
+        "tx_002953",
+        "tx_002955",
+        "tx_002961",
+        "tx_002965",
+        "tx_002968",
+        "tx_002971",
+        "tx_002972",
+        "tx_002978",
+        "tx_002982",
+        "tx_002996",
+        "tx_003002",
+        "tx_003007",
+        "tx_003010",
+        "tx_003027",
+        "tx_003050",
+        "tx_003061",
+        "tx_003062",
+        "tx_003066",
+        "tx_003104",
+        "tx_003110"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_113",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 44861,
+      "evidence_ids": [
+        "tx_003816",
+        "tx_003817",
+        "tx_003818",
+        "tx_003819"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_114",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 453885,
+      "evidence_ids": [
+        "tx_002947",
+        "tx_002948",
+        "tx_002953",
+        "tx_002955",
+        "tx_002961",
+        "tx_002965",
+        "tx_002968",
+        "tx_002971",
+        "tx_002972",
+        "tx_002978",
+        "tx_002982",
+        "tx_002996",
+        "tx_003002",
+        "tx_003007",
+        "tx_003010",
+        "tx_003027",
+        "tx_003050",
+        "tx_003061",
+        "tx_003062",
+        "tx_003066",
+        "tx_003104",
+        "tx_003110",
+        "tx_003816",
+        "tx_003817",
+        "tx_003818",
+        "tx_003819"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_115",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 326116,
+      "evidence_ids": [
+        "tx_002950",
+        "tx_002983",
+        "tx_003017",
+        "tx_003019",
+        "tx_003054",
+        "tx_003073",
+        "tx_003076",
+        "tx_003079",
+        "tx_003082",
+        "tx_003095",
+        "tx_003114"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_116",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_117",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 326116,
+      "evidence_ids": [
+        "tx_002950",
+        "tx_002983",
+        "tx_003017",
+        "tx_003019",
+        "tx_003054",
+        "tx_003073",
+        "tx_003076",
+        "tx_003079",
+        "tx_003082",
+        "tx_003095",
+        "tx_003114"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_118",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002994",
+        "tx_003004",
+        "tx_003048"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_119",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_120",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-05的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-05-01",
+      "end_exclusive": "2026-06-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_002994",
+        "tx_003004",
+        "tx_003048"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_121",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 251794,
+      "evidence_ids": [
+        "tx_003122",
+        "tx_003123",
+        "tx_003128",
+        "tx_003130",
+        "tx_003131",
+        "tx_003135",
+        "tx_003137",
+        "tx_003139",
+        "tx_003147",
+        "tx_003149",
+        "tx_003154",
+        "tx_003159",
+        "tx_003162",
+        "tx_003164",
+        "tx_003166",
+        "tx_003167",
+        "tx_003170",
+        "tx_003172",
+        "tx_003175",
+        "tx_003178",
+        "tx_003182",
+        "tx_003184",
+        "tx_003185",
+        "tx_003189",
+        "tx_003195",
+        "tx_003197",
+        "tx_003199",
+        "tx_003201",
+        "tx_003210",
+        "tx_003213",
+        "tx_003216",
+        "tx_003219",
+        "tx_003224",
+        "tx_003233",
+        "tx_003235",
+        "tx_003236",
+        "tx_003238",
+        "tx_003239",
+        "tx_003244",
+        "tx_003246",
+        "tx_003247",
+        "tx_003249",
+        "tx_003250",
+        "tx_003251",
+        "tx_003253",
+        "tx_003255",
+        "tx_003256",
+        "tx_003257",
+        "tx_003259",
+        "tx_003262",
+        "tx_003264",
+        "tx_003265",
+        "tx_003266"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_122",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_123",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 251794,
+      "evidence_ids": [
+        "tx_003122",
+        "tx_003123",
+        "tx_003128",
+        "tx_003130",
+        "tx_003131",
+        "tx_003135",
+        "tx_003137",
+        "tx_003139",
+        "tx_003147",
+        "tx_003149",
+        "tx_003154",
+        "tx_003159",
+        "tx_003162",
+        "tx_003164",
+        "tx_003166",
+        "tx_003167",
+        "tx_003170",
+        "tx_003172",
+        "tx_003175",
+        "tx_003178",
+        "tx_003182",
+        "tx_003184",
+        "tx_003185",
+        "tx_003189",
+        "tx_003195",
+        "tx_003197",
+        "tx_003199",
+        "tx_003201",
+        "tx_003210",
+        "tx_003213",
+        "tx_003216",
+        "tx_003219",
+        "tx_003224",
+        "tx_003233",
+        "tx_003235",
+        "tx_003236",
+        "tx_003238",
+        "tx_003239",
+        "tx_003244",
+        "tx_003246",
+        "tx_003247",
+        "tx_003249",
+        "tx_003250",
+        "tx_003251",
+        "tx_003253",
+        "tx_003255",
+        "tx_003256",
+        "tx_003257",
+        "tx_003259",
+        "tx_003262",
+        "tx_003264",
+        "tx_003265",
+        "tx_003266"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_124",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117648,
+      "evidence_ids": [
+        "tx_003116",
+        "tx_003125",
+        "tx_003132",
+        "tx_003136",
+        "tx_003142",
+        "tx_003143",
+        "tx_003144",
+        "tx_003158",
+        "tx_003163",
+        "tx_003176",
+        "tx_003177",
+        "tx_003179",
+        "tx_003188",
+        "tx_003190",
+        "tx_003196",
+        "tx_003198",
+        "tx_003202",
+        "tx_003207",
+        "tx_003209",
+        "tx_003214",
+        "tx_003220",
+        "tx_003225",
+        "tx_003229",
+        "tx_003230",
+        "tx_003232",
+        "tx_003261"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_125",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_126",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117648,
+      "evidence_ids": [
+        "tx_003116",
+        "tx_003125",
+        "tx_003132",
+        "tx_003136",
+        "tx_003142",
+        "tx_003143",
+        "tx_003144",
+        "tx_003158",
+        "tx_003163",
+        "tx_003176",
+        "tx_003177",
+        "tx_003179",
+        "tx_003188",
+        "tx_003190",
+        "tx_003196",
+        "tx_003198",
+        "tx_003202",
+        "tx_003207",
+        "tx_003209",
+        "tx_003214",
+        "tx_003220",
+        "tx_003225",
+        "tx_003229",
+        "tx_003230",
+        "tx_003232",
+        "tx_003261"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_127",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 275644,
+      "evidence_ids": [
+        "tx_003117",
+        "tx_003124",
+        "tx_003134",
+        "tx_003141",
+        "tx_003150",
+        "tx_003152",
+        "tx_003153",
+        "tx_003171",
+        "tx_003183",
+        "tx_003186",
+        "tx_003192",
+        "tx_003203",
+        "tx_003205",
+        "tx_003206",
+        "tx_003218",
+        "tx_003223"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_128",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 44433,
+      "evidence_ids": [
+        "tx_003820",
+        "tx_003821",
+        "tx_003822"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_129",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 231211,
+      "evidence_ids": [
+        "tx_003117",
+        "tx_003124",
+        "tx_003134",
+        "tx_003141",
+        "tx_003150",
+        "tx_003152",
+        "tx_003153",
+        "tx_003171",
+        "tx_003183",
+        "tx_003186",
+        "tx_003192",
+        "tx_003203",
+        "tx_003205",
+        "tx_003206",
+        "tx_003218",
+        "tx_003223",
+        "tx_003820",
+        "tx_003821",
+        "tx_003822"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_130",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 231620,
+      "evidence_ids": [
+        "tx_003119",
+        "tx_003120",
+        "tx_003126",
+        "tx_003148",
+        "tx_003155",
+        "tx_003174",
+        "tx_003191",
+        "tx_003194",
+        "tx_003215",
+        "tx_003240",
+        "tx_003242",
+        "tx_003245"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_131",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_132",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 231620,
+      "evidence_ids": [
+        "tx_003119",
+        "tx_003120",
+        "tx_003126",
+        "tx_003148",
+        "tx_003155",
+        "tx_003174",
+        "tx_003191",
+        "tx_003194",
+        "tx_003215",
+        "tx_003240",
+        "tx_003242",
+        "tx_003245"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_133",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003160",
+        "tx_003168",
+        "tx_003211"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_134",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_135",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-06的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-06-01",
+      "end_exclusive": "2026-07-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003160",
+        "tx_003168",
+        "tx_003211"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_136",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 231361,
+      "evidence_ids": [
+        "tx_003268",
+        "tx_003278",
+        "tx_003282",
+        "tx_003283",
+        "tx_003285",
+        "tx_003289",
+        "tx_003291",
+        "tx_003298",
+        "tx_003300",
+        "tx_003304",
+        "tx_003305",
+        "tx_003308",
+        "tx_003309",
+        "tx_003310",
+        "tx_003314",
+        "tx_003317",
+        "tx_003320",
+        "tx_003327",
+        "tx_003330",
+        "tx_003334",
+        "tx_003335",
+        "tx_003338",
+        "tx_003340",
+        "tx_003341",
+        "tx_003343",
+        "tx_003346",
+        "tx_003349",
+        "tx_003354",
+        "tx_003360",
+        "tx_003362",
+        "tx_003368",
+        "tx_003370",
+        "tx_003371",
+        "tx_003379",
+        "tx_003381",
+        "tx_003384",
+        "tx_003388",
+        "tx_003390",
+        "tx_003393",
+        "tx_003400",
+        "tx_003404",
+        "tx_003407",
+        "tx_003412",
+        "tx_003413",
+        "tx_003416",
+        "tx_003417",
+        "tx_003418",
+        "tx_003423",
+        "tx_003424",
+        "tx_003426",
+        "tx_003430",
+        "tx_003433"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_137",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_138",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 231361,
+      "evidence_ids": [
+        "tx_003268",
+        "tx_003278",
+        "tx_003282",
+        "tx_003283",
+        "tx_003285",
+        "tx_003289",
+        "tx_003291",
+        "tx_003298",
+        "tx_003300",
+        "tx_003304",
+        "tx_003305",
+        "tx_003308",
+        "tx_003309",
+        "tx_003310",
+        "tx_003314",
+        "tx_003317",
+        "tx_003320",
+        "tx_003327",
+        "tx_003330",
+        "tx_003334",
+        "tx_003335",
+        "tx_003338",
+        "tx_003340",
+        "tx_003341",
+        "tx_003343",
+        "tx_003346",
+        "tx_003349",
+        "tx_003354",
+        "tx_003360",
+        "tx_003362",
+        "tx_003368",
+        "tx_003370",
+        "tx_003371",
+        "tx_003379",
+        "tx_003381",
+        "tx_003384",
+        "tx_003388",
+        "tx_003390",
+        "tx_003393",
+        "tx_003400",
+        "tx_003404",
+        "tx_003407",
+        "tx_003412",
+        "tx_003413",
+        "tx_003416",
+        "tx_003417",
+        "tx_003418",
+        "tx_003423",
+        "tx_003424",
+        "tx_003426",
+        "tx_003430",
+        "tx_003433"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_139",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117617,
+      "evidence_ids": [
+        "tx_003269",
+        "tx_003275",
+        "tx_003286",
+        "tx_003294",
+        "tx_003303",
+        "tx_003315",
+        "tx_003316",
+        "tx_003318",
+        "tx_003328",
+        "tx_003344",
+        "tx_003355",
+        "tx_003358",
+        "tx_003359",
+        "tx_003361",
+        "tx_003367",
+        "tx_003373",
+        "tx_003378",
+        "tx_003398",
+        "tx_003405",
+        "tx_003408",
+        "tx_003414",
+        "tx_003421",
+        "tx_003427",
+        "tx_003428",
+        "tx_003429"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_140",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_141",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 117617,
+      "evidence_ids": [
+        "tx_003269",
+        "tx_003275",
+        "tx_003286",
+        "tx_003294",
+        "tx_003303",
+        "tx_003315",
+        "tx_003316",
+        "tx_003318",
+        "tx_003328",
+        "tx_003344",
+        "tx_003355",
+        "tx_003358",
+        "tx_003359",
+        "tx_003361",
+        "tx_003367",
+        "tx_003373",
+        "tx_003378",
+        "tx_003398",
+        "tx_003405",
+        "tx_003408",
+        "tx_003414",
+        "tx_003421",
+        "tx_003427",
+        "tx_003428",
+        "tx_003429"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_142",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 340603,
+      "evidence_ids": [
+        "tx_003270",
+        "tx_003272",
+        "tx_003279",
+        "tx_003280",
+        "tx_003290",
+        "tx_003292",
+        "tx_003301",
+        "tx_003302",
+        "tx_003323",
+        "tx_003326",
+        "tx_003329",
+        "tx_003331",
+        "tx_003333",
+        "tx_003348",
+        "tx_003363",
+        "tx_003389",
+        "tx_003395",
+        "tx_003396",
+        "tx_003397",
+        "tx_003411",
+        "tx_003420",
+        "tx_003432"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_143",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 18784,
+      "evidence_ids": [
+        "tx_003823",
+        "tx_003824"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_144",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 321819,
+      "evidence_ids": [
+        "tx_003270",
+        "tx_003272",
+        "tx_003279",
+        "tx_003280",
+        "tx_003290",
+        "tx_003292",
+        "tx_003301",
+        "tx_003302",
+        "tx_003323",
+        "tx_003326",
+        "tx_003329",
+        "tx_003331",
+        "tx_003333",
+        "tx_003348",
+        "tx_003363",
+        "tx_003389",
+        "tx_003395",
+        "tx_003396",
+        "tx_003397",
+        "tx_003411",
+        "tx_003420",
+        "tx_003432",
+        "tx_003823",
+        "tx_003824"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_145",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 415160,
+      "evidence_ids": [
+        "tx_003273",
+        "tx_003274",
+        "tx_003287",
+        "tx_003293",
+        "tx_003297",
+        "tx_003311",
+        "tx_003321",
+        "tx_003347",
+        "tx_003356",
+        "tx_003372",
+        "tx_003382",
+        "tx_003383",
+        "tx_003385",
+        "tx_003391",
+        "tx_003394",
+        "tx_003402",
+        "tx_003419"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_146",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_147",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 415160,
+      "evidence_ids": [
+        "tx_003273",
+        "tx_003274",
+        "tx_003287",
+        "tx_003293",
+        "tx_003297",
+        "tx_003311",
+        "tx_003321",
+        "tx_003347",
+        "tx_003356",
+        "tx_003372",
+        "tx_003382",
+        "tx_003383",
+        "tx_003385",
+        "tx_003391",
+        "tx_003394",
+        "tx_003402",
+        "tx_003419"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_148",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003312",
+        "tx_003324",
+        "tx_003364"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_149",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_150",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-07的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-07-01",
+      "end_exclusive": "2026-08-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003312",
+        "tx_003324",
+        "tx_003364"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_151",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 213805,
+      "evidence_ids": [
+        "tx_003435",
+        "tx_003440",
+        "tx_003443",
+        "tx_003445",
+        "tx_003446",
+        "tx_003449",
+        "tx_003450",
+        "tx_003451",
+        "tx_003456",
+        "tx_003458",
+        "tx_003461",
+        "tx_003466",
+        "tx_003468",
+        "tx_003471",
+        "tx_003472",
+        "tx_003474",
+        "tx_003475",
+        "tx_003480",
+        "tx_003483",
+        "tx_003484",
+        "tx_003488",
+        "tx_003492",
+        "tx_003493",
+        "tx_003495",
+        "tx_003500",
+        "tx_003503",
+        "tx_003509",
+        "tx_003511",
+        "tx_003512",
+        "tx_003517",
+        "tx_003520",
+        "tx_003522",
+        "tx_003527",
+        "tx_003533",
+        "tx_003537",
+        "tx_003540",
+        "tx_003543",
+        "tx_003547",
+        "tx_003553",
+        "tx_003554",
+        "tx_003557",
+        "tx_003558",
+        "tx_003561",
+        "tx_003565",
+        "tx_003572",
+        "tx_003589",
+        "tx_003593",
+        "tx_003596",
+        "tx_003599",
+        "tx_003604",
+        "tx_003606"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_152",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_153",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 213805,
+      "evidence_ids": [
+        "tx_003435",
+        "tx_003440",
+        "tx_003443",
+        "tx_003445",
+        "tx_003446",
+        "tx_003449",
+        "tx_003450",
+        "tx_003451",
+        "tx_003456",
+        "tx_003458",
+        "tx_003461",
+        "tx_003466",
+        "tx_003468",
+        "tx_003471",
+        "tx_003472",
+        "tx_003474",
+        "tx_003475",
+        "tx_003480",
+        "tx_003483",
+        "tx_003484",
+        "tx_003488",
+        "tx_003492",
+        "tx_003493",
+        "tx_003495",
+        "tx_003500",
+        "tx_003503",
+        "tx_003509",
+        "tx_003511",
+        "tx_003512",
+        "tx_003517",
+        "tx_003520",
+        "tx_003522",
+        "tx_003527",
+        "tx_003533",
+        "tx_003537",
+        "tx_003540",
+        "tx_003543",
+        "tx_003547",
+        "tx_003553",
+        "tx_003554",
+        "tx_003557",
+        "tx_003558",
+        "tx_003561",
+        "tx_003565",
+        "tx_003572",
+        "tx_003589",
+        "tx_003593",
+        "tx_003596",
+        "tx_003599",
+        "tx_003604",
+        "tx_003606"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_154",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 170879,
+      "evidence_ids": [
+        "tx_003442",
+        "tx_003452",
+        "tx_003455",
+        "tx_003459",
+        "tx_003463",
+        "tx_003470",
+        "tx_003478",
+        "tx_003479",
+        "tx_003482",
+        "tx_003487",
+        "tx_003490",
+        "tx_003498",
+        "tx_003499",
+        "tx_003505",
+        "tx_003510",
+        "tx_003514",
+        "tx_003521",
+        "tx_003526",
+        "tx_003530",
+        "tx_003549",
+        "tx_003562",
+        "tx_003567",
+        "tx_003570",
+        "tx_003574",
+        "tx_003576",
+        "tx_003582",
+        "tx_003583",
+        "tx_003584",
+        "tx_003586",
+        "tx_003590",
+        "tx_003591",
+        "tx_003595",
+        "tx_003598",
+        "tx_003602",
+        "tx_003605",
+        "tx_003839"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_155",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_156",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 170879,
+      "evidence_ids": [
+        "tx_003442",
+        "tx_003452",
+        "tx_003455",
+        "tx_003459",
+        "tx_003463",
+        "tx_003470",
+        "tx_003478",
+        "tx_003479",
+        "tx_003482",
+        "tx_003487",
+        "tx_003490",
+        "tx_003498",
+        "tx_003499",
+        "tx_003505",
+        "tx_003510",
+        "tx_003514",
+        "tx_003521",
+        "tx_003526",
+        "tx_003530",
+        "tx_003549",
+        "tx_003562",
+        "tx_003567",
+        "tx_003570",
+        "tx_003574",
+        "tx_003576",
+        "tx_003582",
+        "tx_003583",
+        "tx_003584",
+        "tx_003586",
+        "tx_003590",
+        "tx_003591",
+        "tx_003595",
+        "tx_003598",
+        "tx_003602",
+        "tx_003605",
+        "tx_003839"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_157",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 581953,
+      "evidence_ids": [
+        "tx_003448",
+        "tx_003467",
+        "tx_003489",
+        "tx_003494",
+        "tx_003504",
+        "tx_003518",
+        "tx_003524",
+        "tx_003525",
+        "tx_003531",
+        "tx_003532",
+        "tx_003534",
+        "tx_003546",
+        "tx_003552",
+        "tx_003556",
+        "tx_003564",
+        "tx_003569",
+        "tx_003579",
+        "tx_003580",
+        "tx_003585",
+        "tx_003592",
+        "tx_003597",
+        "tx_003600",
+        "tx_003607"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_158",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 31363,
+      "evidence_ids": [
+        "tx_003825",
+        "tx_003826",
+        "tx_003827"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_159",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 550590,
+      "evidence_ids": [
+        "tx_003448",
+        "tx_003467",
+        "tx_003489",
+        "tx_003494",
+        "tx_003504",
+        "tx_003518",
+        "tx_003524",
+        "tx_003525",
+        "tx_003531",
+        "tx_003532",
+        "tx_003534",
+        "tx_003546",
+        "tx_003552",
+        "tx_003556",
+        "tx_003564",
+        "tx_003569",
+        "tx_003579",
+        "tx_003580",
+        "tx_003585",
+        "tx_003592",
+        "tx_003597",
+        "tx_003600",
+        "tx_003607",
+        "tx_003825",
+        "tx_003826",
+        "tx_003827"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_160",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 226534,
+      "evidence_ids": [
+        "tx_003437",
+        "tx_003444",
+        "tx_003460",
+        "tx_003502",
+        "tx_003508",
+        "tx_003550",
+        "tx_003551",
+        "tx_003603"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_161",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_162",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 226534,
+      "evidence_ids": [
+        "tx_003437",
+        "tx_003444",
+        "tx_003460",
+        "tx_003502",
+        "tx_003508",
+        "tx_003550",
+        "tx_003551",
+        "tx_003603"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_163",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003476",
+        "tx_003485",
+        "tx_003528"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_164",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_165",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-08的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-08-01",
+      "end_exclusive": "2026-09-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003476",
+        "tx_003485",
+        "tx_003528"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_166",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的餐饮支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 221842,
+      "evidence_ids": [
+        "tx_003609",
+        "tx_003610",
+        "tx_003612",
+        "tx_003614",
+        "tx_003618",
+        "tx_003619",
+        "tx_003621",
+        "tx_003622",
+        "tx_003623",
+        "tx_003627",
+        "tx_003629",
+        "tx_003635",
+        "tx_003638",
+        "tx_003643",
+        "tx_003650",
+        "tx_003652",
+        "tx_003654",
+        "tx_003658",
+        "tx_003659",
+        "tx_003661",
+        "tx_003667",
+        "tx_003672",
+        "tx_003673",
+        "tx_003675",
+        "tx_003678",
+        "tx_003679",
+        "tx_003681",
+        "tx_003684",
+        "tx_003685",
+        "tx_003686",
+        "tx_003691",
+        "tx_003693",
+        "tx_003698",
+        "tx_003701",
+        "tx_003703",
+        "tx_003704",
+        "tx_003711",
+        "tx_003713",
+        "tx_003718",
+        "tx_003719",
+        "tx_003724",
+        "tx_003725",
+        "tx_003727",
+        "tx_003732",
+        "tx_003736",
+        "tx_003738",
+        "tx_003739",
+        "tx_003740",
+        "tx_003742",
+        "tx_003747",
+        "tx_003751",
+        "tx_003753"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_167",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的餐饮退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_168",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的餐饮净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "餐饮"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 221842,
+      "evidence_ids": [
+        "tx_003609",
+        "tx_003610",
+        "tx_003612",
+        "tx_003614",
+        "tx_003618",
+        "tx_003619",
+        "tx_003621",
+        "tx_003622",
+        "tx_003623",
+        "tx_003627",
+        "tx_003629",
+        "tx_003635",
+        "tx_003638",
+        "tx_003643",
+        "tx_003650",
+        "tx_003652",
+        "tx_003654",
+        "tx_003658",
+        "tx_003659",
+        "tx_003661",
+        "tx_003667",
+        "tx_003672",
+        "tx_003673",
+        "tx_003675",
+        "tx_003678",
+        "tx_003679",
+        "tx_003681",
+        "tx_003684",
+        "tx_003685",
+        "tx_003686",
+        "tx_003691",
+        "tx_003693",
+        "tx_003698",
+        "tx_003701",
+        "tx_003703",
+        "tx_003704",
+        "tx_003711",
+        "tx_003713",
+        "tx_003718",
+        "tx_003719",
+        "tx_003724",
+        "tx_003725",
+        "tx_003727",
+        "tx_003732",
+        "tx_003736",
+        "tx_003738",
+        "tx_003739",
+        "tx_003740",
+        "tx_003742",
+        "tx_003747",
+        "tx_003751",
+        "tx_003753"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_169",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的交通支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 112831,
+      "evidence_ids": [
+        "tx_003615",
+        "tx_003624",
+        "tx_003625",
+        "tx_003628",
+        "tx_003633",
+        "tx_003636",
+        "tx_003641",
+        "tx_003644",
+        "tx_003646",
+        "tx_003666",
+        "tx_003682",
+        "tx_003688",
+        "tx_003690",
+        "tx_003697",
+        "tx_003707",
+        "tx_003715",
+        "tx_003720",
+        "tx_003729",
+        "tx_003731",
+        "tx_003737",
+        "tx_003748",
+        "tx_003750",
+        "tx_003838"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_170",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的交通退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_171",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的交通净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "交通"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 112831,
+      "evidence_ids": [
+        "tx_003615",
+        "tx_003624",
+        "tx_003625",
+        "tx_003628",
+        "tx_003633",
+        "tx_003636",
+        "tx_003641",
+        "tx_003644",
+        "tx_003646",
+        "tx_003666",
+        "tx_003682",
+        "tx_003688",
+        "tx_003690",
+        "tx_003697",
+        "tx_003707",
+        "tx_003715",
+        "tx_003720",
+        "tx_003729",
+        "tx_003731",
+        "tx_003737",
+        "tx_003748",
+        "tx_003750",
+        "tx_003838"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_172",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的购物支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 336155,
+      "evidence_ids": [
+        "tx_003632",
+        "tx_003634",
+        "tx_003639",
+        "tx_003640",
+        "tx_003645",
+        "tx_003651",
+        "tx_003665",
+        "tx_003669",
+        "tx_003689",
+        "tx_003699",
+        "tx_003702",
+        "tx_003712",
+        "tx_003722",
+        "tx_003733",
+        "tx_003735",
+        "tx_003744",
+        "tx_003746",
+        "tx_003749",
+        "tx_003754"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_173",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的购物退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 42445,
+      "evidence_ids": [
+        "tx_003828",
+        "tx_003829",
+        "tx_003830",
+        "tx_003831"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_174",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的购物净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "购物"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 293710,
+      "evidence_ids": [
+        "tx_003632",
+        "tx_003634",
+        "tx_003639",
+        "tx_003640",
+        "tx_003645",
+        "tx_003651",
+        "tx_003665",
+        "tx_003669",
+        "tx_003689",
+        "tx_003699",
+        "tx_003702",
+        "tx_003712",
+        "tx_003722",
+        "tx_003733",
+        "tx_003735",
+        "tx_003744",
+        "tx_003746",
+        "tx_003749",
+        "tx_003754",
+        "tx_003828",
+        "tx_003829",
+        "tx_003830",
+        "tx_003831"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_175",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的娱乐支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 252222,
+      "evidence_ids": [
+        "tx_003617",
+        "tx_003647",
+        "tx_003662",
+        "tx_003670",
+        "tx_003692",
+        "tx_003696",
+        "tx_003708",
+        "tx_003709",
+        "tx_003716",
+        "tx_003721",
+        "tx_003726",
+        "tx_003743",
+        "tx_003755",
+        "tx_003835",
+        "tx_003836"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_176",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的娱乐退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_177",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的娱乐净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "娱乐"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 252222,
+      "evidence_ids": [
+        "tx_003617",
+        "tx_003647",
+        "tx_003662",
+        "tx_003670",
+        "tx_003692",
+        "tx_003696",
+        "tx_003708",
+        "tx_003709",
+        "tx_003716",
+        "tx_003721",
+        "tx_003726",
+        "tx_003743",
+        "tx_003755",
+        "tx_003835",
+        "tx_003836"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_178",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的订阅支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "gross_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003648",
+        "tx_003656",
+        "tx_003694"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_179",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的订阅退款是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "refund",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 0,
+      "evidence_ids": []
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  },
+  {
+    "id": "analysis_180",
+    "split": "test",
+    "user_id": "test_user",
+    "question": "2026-09的订阅净支出是多少？",
+    "plan": {
+      "kind": "analysis",
+      "dataset_id": "personal_ledger",
+      "semantic_version": 1,
+      "metric": "net_expense",
+      "start": "2026-09-01",
+      "end_exclusive": "2026-10-01",
+      "filters": {
+        "category": "订阅"
+      },
+      "group_by": null,
+      "limit": 100
+    },
+    "expected": {
+      "value_cents": 11600,
+      "evidence_ids": [
+        "tx_003648",
+        "tx_003656",
+        "tx_003694"
+      ]
+    },
+    "tags": [
+      "amount",
+      "scope",
+      "posted_only",
+      "refund_policy"
+    ]
+  }
+]
