@@ -20,10 +20,12 @@
 
 ## 架构决策
 
-Next.js / TypeScript → FastAPI / 单规划 Agent → 两条受控路径：
+Vue 3 / TypeScript / Vite → FastAPI / 单规划 Agent → 两条受控路径：
 
 - **分析**：语义目录 → IntentPlan → 后端校验 → 参数化只读SQL → 精确数值和证据。模型不自由写SQL。
 - **执行**：结构化操作 → 用户确认/必要强验证 → Execution Gate → PostgreSQL Outbox / Worker → Bank adapter → Mock Bank → 结果核验。
+
+正式前端采用 Vue Router 管理页面、Pinia 管理跨页状态、ECharts 展示图表；界面以 Vue 单文件组件和 Composition API 实现。选型依据与实施边界见[前端选型决策](docs/06-前端选型决策.md)。当前 HTML 原型仍作为设计稿，尚无正式 Vue 应用。
 
 现金流使用整数分确定性引擎，独立于模型；银行事实与Agent任务状态隔离。首版不引入Redis、多Agent或向量库。详细架构包含后续实现目标，不代表当前已有完整服务。
 
@@ -66,3 +68,8 @@ A：银行服务与数据；B：安全执行与Worker；C：Agent与应用API；
 `db/schema.sql` 尚未在PostgreSQL执行验证；生产RLS/角色授权、账本平衡触发器、完整API/Worker/认证/沙箱均需后续实现。SQLite是离线参考数据集，不是Mock Bank。270条题目和规格不是270项已通过的产品测试。数据真值公开，适合回归，不能当隐藏评测结果。
 
 竞赛规则、资格、人数限制、评分与截止日未在本次工作中核实。来源材料保留原作者内容；团队应另行决定项目许可证。不要提交真实账单、认证凭证或`.env`。
+
+## Contributors
+
+- [**Maggie-maoyiqi**](https://github.com/Maggie-maoyiqi)
+- [**Undertaker2077**](https://github.com/Undertaker2077)
