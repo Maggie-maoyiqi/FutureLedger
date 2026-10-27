@@ -1,75 +1,123 @@
 # FutureLedger · 未来账本
 
-银行 AI Agent：用自然语言理解生活目标，读取授权账户和账单，预演未来现金流，再将用户明确选中的动作交给安全执行门，查询银行事实验证结果。
+FutureLedger 是一个本地运行的个人账本问答演示。用户用自然语言提问，LLM 将问题分到查询、转账执行、规划或普通对话；查询再转换为受控 IntentPlan，由后端校验并编译只读 SQL。模型不直接编写或执行 SQL。
 
-**当前阶段：开发前设计基线 + 合成数据 + 离线参考评测 + 可点击页面原型。完整银行 API、Agent、授权系统、Worker 和沙箱尚未实现。**
+这个仓库目前提供合成账单、Text2SQL 聊天界面和本地演示转账。它不会连接银行，也不适合存放真实账单或真实账户凭据。存钱目标／省钱规划目前只识别请求，尚未生成现金流方案。
 
-## 先读这些
+## 功能
 
-|资料|解决的问题|
+- 左侧会话列表、右侧聊天消息流。
+- 查询单值、类别／商户／账户汇总、排名、月度趋势、多类别折线、流水明细和平均每笔支出。
+- 单值显示数字卡片，排名显示柱状图，时间趋势显示折线图，普通分组显示表格。
+- 演示转账仅在两个合成用户之间进行；需重新输入 FutureLedger 密码，选择用途类别并确认。转出计入所选支出类别，转入计入收入。
+- 查询结果不显示 IntentPlan、SQL 或内部流水 ID。
+- 本地离线模式无需 API key；也支持 OpenAI、DeepSeek，以及支持 OpenAI-compatible Chat Completions JSON mode 的模型服务。
+
+## 快速启动
+
+需要 Python 3.10 或更新版本。先从 GitHub 仓库页面的 **Code** 菜单复制仓库地址，再在终端运行：
+
+```bash
+git clone <repository-url>
+cd FutureLedger
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements-demo.txt
+python3 scripts/generate_data.py
+python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
+```
+
+将 `<repository-url>` 替换为刚才复制的 GitHub 地址。浏览器打开 <http://127.0.0.1:8000>。首次使用时选 **首次设置密码**，为演示用户 `test_user` 或 `isolation_user` 设置密码，然后登录。转账时会再次要求该密码。
+
+如需结束服务，在运行 Uvicorn 的终端按 `Ctrl+C`。再次启动时执行最后一条 Uvicorn 命令即可。第一次生成数据之后，无需每次重新运行 `generate_data.py`；重新生成会覆盖合成基准数据。
+
+## 配置模型 API
+
+API key 和模型名称都通过环境变量提供。请在启动 Uvicorn 的同一个终端设置它们；不要把真实 key 写进 Python 文件、README、截图或 Git。`.env.example` 仅供参考，应用不会自动读取该文件。实际 `.env` 已列入 `.gitignore`。
+
+**离线模式**无需设置 key，也不会调用 LLM。它使用有限的本地规则，只适合基本演示：
+
+```bash
+export FUTURELEDGER_PROVIDER=local
+python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
+```
+
+**DeepSeek** 使用服务商控制台提供的 API key 和模型 ID：
+
+```bash
+export FUTURELEDGER_PROVIDER=deepseek
+export FUTURELEDGER_API_KEY='YOUR_APIKEY'
+export FUTURELEDGER_MODEL='YOUR_MODEL_NAME'
+python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
+```
+
+把 `YOUR_APIKEY` 和 `YOUR_MODEL_NAME` 换成自己账户可用的值。DeepSeek 的默认 API Base URL 是 `https://api.deepseek.com`。
+
+**OpenAI**：
+
+```bash
+export FUTURELEDGER_PROVIDER=openai
+export FUTURELEDGER_API_KEY='YOUR_APIKEY'
+export FUTURELEDGER_MODEL='YOUR_MODEL_NAME'
+python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
+```
+
+**其他兼容 OpenAI Chat Completions 的模型服务**（例如提供兼容接口的国产模型服务）：
+
+```bash
+export FUTURELEDGER_PROVIDER=compatible
+export FUTURELEDGER_API_KEY='YOUR_APIKEY'
+export FUTURELEDGER_API_BASE='https://YOUR_PROVIDER_BASE_URL/v1'
+export FUTURELEDGER_MODEL='YOUR_MODEL_NAME'
+python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
+```
+
+`FUTURELEDGER_API_BASE` 填服务商给出的 API 根地址；程序会在末尾追加 `/chat/completions`。模型名称必须填写服务商提供的准确 model ID，代码不会猜测。兼容服务须支持 Chat Completions 格式及 JSON mode（`response_format: json_object`）。如果服务商文档提供不同的 API Base、模型名或 JSON mode 要求，请按其文档设置；不支持该协议的接口目前不能直接使用。
+
+|变量|用途|
 |---|---|
-|[方案共识](docs/00-方案共识.md)|范围、两份设计的取舍、Text2SQL适用边界、统一口径|
-|[技术架构](docs/01-技术架构.md)|分层、数据流、读写路径、状态机与恢复|
-|[功能清单与页面](docs/02-功能清单与页面.md)|每模块功能、用户例子、七类页面|
-|[数据库与接口](docs/03-数据库与接口契约.md)|表关系、金额与时间、语义指标、API|
-|[数据与Benchmark](docs/04-test_user与Benchmark.md)|test_user、数据规模、预期答案、运行方法|
-|[六人分工](docs/05-六人分工与里程碑.md)|A–F责任、接口、交叉验收、四个里程碑|
-|[PostgreSQL DDL基线](db/schema.sql)|表、外键、索引与执行状态存储|
-|[AnalysisPlan Schema](contracts/analysis-plan.schema.json)|受控分析意图及禁止额外参数|
-|[原始参考方案](references/)|用户提供的两份DOCX，保持原样|
+|`FUTURELEDGER_PROVIDER`|`local`、`deepseek`、`openai` 或 `compatible`|
+|`FUTURELEDGER_API_KEY`|该模型服务的 API key|
+|`FUTURELEDGER_MODEL`|服务商提供的模型 ID；启用 LLM 时必填|
+|`FUTURELEDGER_API_BASE`|兼容服务必填；内置 DeepSeek/OpenAI 地址可覆盖|
+|`FUTURELEDGER_TODAY`|可选固定日期，用于重复演示相对日期问题，例如 `2026-10-26`|
 
-## 架构决策
+每个新终端都需要重新设置环境变量。也可在本机创建 `.env` 保存配置，但需自行通过 shell 加载；不要提交真实 `.env`。
 
-Vue 3 / TypeScript / Vite → FastAPI / 单规划 Agent → 两条受控路径：
+## 可用于演示的问题
 
-- **分析**：语义目录 → IntentPlan → 后端校验 → 参数化只读SQL → 精确数值和证据。模型不自由写SQL。
-- **执行**：结构化操作 → 用户确认/必要强验证 → Execution Gate → PostgreSQL Outbox / Worker → Bank adapter → Mock Bank → 结果核验。
+以下账单问题会交给查询路由。月份未写年份时，LLM 会结合当前日期理解；合成数据覆盖的日期有限，因此查询结果取决于数据集内容。
 
-正式前端采用 Vue Router 管理页面、Pinia 管理跨页状态、ECharts 展示图表；界面以 Vue 单文件组件和 Composition API 实现。选型依据与实施边界见[前端选型决策](docs/06-前端选型决策.md)。当前 HTML 原型仍作为设计稿，尚无正式 Vue 应用。
+- `这个月的支出是多少？`
+- `上个月的收入明细`
+- `8月和9月的各项净支出`
+- `2026年9月各类别净支出排名前五`
+- `最近三个月每月餐饮支出趋势`
+- `本月转账记录`
+- `上个月交通平均每笔支出是多少？`
 
-现金流使用整数分确定性引擎，独立于模型；银行事实与Agent任务状态隔离。首版不引入Redis、多Agent或向量库。详细架构包含后续实现目标，不代表当前已有完整服务。
+执行路由示例：`给测试用户B转25元`。系统会显示转账预览，然后要求重新验证密码、选择类别并最终确认；不要把密码发在聊天框里。
 
-## 立即运行离线验证
+规划路由示例：`我想存6000元买电脑，至少留3000元`。当前版本只识别这是规划意图并说明规划引擎尚未实现，不会给出存钱期限或省钱建议。
 
-需要Python 3.10+；只使用标准库，无需API Key、数据库服务或pip依赖。Python测试已在3.14本机执行。
+## 数据和隐私范围
+
+仓库中的账单和用户均为合成数据。查询计划阶段只向模型提供当前登录用户范围内的有限上下文（账户、商户及最多 30 条已入账流水样例）；不发送其他用户、自由备注或完整历史。数据库执行结果、完整查询结果和 SQL 不会发回模型。路由阶段只收到当前问题。执行路由不会让模型执行写操作，转账需走独立的密码复核和确认流程。
+
+登录、会话与待处理动作仅用于本地演示，不是生产身份认证。重启服务会清空内存中的登录会话。演示转账仅修改本地合成数据副本，不会修改基准账本或连接银行。
+
+## 测试
+
+```bash
+python3 -m unittest discover -s tests -v
+```
+
+也可运行离线参考评测：
 
 ```bash
 python3 scripts/generate_data.py
 python3 scripts/generate_scenarios.py
 python3 scripts/run_benchmark.py
-python3 -m unittest discover -s tests -v
 ```
 
-Windows PowerShell 使用 `py -3` 代替 `python3`。数据种子20261015，固定时钟2026-10-01（Asia/Shanghai）。每次生成会重建本地离线SQLite测试库，不触碰外部数据库。
-
-- 标准流水3839条，test_user 3109条，隔离用户730条；原始导入3963条，含124重复行。
-- 180条账单数值/凭据题，30条现金流题，60条待实现验收规格。
-- `benchmark/VERIFICATION.md` 记录本次实际验证范围；写操作、安全及故障恢复规格保持NOT_RUN。
-- `run_benchmark.py --predictions predictions.json` 校验团队系统的分析结果；缺题判失败。
-
-## 看页面原型
-
-```bash
-python3 -m http.server 8765 --bind 127.0.0.1
-```
-
-打开 [本地原型](http://127.0.0.1:8765/prototype/)。查看七个页面，切换第1/13/19天购买、正常/延迟发薪日和日常预算。页面金额由整数分计算；账单汇总来自生成数据。原型无LLM，不连接银行，写按钮只展示流程说明。
-
-可选Node.js运行原型逻辑检查：`node scripts/check_prototype.cjs`。这项是运行时smoke检查，不代替真实浏览器与移动端视觉验收。
-
-## 六人分工起点
-
-A：银行服务与数据；B：安全执行与Worker；C：Agent与应用API；D：账单/Text2SQL与现金流；E：前端交互；F：评测、沙箱、部署。每人写模块测试，F负责集成证据；具体成员姓名与时间安排由团队填入。
-
-## 数据及实现边界
-
-所有账号、身份、流水、授权、商户和故障均为虚构材料。没有真实银行服务、可用测试登录密码或固定万能验证码。
-
-`db/schema.sql` 尚未在PostgreSQL执行验证；生产RLS/角色授权、账本平衡触发器、完整API/Worker/认证/沙箱均需后续实现。SQLite是离线参考数据集，不是Mock Bank。270条题目和规格不是270项已通过的产品测试。数据真值公开，适合回归，不能当隐藏评测结果。
-
-竞赛规则、资格、人数限制、评分与截止日未在本次工作中核实。来源材料保留原作者内容；团队应另行决定项目许可证。不要提交真实账单、认证凭证或`.env`。
-
-## Contributors
-
-- [**Maggie-maoyiqi**](https://github.com/Maggie-maoyiqi)
-- [**Undertaker2077**](https://github.com/Undertaker2077)
+这些检查不需要模型 API key。生产身份认证、真实银行服务、现金流规划引擎和部署沙箱尚未实现。

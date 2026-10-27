@@ -4,8 +4,10 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS bank;
 CREATE SCHEMA IF NOT EXISTS app;
 CREATE TABLE app.users (
- id text PRIMARY KEY, username text UNIQUE NOT NULL, role text NOT NULL DEFAULT 'customer',
+ id text PRIMARY KEY, username text UNIQUE NOT NULL, password_hash text NOT NULL,
+ role text NOT NULL DEFAULT 'customer',
  created_at timestamptz NOT NULL DEFAULT now()
+ -- Store only a salted, slow password hash (e.g. Argon2id/scrypt); never persist plaintext passwords.
 );
 CREATE TABLE bank.accounts (
  id text PRIMARY KEY, user_id text NOT NULL REFERENCES app.users(id),
