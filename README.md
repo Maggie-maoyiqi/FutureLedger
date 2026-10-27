@@ -18,7 +18,7 @@ FutureLedger 是一个本地运行的个人账本问答演示。用户用自然�
 需要 Python 3.10 或更新版本。先从 GitHub 仓库页面的 **Code** 菜单复制仓库地址，再在终端运行：
 
 ```bash
-git clone git clone https://github.com/Maggie-maoyiqi/FutureLedger
+git clone https://github.com/Maggie-maoyiqi/FutureLedger
 cd FutureLedger
 python3 -m venv .venv
 source .venv/bin/activate
