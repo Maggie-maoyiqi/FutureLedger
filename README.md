@@ -18,7 +18,7 @@ FutureLedger 是一个本地运行的个人账本问答演示。用户用自然�
 需要 Python 3.10 或更新版本。先从 GitHub 仓库页面的 **Code** 菜单复制仓库地址，再在终端运行：
 
 ```bash
-git clone <repository-url>
+git clone git clone https://github.com/Maggie-maoyiqi/FutureLedger
 cd FutureLedger
 python3 -m venv .venv
 source .venv/bin/activate
@@ -27,7 +27,7 @@ python3 scripts/generate_data.py
 python3 -m uvicorn demo.api:app --host 127.0.0.1 --port 8000
 ```
 
-将 `<repository-url>` 替换为刚才复制的 GitHub 地址。浏览器打开 <http://127.0.0.1:8000>。首次使用时选 **首次设置密码**，为演示用户 `test_user` 或 `isolation_user` 设置密码，然后登录。转账时会再次要求该密码。
+浏览器打开 <http://127.0.0.1:8000>。首次使用时选 **首次设置密码**，为演示用户 `test_user` 或 `isolation_user` 设置密码，然后登录。转账时会再次要求该密码。
 
 如需结束服务，在运行 Uvicorn 的终端按 `Ctrl+C`。再次启动时执行最后一条 Uvicorn 命令即可。第一次生成数据之后，无需每次重新运行 `generate_data.py`；重新生成会覆盖合成基准数据。
 
