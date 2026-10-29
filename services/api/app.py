@@ -1,4 +1,4 @@
-"""C1 composition root. Run services.api.dev:create_dev_app for explicit offline auth."""
+"""C1/C2 composition root. Use services.api.dev:create_dev_app for explicit offline auth."""
 
 import json
 from datetime import datetime
@@ -30,9 +30,11 @@ bearer = HTTPBearer(auto_error=False)
 
 def create_app(*, authenticator=None, directory=None, analysis=None, planner=None,
                execution: ExecutionGateway | None = None, cashflow: CashflowGateway | None = None,
-               clock=None, provider_timeout=25):
-    app = FastAPI(title='FutureLedger C1 Application API', version='0.1.0',
-                  description='C1 planning only. B execution and D cashflow are explicitly unsupported.')
+               clock=None, provider_timeout=25, enable_c2=True, dag_tools=None, dag_execution=None):
+    app = FastAPI(title='FutureLedger C2 Application API' if enable_c2 else 'FutureLedger C1 Application API',
+                  version='0.2.0' if enable_c2 else '0.1.0',
+                  description=('C2 versioned DAG orchestration. Financial execution remains owned by B.' if enable_c2 else
+                               'C1 planning only. B execution and D cashflow are explicitly unsupported.'))
     auth = authenticator or DenyAuthentication()
     directory = directory or FixtureDirectory(ROOT / 'data')
     analysis = analysis or UnavailableAnalysis()
@@ -41,6 +43,12 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     clock = clock or (lambda: datetime.now(ZoneInfo('Asia/Shanghai')).date())
     store = ContextStore()
     service = AgentService(directory, store, planner, provider_timeout=provider_timeout)
+    dag = None
+    if enable_c2:
+        from .agent.dag.engine import DagEngine
+        from .agent.dag.ports import AnalysisReads
+        dag = DagEngine(store, directory, tools=dag_tools or AnalysisReads(analysis),
+                        bank_execution=dag_execution, clock=clock, timeout=provider_timeout)
 
     def envelope(request, data=None):
         return dict(data=data, error=None, request_id=request.state.request_id)
@@ -112,6 +120,8 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     @app.post('/api/plans/{id}/simulate', response_model=Envelope[SimulationResult], responses=errors)
     async def simulate(id: str, body: SimulateRequest, request: Request, p: Principal = Depends(principal)):
         record = store.plan(id, p, body.plan_version)
+        if dag:
+            dag.guard_c1_plan(id)
         if record.result.intent != 'goal':
             raise AgentError('INVALID_ACTION', 422)
         return envelope(request, await cashflow.simulate(p, snapshot(record), body.assumptions))
@@ -119,25 +129,43 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     @app.post('/api/operations', response_model=Envelope[OperationState], responses=errors)
     async def propose(body: OperationRequest, request: Request, p: Principal = Depends(principal)):
         record = service.operation_proposal(p, body.plan_id, body.plan_version, body.selected_action, clock())
-        return envelope(request, await execution.propose(p, snapshot(record), body.selected_action))
+        if dag:
+            dag.begin_legacy_proposal(body.plan_id)
+        try:
+            result = await execution.propose(p, snapshot(record), body.selected_action)
+        except BaseException as exc:
+            if dag:
+                dag.finish_legacy_proposal(body.plan_id, unresolved=not (isinstance(exc, AgentError) and exc.code == 'UNSUPPORTED'))
+            raise
+        if dag:
+            dag.finish_legacy_proposal(body.plan_id, unresolved=True)
+        return envelope(request, result)
 
     @app.post('/api/operations/{id}/confirm', response_model=Envelope[OperationState], responses=errors)
     async def confirm(id: str, body: ConfirmRequest, request: Request, p: Principal = Depends(principal)):
+        if dag:
+            dag.guard_legacy_operation(p, id)
         return envelope(request, await execution.confirm(p, id, body))
 
     @app.post('/api/operations/{id}/verify', response_model=Envelope[OperationState], responses=errors)
     async def verify(id: str, body: VerifyRequest, request: Request, p: Principal = Depends(principal)):
         # Credential never reaches Agent/provider/context/event storage.
+        if dag:
+            dag.guard_legacy_operation(p, id)
         return envelope(request, await execution.verify(p, id, body))
 
     @app.post('/api/operations/{id}/execute', response_model=Envelope[OperationState], responses=errors)
     async def execute(id: str, body: ExecuteRequest, request: Request,
                       idempotency_key: str = Header(min_length=1, max_length=128, alias='Idempotency-Key'),
                       p: Principal = Depends(principal)):
+        if dag:
+            dag.guard_legacy_operation(p, id)
         return envelope(request, await execution.execute(p, id, body, idempotency_key))
 
     @app.get('/api/operations/{id}', response_model=Envelope[OperationState], responses=errors)
     async def get_operation(id: str, request: Request, p: Principal = Depends(principal)):
+        if dag:
+            dag.guard_legacy_operation(p, id)
         return envelope(request, await execution.get(p, id))
 
     @app.post('/api/tasks/{id}/cancel', response_model=Envelope[TaskResult], responses=errors)
@@ -162,6 +190,9 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
 
         return StreamingResponse(stream(), media_type='text/event-stream', headers={'Cache-Control': 'no-cache'})
 
+    if dag:
+        from .agent.dag.api import register_dag_routes
+        register_dag_routes(app, dag, principal, envelope, errors)
     return app
 
 

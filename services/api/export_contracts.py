@@ -1,10 +1,11 @@
-"""Export only the additive C1 contracts; --check fails on schema drift."""
+"""Export compatible C1 and additive C2 contracts; --check fails on schema drift."""
 
 import argparse
 import json
 
 from .app import ROOT, create_app
 from .agent.schemas import AgentIntent
+from .agent.dag.schemas import GraphDefinition
 
 
 def main():
@@ -13,8 +14,12 @@ def main():
     args = parser.parse_args()
     schema = AgentIntent.model_json_schema()
     schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
+    dag_schema = GraphDefinition.model_json_schema()
+    dag_schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
     outputs = {'agent-intent.c1.schema.json': schema,
-               'application-api.c1.openapi.json': create_app().openapi()}
+               'application-api.c1.openapi.json': create_app(enable_c2=False).openapi(),
+               'dag-plan.c2.schema.json': dag_schema,
+               'application-api.c2.openapi.json': create_app().openapi()}
     for name, data in outputs.items():
         path = ROOT / 'contracts' / name
         contents = json.dumps(data, ensure_ascii=False, indent=2) + '\n'

@@ -1,5 +1,7 @@
 # C1 Agent & Application API
 
+当前分支另提供已实现的 C2 显式 DAG、增量重规划和 B 查证入口，详见 [C2 使用与交付说明](../../docs/c2-dag-replanning.md)。启动命令不变，默认应用 OpenAPI 版本为 0.2.0；原 C1 契约快照保持不变。
+
 正式 C 模块的首个可合并版本；不是生产支付系统。原 `demo.api:app` 保持独立可运行。完整设计、差异及 C2–C4 任务见 [交付说明](../../docs/c1-agent-api.md)。
 
 ## 启动（无需模型密钥）
@@ -75,7 +77,7 @@ with httpx.Client(base_url="http://127.0.0.1:8001", trust_env=False,
 {"session_id":"<server session>","plan":{"kind":"analysis","dataset_id":"personal_ledger","semantic_version":1,"metric":"net_expense","start":"2026-09-01","end_exclusive":"2026-10-01","filters":{"category":"餐饮"},"group_by":null,"limit":100}}
 ```
 
-计划以新的 `plan_id`、`plan_version=1` 保存；完整 DAG/重规划版本在 C2/C3 实现。`context_ref` 用于显式补参：下一条 chat 可传 `context_refs:[...]`，或同一会话使用“还是上次那个”。新计划不继承银行授权；已取消历史不允许引用。约束累积后旧计划提交返回 PLAN_STALE。
+此处 C1 计划以新的 `plan_id`、`plan_version=1` 保存；显式 DAG 和递增版本通过独立 C2 接口提供，持久化留给后续阶段。`context_ref` 用于显式补参：下一条 chat 可传 `context_refs:[...]`，或同一会话使用“还是上次那个”。新计划不继承银行授权；已取消历史不允许引用。约束累积后旧计划提交返回 PLAN_STALE。
 
 同名张伟返回两个已验证候选：选择 rec_3 或 rec_4 后显式引用上一条 context_ref 继续。云盘默认受保护；“别动视频”等保护要求以及只读约束在会话内不能被模型撤销。C1 没有解除保护/授权执行的快捷聊天指令。
 
