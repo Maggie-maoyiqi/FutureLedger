@@ -131,5 +131,77 @@ class AnalyticsBoundaryTests(unittest.TestCase):
         self.assertEqual(result, {"rows": [{"value_cents": 0}], "evidence_ids": [], "sql": result["sql"]})
 
 
+class SimulationApiTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from pathlib import Path
+
+        cls.root = Path(__file__).resolve().parents[1]
+        cls.db = cls.root / "data/benchmark.sqlite"
+        cls.base_request = {
+            "session_id": "test-session",
+            "plan_version": 1,
+            "salary_day": 17,
+            "purchase_day": 19,
+            "daily_budget_cents": 8000,
+            "floor_cents": 300000,
+            "goal_cents": 600000,
+        }
+
+    def test_simulation_requires_valid_session(self):
+        from fastapi import HTTPException
+        from demo.api import PlanSimulationRequest, create_app
+
+        app = create_app(db_path=self.db)
+        route = next(route for route in app.routes if route.path == "/api/plans/{plan_id}/simulate")
+        request = PlanSimulationRequest.model_validate({**self.base_request, "session_id": "invalid-session"})
+
+        with self.assertRaises(HTTPException) as caught:
+            route.endpoint("goal-demo", request)
+        self.assertEqual(caught.exception.status_code, 403)
+        self.assertEqual(caught.exception.detail["code"], "FORBIDDEN")
+
+    def test_simulation_returns_anchor_result(self):
+        from demo.api import PlanSimulationRequest, simulate_plan_payload
+
+        request = PlanSimulationRequest.model_validate(self.base_request)
+        payload = simulate_plan_payload("goal-demo", request, user_id="test_user")
+        self.assertEqual(payload["status"], "simulated")
+        self.assertEqual(payload["plan_id"], "goal-demo")
+        self.assertEqual(payload["result"]["min_balance_cents"], 412200)
+        self.assertEqual(payload["result"]["min_day"], 16)
+        self.assertTrue(payload["result"]["feasible"])
+        self.assertEqual(len(payload["result"]["points_cents"]), 30)
+
+    def test_simulation_rejects_extra_fields_and_invalid_values(self):
+        from pydantic import ValidationError
+        from demo.api import PlanSimulationRequest
+
+        with self.assertRaises(ValidationError):
+            PlanSimulationRequest.model_validate({**self.base_request, "unexpected": "must be rejected"})
+        with self.assertRaises(ValidationError):
+            PlanSimulationRequest.model_validate({**self.base_request, "salary_day": 31})
+
+    def test_simulation_does_not_write_ledger(self):
+        import sqlite3
+        from demo.api import PlanSimulationRequest, simulate_plan_payload
+
+        with sqlite3.connect(self.db) as conn:
+            before = conn.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
+            balances_before = conn.execute("SELECT id, balance_cents FROM accounts ORDER BY id").fetchall()
+
+        simulate_plan_payload(
+            "goal-demo",
+            PlanSimulationRequest.model_validate(self.base_request),
+            user_id="test_user",
+        )
+
+        with sqlite3.connect(self.db) as conn:
+            after = conn.execute("SELECT COUNT(*) FROM transactions").fetchone()[0]
+            balances_after = conn.execute("SELECT id, balance_cents FROM accounts ORDER BY id").fetchall()
+        self.assertEqual(after, before)
+        self.assertEqual(balances_after, balances_before)
+
+
 if __name__ == "__main__":
     unittest.main()

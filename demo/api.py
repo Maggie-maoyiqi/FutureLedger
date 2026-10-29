@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError
 
 from .planner import classify_route, make_intent, parse_transfer
 from .provider import ChatProvider, ProviderError
+from .cashflow import simulate_cashflow
 from .query import Ledger, QueryError
 from .semantic import GROUPS, METRICS, IntentPlan, public_catalog
 
@@ -45,6 +46,18 @@ class AskRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     session_id: str
     question: str = Field(min_length=1, max_length=500)
+
+
+class PlanSimulationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    session_id: str = Field(min_length=1, max_length=128)
+    plan_version: int = Field(ge=1)
+    salary_day: int = Field(ge=1, le=30)
+    purchase_day: int = Field(ge=1, le=30)
+    daily_budget_cents: int = Field(default=8000, ge=0)
+    floor_cents: int = Field(default=300000, ge=0)
+    goal_cents: int = Field(default=600000, ge=0)
 
 
 class ActionAuthorizeRequest(BaseModel):
@@ -101,6 +114,24 @@ def chart_for(plan: IntentPlan, question: str):
 def csv_safe(value):
     text = "" if value is None else str(value)
     return "'" + text if isinstance(value, str) and text.startswith(("=", "+", "-", "@")) else text
+
+
+def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str) -> dict[str, object]:
+    """Build a deterministic simulation response without changing ledger state."""
+    result = simulate_cashflow(
+        salary_day=request.salary_day,
+        purchase_day=request.purchase_day,
+        daily_budget_cents=request.daily_budget_cents,
+        floor_cents=request.floor_cents,
+        goal_cents=request.goal_cents,
+    )
+    return {
+        "status": "simulated",
+        "route": "planning",
+        "plan_id": plan_id,
+        "plan_version": request.plan_version,
+        "result": result.to_dict(),
+    }
 
 
 def create_app(*, db_path=None, provider=None, today=None):
@@ -196,6 +227,16 @@ def create_app(*, db_path=None, provider=None, today=None):
         sessions[token] = user
         return {"session_id": token, "dataset_id": "personal_ledger", "semantic_version": 1,
                 "demo_user": user, "warning": "本地演示身份，不是生产鉴权"}
+
+    @app.post("/api/plans/{plan_id}/simulate")
+    def simulate_plan(plan_id: str, request: PlanSimulationRequest):
+        user = sessions.get(request.session_id)
+        if user is None:
+            raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
+        try:
+            return simulate_plan_payload(plan_id, request, user_id=user)
+        except ValueError as exc:
+            raise HTTPException(422, {"code": "INVALID_SIMULATION", "message": str(exc)}) from exc
 
     @app.post("/api/ask")
     async def ask(request: AskRequest):
