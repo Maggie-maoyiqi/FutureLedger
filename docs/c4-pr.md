@@ -16,7 +16,7 @@ Stacked base: `codex/agent-orchestration` / `137e66f`. Branch: `codex/agent-fina
 
 ## Tests
 
-Tested clean code SHA `df0682b20fcaec8759e3b237d3a1e7a0b081e76c` on Python `3.12.14`. All 12 local commands exit 0.
+Tested clean code SHA `726d3e65adc050342319074484e98ad613f0c23d` on Python `3.12.14`. All 12 local commands exit 0.
 
 - Full suite **189/189** (C unit6 + integration12 + security10 + fault16 + original regression145), fail0/skip0.
 - Local Agent natural-language analysis **180/180**, no gold input to planner; C1_fixture, not real LLM/formal D.

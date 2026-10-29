@@ -1,7 +1,7 @@
 {
-  "started_at_utc": "2026-10-29T14:28:09.476503+00:00",
+  "started_at_utc": "2026-10-29T14:33:57.405108+00:00",
   "branch": "codex/agent-final-acceptance",
-  "commit": "df0682b20fcaec8759e3b237d3a1e7a0b081e76c",
+  "commit": "726d3e65adc050342319074484e98ad613f0c23d",
   "dirty": false,
   "python": "3.12.14",
   "commands": [
@@ -12,7 +12,7 @@
         "scripts/prepare_c4_fixture.py"
       ],
       "exit_code": 0,
-      "seconds": 0.072,
+      "seconds": 0.079,
       "log_file": "fixture.log",
       "log_sha256": "23de9f7a76ed45d58b75fe6bd0dfef99902d2d7c79eb3ee9588bb80decd8e079"
     },
@@ -25,7 +25,7 @@
         "check"
       ],
       "exit_code": 0,
-      "seconds": 0.42,
+      "seconds": 0.611,
       "log_file": "dependencies.log",
       "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
     },
@@ -44,7 +44,7 @@
         "demo"
       ],
       "exit_code": 0,
-      "seconds": 0.068,
+      "seconds": 0.076,
       "log_file": "static.log",
       "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
     },
@@ -57,7 +57,7 @@
         "--check"
       ],
       "exit_code": 0,
-      "seconds": 1.954,
+      "seconds": 2.654,
       "log_file": "api_export.log",
       "log_sha256": "547dfdbdb4282dc1dcc8e5258956b03962352b87cfe89a7aeca58ef27e849740"
     },
@@ -72,12 +72,12 @@
         "--source=services/api",
         "scripts/c4_unittest.py",
         "--output",
-        "/tmp/futureledger-c4-verified/unittest.json"
+        "/tmp/futureledger-c4-release/unittest.json"
       ],
       "exit_code": 0,
-      "seconds": 74.554,
+      "seconds": 83.567,
       "log_file": "unittest.log",
-      "log_sha256": "0e5cc07d5379715ad3d14d3782059472fed8dbc25cb5f82ed259bdc0b4710892"
+      "log_sha256": "3298692344799edc7a29ddaa45a36c229aeb7dc0970b60ca20153af71eaf9b4a"
     },
     {
       "name": "coverage",
@@ -87,12 +87,12 @@
         "coverage",
         "json",
         "-o",
-        "/tmp/futureledger-c4-verified/coverage.json"
+        "/tmp/futureledger-c4-release/coverage.json"
       ],
       "exit_code": 0,
-      "seconds": 0.73,
+      "seconds": 1.326,
       "log_file": "coverage.log",
-      "log_sha256": "3b6c632882000c23cbea846aeafb73c7248dcbc6dbb90691c0017be30ceea779"
+      "log_sha256": "c1d40be5e41a74ad8bcea69e32f1c6c61382d1b28cb7a30cc581c8b3421d3f04"
     },
     {
       "name": "agent_benchmark",
@@ -100,10 +100,10 @@
         "/workspace/FutureLedger/.venv/bin/python",
         "scripts/run_c4_benchmark.py",
         "--output",
-        "/tmp/futureledger-c4-verified/agent-benchmark.json"
+        "/tmp/futureledger-c4-release/agent-benchmark.json"
       ],
       "exit_code": 0,
-      "seconds": 6.159,
+      "seconds": 8.185,
       "log_file": "agent_benchmark.log",
       "log_sha256": "7a1995312f7c2dc45a0469bf34c7789e8717413706e5e72d7577c8ceee9f2c53"
     },
@@ -114,7 +114,7 @@
         "scripts/run_benchmark.py"
       ],
       "exit_code": 0,
-      "seconds": 0.333,
+      "seconds": 0.317,
       "log_file": "reference_oracle.log",
       "log_sha256": "bafa6541d16d74bb248003b63ea1035611684e05e40e61ce867f48a6831e5a7e"
     },
@@ -132,9 +132,9 @@
         "-v"
       ],
       "exit_code": 0,
-      "seconds": 0.241,
+      "seconds": 0.313,
       "log_file": "reference_self_checks.log",
-      "log_sha256": "de95fd8dde1fd5e1cf2c46f084e1782543e37e963c9176965ec752bc130180ac"
+      "log_sha256": "02f47f1ba94faf0bb161665533fce8c48f7b563a7b33eeb373a095d0ba3d55ab"
     },
     {
       "name": "prototype",
@@ -143,7 +143,7 @@
         "scripts/check_prototype.cjs"
       ],
       "exit_code": 0,
-      "seconds": 0.181,
+      "seconds": 0.088,
       "log_file": "prototype.log",
       "log_sha256": "9cbfeb0b12012fdfbc9259a4cbb2c673b7e813e139a713f59e7abe3e801df693"
     },
@@ -154,7 +154,7 @@
         "scripts/check_c4_restart.py"
       ],
       "exit_code": 0,
-      "seconds": 2.055,
+      "seconds": 2.121,
       "log_file": "process_restart.log",
       "log_sha256": "15858712b1504af291582969fd88f3d01290e5a7145d7f735068d5d9e07a614c"
     },
@@ -166,7 +166,7 @@
         "--check"
       ],
       "exit_code": 0,
-      "seconds": 0.004,
+      "seconds": 0.005,
       "log_file": "diff.log",
       "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
@@ -214,7 +214,7 @@
     "tests/test_c4_faults.py": "1e7b986736ed23c4512b697fa95d44a7e5ce912f43b5e34ac2a47314bd0bfb4a",
     "tests/test_c4_integration.py": "dceb50884e4030ee03ead45842e41c48ac33a449e9320fa46438154dad008582",
     "tests/test_c4_security.py": "26615807502f716029e62a1a85b03b42ebba5c5bb251164876454ccc9a54f4b0",
-    "tests/test_c4_unit.py": "6680350e5fb090a06d08de52f35b432eb41150143e93c3e9336bb4e569c7e77e",
+    "tests/test_c4_unit.py": "f24cc4985c91a975f903bc5d7807d8c868ac45cad097e7c4e56fb8aa9db1c543",
     "tests/test_dag_api_c2.py": "bc8938044351f76dcf112dca86404cb9d0c529c1e0d3e1eb4d826c51e62dbb32",
     "tests/test_dag_c2.py": "2977c9cc636182b7a422eb92471a5c3d22bcf59c62d6017b1991e21cee7c4808",
     "tests/test_orchestration_c3.py": "5b4b79c96d692dcd72423de7dc6882cffab9f1bda9d59d235ca9c8e09f94e9a4",
@@ -300,14 +300,14 @@
       "worker recovery"
     ]
   },
-  "completed_at_utc": "2026-10-29T14:29:36.278798+00:00",
+  "completed_at_utc": "2026-10-29T14:35:36.789367+00:00",
   "gates_passed": true,
   "external_integration": "BLOCKED: formal A/B/D services unavailable",
   "final_status": "PARTIAL",
   "reason": "Implemented-scope offline gates passed; formal analysis expansion/public mandate flow/persistent state and A/B/D integration incomplete",
   "unittest": {
     "total": 189,
-    "duration_seconds": 73.72,
+    "duration_seconds": 82.491,
     "groups": {
       "Regression Tests": {
         "PASS": 145,
@@ -2526,7 +2526,7 @@
     "state_loss_fail_closed": "PASS",
     "processes": 2
   },
-  "evidence_directory": "/tmp/futureledger-c4-verified",
+  "evidence_directory": "/tmp/futureledger-c4-release",
   "files": {
     ".github/workflows/c-module.yml": "新增：无密钥/无支付的本地质量 CI；保存可复现 artifacts",
     "contracts/application-api.c4.openapi.json": "新增：C4 OpenAPI，新增可选 chat 重放键，保留旧版快照",

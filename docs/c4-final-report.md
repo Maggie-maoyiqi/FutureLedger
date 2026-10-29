@@ -71,22 +71,22 @@
 - 另用两个独立 OS 进程验证旧 session/plan 为 403、不可用事件游标为 409。证明的是 state-loss fail closed，**不是跨进程恢复**。
 - Ruff 仅 F821/F822/F823、pip check、原型检查、导出漂移与 diff 检查的实际退出码均记录在机器证据。
 
-最终测试代码：`df0682b20fcaec8759e3b237d3a1e7a0b081e76c`；开始时工作区干净。UTC 2026-10-29T14:28:09.476503+00:00 至 2026-10-29T14:29:36.278798+00:00。测试 runner 耗时 73.72 秒，全部质量门累计实际墙钟约 87 秒（含解释器启动等）。`services/api` 语句覆盖率 **91.29%**，分支覆盖率 **77.22%**，coverage 综合指标 **87.93%**；不是全仓覆盖率。远程 GitHub Actions 未运行，不能把本地 gate 结果当成远程 CI 状态。
+最终测试代码：`726d3e65adc050342319074484e98ad613f0c23d`；开始时工作区干净。UTC 2026-10-29T14:33:57.405108+00:00 至 2026-10-29T14:35:36.789367+00:00。测试 runner 耗时 82.491 秒，全部质量门的实际起止与各命令耗时见下表/机器证据。`services/api` 语句覆盖率 **91.29%**，分支覆盖率 **77.22%**，coverage 综合指标 **87.93%**；不是全仓覆盖率。远程 GitHub Actions 未运行，不能把本地 gate 结果当成远程 CI 状态。
 
 |命令组|退出码|秒|
 |---|---:|---:|
-|fixture|0|0.072|
-|dependencies|0|0.42|
-|static|0|0.068|
-|api_export|0|1.954|
-|unittest|0|74.554|
-|coverage|0|0.73|
-|agent_benchmark|0|6.159|
-|reference_oracle|0|0.333|
-|reference_self_checks|0|0.241|
-|prototype|0|0.181|
-|process_restart|0|2.055|
-|diff|0|0.004|
+|fixture|0|0.079|
+|dependencies|0|0.611|
+|static|0|0.076|
+|api_export|0|2.654|
+|unittest|0|83.567|
+|coverage|0|1.326|
+|agent_benchmark|0|8.185|
+|reference_oracle|0|0.317|
+|reference_self_checks|0|0.313|
+|prototype|0|0.088|
+|process_restart|0|2.121|
+|diff|0|0.005|
 
 四类业务验收范围：
 
