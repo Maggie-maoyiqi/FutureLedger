@@ -35,7 +35,7 @@ def route_question(question: str):
     if re.search(r"转(?:了)?(?:账|帐|款).*(?:为什么|为啥|怎么回事|怎么还|还是\s*(?:0|零))", q):
         return "view", "现在转出会计入支出，并按你选择的用途类别统计；转入会计入收入。若结果仍为 0，请核对所问日期范围、当前登录用户和流水状态；可以再查‘本月转账明细’确认记录。"
     if PLANNING_REQUEST.search(q):
-        return "planning", "这是未来账本规划请求，应单独确认目标金额、期限、保留余额和账户范围，再由后端读取所需的授权数据并运行按日现金流模拟。当前 demo 尚未接入规划引擎；它不会把全量流水交给模型，也不会据此执行转账。"
+        return "planning", "这是未来账本规划请求，应单独确认目标金额、期限、保留余额和账户范围，再由后端校验计划参数并调用现金流模拟接口。它不会把全量流水交给模型，也不会据此执行转账。"
     if (WRITE_BANK.search(q) and not ACTION_QUESTION.search(q)) or q == "转账":
         return "execution", None
     if SMALL_TALK.fullmatch(q):

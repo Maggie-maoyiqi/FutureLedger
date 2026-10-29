@@ -203,5 +203,61 @@ class SimulationApiTests(unittest.TestCase):
         self.assertEqual(balances_after, balances_before)
 
 
+class BenchmarkAgreementTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from pathlib import Path
+
+        cls.root = Path(__file__).resolve().parents[1]
+        cls.db = cls.root / "data/benchmark.sqlite"
+
+    def test_all_analysis_cases_match_production_ledger(self):
+        import json
+
+        from demo.query import Ledger
+        from demo.semantic import IntentPlan
+
+        ledger = Ledger(self.db)
+        cases = json.loads((self.root / "benchmark/analysis_cases.json").read_text(encoding="utf-8"))
+        for case in cases:
+            with self.subTest(case=case["id"]):
+                raw = case["plan"].copy()
+                raw["kind"] = "aggregate"
+                raw["sort"] = "metric_desc"
+                raw["filters"] = {
+                    "category": raw["filters"]["category"],
+                    "merchant": None,
+                    "account_id": None,
+                }
+                plan = IntentPlan.model_validate_json(json.dumps(raw, ensure_ascii=False))
+                actual = ledger.execute(plan, case["user_id"])
+                self.assertEqual(actual["rows"][0]["value_cents"], case["expected"]["value_cents"])
+                self.assertEqual(actual["evidence_ids"], case["expected"]["evidence_ids"])
+
+    def test_all_cashflow_cases_match_production_simulator(self):
+        import json
+
+        from demo.cashflow import simulate_cashflow
+
+        cases = json.loads((self.root / "benchmark/cashflow_cases.json").read_text(encoding="utf-8"))
+        for case in cases:
+            with self.subTest(case=case["id"]):
+                actual = simulate_cashflow(
+                    salary_day=case["salary_day"],
+                    purchase_day=case["purchase_day"],
+                )
+                expected = case["expected"]
+                self.assertEqual(list(actual.points_cents), expected["points_cents"])
+                self.assertEqual(actual.min_balance_cents, expected["min_balance_cents"])
+                self.assertEqual(actual.min_day, expected["min_day"])
+                self.assertEqual(actual.feasible, expected["feasible"])
+
+    def test_production_modules_do_not_import_reference_engine(self):
+        for relative in ("demo/cashflow.py", "demo/query.py", "demo/api.py"):
+            with self.subTest(module=relative):
+                source = (self.root / relative).read_text(encoding="utf-8")
+                self.assertNotIn("reference_engine", source)
+
+
 if __name__ == "__main__":
     unittest.main()
