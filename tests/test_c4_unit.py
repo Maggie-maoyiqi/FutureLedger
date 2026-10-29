@@ -114,4 +114,3 @@ class AdapterBoundaryTests(unittest.IsolatedAsyncioTestCase):
             with self.subTest(tool=name):
                 result=await self.r.invoke(name,inputs,ctx)
                 self.r.get(name).output_schema.model_validate(result)
-
