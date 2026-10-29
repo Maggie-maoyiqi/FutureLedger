@@ -1,0 +1,374 @@
+{
+  "$defs": {
+    "AnalysisFilters": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "餐饮",
+            "交通",
+            "购物",
+            "娱乐",
+            "订阅",
+            "房租",
+            "医疗",
+            "其他",
+            "工资",
+            "转账"
+          ],
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "AnalysisFilters",
+      "type": "object"
+    },
+    "AnalysisPlan": {
+      "additionalProperties": false,
+      "description": "Existing static analysis-plan v1 subset, not the broader Demo IntentPlan.",
+      "properties": {
+        "kind": {
+          "const": "analysis",
+          "title": "Kind",
+          "type": "string"
+        },
+        "dataset_id": {
+          "const": "personal_ledger",
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "semantic_version": {
+          "const": 1,
+          "title": "Semantic Version",
+          "type": "integer"
+        },
+        "metric": {
+          "enum": [
+            "gross_expense",
+            "refund",
+            "net_expense"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end_exclusive": {
+          "title": "End Exclusive",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/$defs/AnalysisFilters"
+        },
+        "group_by": {
+          "title": "Group By",
+          "type": "null"
+        },
+        "limit": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "dataset_id",
+        "semantic_version",
+        "metric",
+        "start",
+        "end_exclusive",
+        "filters",
+        "group_by",
+        "limit"
+      ],
+      "title": "AnalysisPlan",
+      "type": "object"
+    },
+    "Constraints": {
+      "additionalProperties": false,
+      "properties": {
+        "read_only": {
+          "default": false,
+          "title": "Read Only",
+          "type": "boolean"
+        },
+        "protected_mandate_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Protected Mandate Ids",
+          "type": "array"
+        },
+        "min_balance_cents": {
+          "anyOf": [
+            {
+              "maximum": 9223372036854775807,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Balance Cents"
+        }
+      },
+      "title": "Constraints",
+      "type": "object"
+    },
+    "Entities": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnalysisPlan"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "amount_cents": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9223372036854775807,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Cents"
+        },
+        "recipient_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Id"
+        },
+        "recipient_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Name"
+        },
+        "source_account_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Account Id"
+        },
+        "execution_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Execution Date"
+        },
+        "mandate_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Id"
+        },
+        "mandate_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Name"
+        },
+        "mandate_action": {
+          "anyOf": [
+            {
+              "enum": [
+                "list",
+                "cancel"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Action"
+        },
+        "goal_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Goal Name"
+        },
+        "target_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        }
+      },
+      "title": "Entities",
+      "type": "object"
+    },
+    "ProposedStep": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "analyze",
+            "propose_transfer",
+            "request_mandate_scope",
+            "propose_mandate_cancel",
+            "simulate_goal"
+          ],
+          "title": "Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "ProposedStep",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "intent": {
+      "enum": [
+        "analysis",
+        "transfer",
+        "mandate",
+        "goal"
+      ],
+      "title": "Intent",
+      "type": "string"
+    },
+    "entities": {
+      "$ref": "#/$defs/Entities"
+    },
+    "constraints": {
+      "$ref": "#/$defs/Constraints"
+    },
+    "missing_fields": {
+      "items": {
+        "enum": [
+          "analysis_plan",
+          "amount_cents",
+          "recipient_id",
+          "source_account_id",
+          "execution_date",
+          "mandate_id",
+          "mandate_action",
+          "goal_name",
+          "target_date"
+        ],
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Missing Fields",
+      "type": "array"
+    },
+    "context_refs": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 20,
+      "title": "Context Refs",
+      "type": "array"
+    },
+    "proposed_steps": {
+      "items": {
+        "$ref": "#/$defs/ProposedStep"
+      },
+      "maxItems": 10,
+      "title": "Proposed Steps",
+      "type": "array"
+    }
+  },
+  "required": [
+    "intent",
+    "entities",
+    "constraints",
+    "missing_fields",
+    "context_refs",
+    "proposed_steps"
+  ],
+  "title": "AgentIntent",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
