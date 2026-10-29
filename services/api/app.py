@@ -30,10 +30,15 @@ bearer = HTTPBearer(auto_error=False)
 
 def create_app(*, authenticator=None, directory=None, analysis=None, planner=None,
                execution: ExecutionGateway | None = None, cashflow: CashflowGateway | None = None,
-               clock=None, provider_timeout=25, enable_c2=True, dag_tools=None, dag_execution=None):
-    app = FastAPI(title='FutureLedger C2 Application API' if enable_c2 else 'FutureLedger C1 Application API',
-                  version='0.2.0' if enable_c2 else '0.1.0',
-                  description=('C2 versioned DAG orchestration. Financial execution remains owned by B.' if enable_c2 else
+               clock=None, provider_timeout=25, enable_c2=True, dag_tools=None, dag_execution=None,
+               enable_c3=True, bank_read_adapter=None, analytics_adapter=None, execution_gate_adapter=None,
+               agent_provider=None, orchestration_limits=None):
+    enable_c3 = enable_c3 and enable_c2
+    app = FastAPI(title=('FutureLedger C3 Application API' if enable_c3 else
+                        'FutureLedger C2 Application API' if enable_c2 else 'FutureLedger C1 Application API'),
+                  version='0.3.0' if enable_c3 else '0.2.0' if enable_c2 else '0.1.0',
+                  description=('C3 bounded tool orchestration. Financial authority remains with B.' if enable_c3 else
+                               'C2 versioned DAG orchestration. Financial execution remains owned by B.' if enable_c2 else
                                'C1 planning only. B execution and D cashflow are explicitly unsupported.'))
     auth = authenticator or DenyAuthentication()
     directory = directory or FixtureDirectory(ROOT / 'data')
@@ -42,13 +47,30 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     cashflow = cashflow or UnavailableCashflow()
     clock = clock or (lambda: datetime.now(ZoneInfo('Asia/Shanghai')).date())
     store = ContextStore()
+    if agent_provider is not None:
+        from .agent.planner import ModelPlanner
+        from .agent.orchestration.provider import StructuredProvider
+        planner = ModelPlanner(StructuredProvider(agent_provider, timeout=min(provider_timeout,20)))
     service = AgentService(directory, store, planner, provider_timeout=provider_timeout)
     dag = None
+    orchestrator = None
     if enable_c2:
         from .agent.dag.engine import DagEngine
         from .agent.dag.ports import AnalysisReads
-        dag = DagEngine(store, directory, tools=dag_tools or AnalysisReads(analysis),
-                        bank_execution=dag_execution, clock=clock, timeout=provider_timeout)
+        runtime = None
+        if enable_c3:
+            from .agent.orchestration.adapters import UnavailableBankRead, UnavailableGate, ExistingAnalysisAdapter
+            from .agent.orchestration.runtime import ToolRuntime
+            from .agent.orchestration.service import AgentOrchestrator
+            from .agent.orchestration.schemas import ExecutionLimits
+            limits = orchestration_limits or ExecutionLimits()
+            runtime = ToolRuntime(directory,bank_read_adapter or UnavailableBankRead(),
+                execution_gate_adapter or UnavailableGate(),analytics_adapter or ExistingAnalysisAdapter(analysis),
+                timeout=limits.node_timeout_seconds)
+        dag = DagEngine(store, directory, tools=dag_tools or (runtime.reads if runtime else AnalysisReads(analysis)),
+                        bank_execution=dag_execution or (runtime.gate if runtime else None), clock=clock, timeout=provider_timeout)
+        if runtime:
+            orchestrator = AgentOrchestrator(service,dag,runtime,clock,limits=limits)
 
     def envelope(request, data=None):
         return dict(data=data, error=None, request_id=request.state.request_id)
@@ -61,12 +83,16 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     @app.middleware('http')
     async def request_identity(request, call_next):
         request.state.request_id = uuid4().hex
+        from .agent.orchestration.events import request_id as correlation_id
+        correlation_token = correlation_id.set(request.state.request_id)
         try:
             response = await call_next(request)
         except Exception:
             # Never return upstream payloads, credentials or request validation inputs.
             response = failure(request, AgentError('INTERNAL_ERROR', 500,
                 next_action='服务内部错误，请凭 request_id 联系维护者。'))
+        finally:
+            correlation_id.reset(correlation_token)
         response.headers['X-Request-ID'] = request.state.request_id
         return response
 
@@ -193,6 +219,9 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     if dag:
         from .agent.dag.api import register_dag_routes
         register_dag_routes(app, dag, principal, envelope, errors)
+    if orchestrator:
+        from .agent.orchestration.api import register_agent_routes
+        register_agent_routes(app,orchestrator,principal,envelope,errors)
     return app
 
 

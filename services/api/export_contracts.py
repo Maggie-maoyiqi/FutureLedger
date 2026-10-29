@@ -6,6 +6,7 @@ import json
 from .app import ROOT, create_app
 from .agent.schemas import AgentIntent
 from .agent.dag.schemas import GraphDefinition
+from .agent.orchestration.schemas import ExecutionReport
 
 
 def main():
@@ -16,10 +17,14 @@ def main():
     schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
     dag_schema = GraphDefinition.model_json_schema()
     dag_schema['$schema'] = 'https://json-schema.org/draft/2020-12/schema'
+    report_schema=ExecutionReport.model_json_schema()
+    report_schema['$schema']='https://json-schema.org/draft/2020-12/schema'
     outputs = {'agent-intent.c1.schema.json': schema,
                'application-api.c1.openapi.json': create_app(enable_c2=False).openapi(),
                'dag-plan.c2.schema.json': dag_schema,
-               'application-api.c2.openapi.json': create_app().openapi()}
+               'application-api.c2.openapi.json': create_app(enable_c3=False).openapi(),
+               'agent-report.c3.schema.json':report_schema,
+               'application-api.c3.openapi.json':create_app().openapi()}
     for name, data in outputs.items():
         path = ROOT / 'contracts' / name
         contents = json.dumps(data, ensure_ascii=False, indent=2) + '\n'

@@ -48,12 +48,21 @@ class DagEngine:
         self.legacy_inflight: dict[str, int] = {}
         self.legacy_unresolved: set[str] = set()
         self.pending_changed: dict[str, set[str]] = {}
+        self.event_sink = None
+        self.access_guard = None
+        self.observation_guard = None
+
+    def _notify(self, kind, plan, node=None):
+        if self.event_sink:
+            self.event_sink(kind, plan, node)
 
     def _access(self, id, principal, version=None, *, allow_constraints=False, allow_cancelled=False):
         history = self.histories.get(id)
         if history is None or history.subject != principal.subject:
             raise forbidden()
         plan = history.versions[-1]
+        if self.access_guard and not allow_cancelled:
+            self.access_guard(id)
         session = self.store.session(plan.session_id, principal)
         scope = self.store.scope(session, principal)
         if plan.origin_c1_plan_id:
@@ -113,6 +122,7 @@ class DagEngine:
         if origin:
             self.promoted[origin] = plan.plan_id
         self._emit(plan, principal.subject)
+        self._notify('plan_created', plan)
         return plan.model_copy(deep=True)
 
     def from_c1(self, id, version, principal):
@@ -202,6 +212,7 @@ class DagEngine:
                         continue
                     if not self._conditions_met(plan, node):
                         node.status, node.error_code = 'BLOCKED', 'PRECONDITION_FAILED'
+                        self._notify('node_failed', plan, node)
                         continue
                     if node.tool_name.startswith('execution.'):
                         if node.status == 'PENDING_UNKNOWN' and not node.operation_id:
@@ -212,22 +223,32 @@ class DagEngine:
                         await self._observe(plan, node, scope)
                         continue
                     node.status, node.error_code = 'RUNNING', None
+                    self._notify('node_started', plan, node)
                     dependencies = {dep: self.results[by_id[dep].result_ref].model_copy(deep=True)
                                     for dep in ancestors(plan.nodes, node_id) if by_id[dep].result_ref}
                     try:
-                        raw = await asyncio.wait_for(self.tools.read(node.tool_name, scope,
-                            node.inputs.model_copy(deep=True), dependencies), self.timeout)
+                        if hasattr(self.tools, 'read_node'):
+                            call = self.tools.read_node(plan.model_copy(deep=True), node.model_copy(deep=True), scope, dependencies)
+                        else:
+                            call = self.tools.read(node.tool_name, scope, node.inputs.model_copy(deep=True), dependencies)
+                        raw = await asyncio.wait_for(call, self.timeout)
                         data = READ_RESULTS[node.tool_name].model_validate(raw)
                         if node.tool_name == 'bank.recipient' and data.recipient_id != node.inputs.recipient_id:
                             raise ValueError('recipient mismatch')
                         self._record(plan, node, data, self.tools.source(node.tool_name))
                         node.status = 'SUCCEEDED'
+                        self._notify('node_completed', plan, node)
                     except (ValidationError, ValueError, TypeError):
                         node.status, node.error_code = 'FAILED', 'INVALID_TOOL_RESULT'
+                        self._notify('node_failed', plan, node)
                         continue
                     except (AgentError, asyncio.TimeoutError, httpx.HTTPError) as exc:
                         node.status, node.error_code = 'FAILED', exc.code if isinstance(exc, AgentError) else 'UPSTREAM_UNAVAILABLE'
+                        self._notify('node_failed', plan, node)
                         continue
+                    except asyncio.CancelledError:
+                        node.status, node.error_code = 'PENDING', 'INTERRUPTED'
+                        raise
                     if any(getattr(data, e.field) != e.value for e in node.expected_result):
                         plan.state = 'REQUIRES_REPLAN'
                         self.pending_changed.setdefault(id, set()).add(node.node_id)
@@ -281,6 +302,8 @@ class DagEngine:
 
     async def _observe(self, plan, node, scope):
         _, binding = self.bindings[node.operation_id]
+        if self.observation_guard and not self.observation_guard(binding):
+            return
         try:
             raw = await asyncio.wait_for(self.b.observe(scope, binding.model_copy(deep=True)), self.timeout)
             data = BOutcome.model_validate(raw)
@@ -295,6 +318,16 @@ class DagEngine:
             node.status, node.error_code = 'PENDING_UNKNOWN', 'INVALID_B_RESULT'
         except (AgentError, asyncio.TimeoutError, httpx.HTTPError):
             node.status, node.error_code = 'PENDING_UNKNOWN', 'UPSTREAM_UNAVAILABLE'
+        except asyncio.CancelledError:
+            node.status, node.error_code = 'PENDING_UNKNOWN', 'INTERRUPTED'
+            raise
+        self._notify('operation_status_changed', plan, node)
+        if node.status == 'SUCCEEDED':
+            self._notify('node_completed', plan, node)
+        elif node.status == 'FAILED':
+            self._notify('node_failed', plan, node)
+        elif node.result_ref and self.results[node.result_ref].data.status == 'NEEDS_CONFIRM':
+            self._notify('confirmation_required', plan, node)
 
     def _financial_checks(self, plan, node):
         if not self._conditions_met(plan, node):
@@ -427,4 +460,5 @@ class DagEngine:
         history.versions.append(new)
         self.pending_changed.pop(new.plan_id, None)
         self._emit(new, history.subject)
+        self._notify('plan_replanned', new)
         return new.model_copy(deep=True)

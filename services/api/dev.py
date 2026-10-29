@@ -7,7 +7,6 @@ from demo.provider import ChatProvider
 from .app import ROOT, create_app
 from .agent.adapters import FixtureAnalysis
 from .agent.auth import DevelopmentTokens, Principal
-from .agent.planner import ModelPlanner
 
 
 def create_dev_app():
@@ -17,4 +16,4 @@ def create_dev_app():
     auth = DevelopmentTokens({token: Principal('test_user', ('acc_daily', 'acc_savings'), ('personal_ledger',))})
     provider = ChatProvider()
     return create_app(authenticator=auth, analysis=FixtureAnalysis(ROOT / 'data/benchmark.sqlite'),
-                      planner=ModelPlanner(provider) if provider.provider != 'local' else None)
+                      agent_provider=provider if provider.provider != 'local' else None)

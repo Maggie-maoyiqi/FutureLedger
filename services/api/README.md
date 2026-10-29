@@ -1,6 +1,8 @@
 # C1 Agent & Application API
 
-当前分支另提供已实现的 C2 显式 DAG、增量重规划和 B 查证入口，详见 [C2 使用与交付说明](../../docs/c2-dag-replanning.md)。启动命令不变，默认应用 OpenAPI 版本为 0.2.0；原 C1 契约快照保持不变。
+当前分支提供 C3 受控工具编排、A/B/D 协议、结构化聚合、取消和事件关联，详见 [C3 交付与 API 示例](../../docs/c3-orchestration.md)。默认应用 OpenAPI 版本为 0.3.0，C1/C2 契约快照分别保留；完整链路入口为 `/api/agent/chat`，原 `/api/chat` 仍为 C1 提议接口。
+
+当前分支保留已实现的 C2 显式 DAG、增量重规划和 B 查证入口，详见 [C2 使用与交付说明](../../docs/c2-dag-replanning.md)。启动命令不变，C2 的 0.2.0 契约快照和原 C1 契约快照保持不变。
 
 正式 C 模块的首个可合并版本；不是生产支付系统。原 `demo.api:app` 保持独立可运行。完整设计、差异及 C2–C4 任务见 [交付说明](../../docs/c1-agent-api.md)。
 
