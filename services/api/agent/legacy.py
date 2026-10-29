@@ -29,7 +29,7 @@ class LegacyBoundary:
     def _parse(self,raw,*,id=None,plan_id,version):
         try:
             # Pydantic otherwise trusts already-constructed (possibly mutated) instances.
-            payload=raw.model_dump() if isinstance(raw,OperationState) else raw
+            payload=raw.model_dump(warnings=False) if isinstance(raw,OperationState) else raw
             view=OperationState.model_validate(payload).model_copy(deep=True)
             if (id is not None and view.operation_id!=id) or view.plan_id!=plan_id or view.plan_version!=version:
                 raise ValueError('binding mismatch')

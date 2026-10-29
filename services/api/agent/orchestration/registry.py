@@ -99,7 +99,7 @@ class ToolRegistry:
     async def invoke(self, name, raw, ctx: CallContext):
         spec = self.get(name)
         try:
-            inputs = spec.input_schema.model_validate(raw.model_dump() if isinstance(raw,BaseModel) else raw).model_copy(deep=True)
+            inputs = spec.input_schema.model_validate(raw.model_dump(warnings=False) if isinstance(raw,BaseModel) else raw).model_copy(deep=True)
         except (ValidationError, TypeError, ValueError) as exc:
             raise AgentError('INVALID_TOOL_INPUT', 422) from exc
         self._scope(ctx, inputs)
@@ -113,7 +113,7 @@ class ToolRegistry:
             try:
                 self._scope(ctx, inputs)
                 raw_result = await asyncio.wait_for(spec.handler(ctx, inputs.model_copy(deep=True)), spec.timeout_seconds)
-                payload=raw_result.model_dump() if isinstance(raw_result,BaseModel) else raw_result
+                payload=raw_result.model_dump(warnings=False) if isinstance(raw_result,BaseModel) else raw_result
                 result = spec.output_schema.model_validate(payload).model_copy(deep=True)
                 self._check_result(inputs, result, ctx)
                 return result

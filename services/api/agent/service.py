@@ -72,7 +72,7 @@ class AgentService:
                 raw = await asyncio.wait_for(self.planner.plan(request.text, today, context), self.provider_timeout)
                 # Validate native objects strictly; JSON strings are accepted only as a JSON object.
                 parsed = AgentIntent.model_validate_json(raw) if isinstance(raw, str) else AgentIntent.model_validate(
-                    raw.model_dump() if isinstance(raw,BaseModel) else raw)
+                    raw.model_dump(warnings=False) if isinstance(raw,BaseModel) else raw)
             except (asyncio.TimeoutError, httpx.HTTPError, ProviderError) as exc:
                 raise AgentError('UPSTREAM_UNAVAILABLE', 503, next_action='模型服务不可用；稍后重试，不执行操作。') from exc
             except (ValidationError, ValueError, TypeError) as exc:

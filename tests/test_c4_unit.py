@@ -24,9 +24,13 @@ class FixtureTimezoneTests(unittest.TestCase):
         from services.api.agent.legacy import LegacyBoundary
         from services.api.agent.ports import OperationState
         state=OperationState(operation_id='operation',plan_id='plan',plan_version=1,status='READY',next_action='')
-        state.status='MAGIC_SUCCESS'
-        with self.assertRaises(AgentError) as error:
-            LegacyBoundary(None,None)._parse(state,plan_id='plan',version=1)
+        import warnings
+        state.status='sk-C4SYNTHETICTOKEN123456789'
+        with warnings.catch_warnings(record=True) as recorded:
+            warnings.simplefilter('always')
+            with self.assertRaises(AgentError) as error:
+                LegacyBoundary(None,None)._parse(state,plan_id='plan',version=1)
+        self.assertEqual(recorded,[])
         self.assertEqual(error.exception.code,'INVALID_UPSTREAM_RESULT')
 
     def test_utc_instants_are_filtered_by_shanghai_business_date(self):
