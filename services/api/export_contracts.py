@@ -24,7 +24,8 @@ def main():
                'dag-plan.c2.schema.json': dag_schema,
                'application-api.c2.openapi.json': create_app(enable_c3=False).openapi(),
                'agent-report.c3.schema.json':report_schema,
-               'application-api.c3.openapi.json':create_app().openapi()}
+               'application-api.c3.openapi.json':create_app(enable_c4=False).openapi(),
+               'application-api.c4.openapi.json':create_app().openapi()}
     for name, data in outputs.items():
         path = ROOT / 'contracts' / name
         contents = json.dumps(data, ensure_ascii=False, indent=2) + '\n'

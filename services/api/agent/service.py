@@ -6,7 +6,7 @@ import re
 from datetime import date
 
 import httpx
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
 
 from demo.provider import ProviderError
 
@@ -16,6 +16,7 @@ from .context import ContextStore, new_id
 from .errors import AgentError, forbidden
 from .planner import LocalPlanner, Planner, MINIMUM_EXPRESSION
 from .money import yuan_to_cents
+from .sensitive import reject_credentials, contains_secret
 from .schemas import AgentIntent, ChatRequest, ChatResult, Constraints, Entities
 
 
@@ -45,6 +46,7 @@ class AgentService:
         self.provider_timeout = provider_timeout
 
     async def chat(self, request: ChatRequest, principal: Principal, today: date) -> ChatResult:
+        reject_credentials(request.text)
         session = self.store.session(request.session_id, principal)
         async with session.lock:
             scope = self.store.scope(session, principal)
@@ -64,10 +66,13 @@ class AgentService:
                        'constraints': session.constraints.model_dump(),
                        'references': [dict(context_ref=r.result.context_ref, intent=r.result.intent,
                                            entities=entity_values(r.result.entities)) for r in records]}
+            if contains_secret(json.dumps(context,ensure_ascii=False)):
+                raise AgentError('SENSITIVE_CONTEXT',502,next_action='授权语义上下文需要先脱敏。')
             try:
                 raw = await asyncio.wait_for(self.planner.plan(request.text, today, context), self.provider_timeout)
                 # Validate native objects strictly; JSON strings are accepted only as a JSON object.
-                parsed = AgentIntent.model_validate_json(raw) if isinstance(raw, str) else AgentIntent.model_validate(raw)
+                parsed = AgentIntent.model_validate_json(raw) if isinstance(raw, str) else AgentIntent.model_validate(
+                    raw.model_dump() if isinstance(raw,BaseModel) else raw)
             except (asyncio.TimeoutError, httpx.HTTPError, ProviderError) as exc:
                 raise AgentError('UPSTREAM_UNAVAILABLE', 503, next_action='模型服务不可用；稍后重试，不执行操作。') from exc
             except (ValidationError, ValueError, TypeError) as exc:

@@ -72,7 +72,7 @@ class FixtureAnalysis:
                 kinds = ('expense',) if plan.metric == 'gross_expense' else ('refund',) if plan.metric == 'refund' else ('expense', 'refund')
                 marks = ','.join('?' for _ in accounts)
                 where = (f"user_id=? AND account_id IN ({marks}) AND status='POSTED' "
-                         "AND substr(posted_at,1,10)>=? AND substr(posted_at,1,10)<? AND category=? "
+                         "AND date(posted_at,'+8 hours')>=? AND date(posted_at,'+8 hours')<? AND category=? "
                          f"AND kind IN ({','.join('?' for _ in kinds)})")
                 params = (principal.subject, *accounts, plan.start, plan.end_exclusive, plan.filters.category, *kinds)
                 # These expressions implement the original static contract, excluding transfers.

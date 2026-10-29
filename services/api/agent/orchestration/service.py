@@ -216,7 +216,8 @@ class AgentOrchestrator:
         elif any(s in {'SCHEDULED','SUBMITTING'} for s in bstates):
             status='SUBMITTED'
         elif any(n.status=='FAILED' for n in plan.nodes):
-            status='FAILED'
+            meaningful=WRITE_TOOLS | {'analytics.analysis','cashflow.simulate'}
+            status='PARTIAL' if any(n.status=='SUCCEEDED' and n.tool_name in meaningful for n in plan.nodes) else 'FAILED'
         elif any(n.error_code=='UNSUPPORTED' for n in plan.nodes):
             status='BLOCKED'
         elif any(n.status=='SUCCEEDED' for n in plan.nodes):

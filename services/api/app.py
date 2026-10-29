@@ -32,12 +32,14 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
                execution: ExecutionGateway | None = None, cashflow: CashflowGateway | None = None,
                clock=None, provider_timeout=25, enable_c2=True, dag_tools=None, dag_execution=None,
                enable_c3=True, bank_read_adapter=None, analytics_adapter=None, execution_gate_adapter=None,
-               agent_provider=None, orchestration_limits=None):
+               agent_provider=None, orchestration_limits=None, enable_c4=True):
     enable_c3 = enable_c3 and enable_c2
-    app = FastAPI(title=('FutureLedger C3 Application API' if enable_c3 else
+    enable_c4 = enable_c4 and enable_c3
+    app = FastAPI(title=('FutureLedger C4 Application API' if enable_c4 else 'FutureLedger C3 Application API' if enable_c3 else
                         'FutureLedger C2 Application API' if enable_c2 else 'FutureLedger C1 Application API'),
-                  version='0.3.0' if enable_c3 else '0.2.0' if enable_c2 else '0.1.0',
-                  description=('C3 bounded tool orchestration. Financial authority remains with B.' if enable_c3 else
+                  version='0.4.0' if enable_c4 else '0.3.0' if enable_c3 else '0.2.0' if enable_c2 else '0.1.0',
+                  description=('C4 verified C module; real service integration and durable recovery remain external.' if enable_c4 else
+                               'C3 bounded tool orchestration. Financial authority remains with B.' if enable_c3 else
                                'C2 versioned DAG orchestration. Financial execution remains owned by B.' if enable_c2 else
                                'C1 planning only. B execution and D cashflow are explicitly unsupported.'))
     auth = authenticator or DenyAuthentication()
@@ -47,6 +49,8 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
     cashflow = cashflow or UnavailableCashflow()
     clock = clock or (lambda: datetime.now(ZoneInfo('Asia/Shanghai')).date())
     store = ContextStore()
+    from .agent.legacy import LegacyBoundary
+    legacy = LegacyBoundary(store,execution)
     if agent_provider is not None:
         from .agent.planner import ModelPlanner
         from .agent.orchestration.provider import StructuredProvider
@@ -165,20 +169,20 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
             raise
         if dag:
             dag.finish_legacy_proposal(body.plan_id, unresolved=True)
-        return envelope(request, result)
+        return envelope(request, legacy.register(p,snapshot(record),result))
 
     @app.post('/api/operations/{id}/confirm', response_model=Envelope[OperationState], responses=errors)
     async def confirm(id: str, body: ConfirmRequest, request: Request, p: Principal = Depends(principal)):
         if dag:
             dag.guard_legacy_operation(p, id)
-        return envelope(request, await execution.confirm(p, id, body))
+        return envelope(request, await legacy.command(p,id,'confirm',body))
 
     @app.post('/api/operations/{id}/verify', response_model=Envelope[OperationState], responses=errors)
     async def verify(id: str, body: VerifyRequest, request: Request, p: Principal = Depends(principal)):
         # Credential never reaches Agent/provider/context/event storage.
         if dag:
             dag.guard_legacy_operation(p, id)
-        return envelope(request, await execution.verify(p, id, body))
+        return envelope(request, await legacy.command(p,id,'verify',body))
 
     @app.post('/api/operations/{id}/execute', response_model=Envelope[OperationState], responses=errors)
     async def execute(id: str, body: ExecuteRequest, request: Request,
@@ -186,13 +190,13 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
                       p: Principal = Depends(principal)):
         if dag:
             dag.guard_legacy_operation(p, id)
-        return envelope(request, await execution.execute(p, id, body, idempotency_key))
+        return envelope(request, await legacy.command(p,id,'execute',body,key=idempotency_key))
 
     @app.get('/api/operations/{id}', response_model=Envelope[OperationState], responses=errors)
     async def get_operation(id: str, request: Request, p: Principal = Depends(principal)):
         if dag:
             dag.guard_legacy_operation(p, id)
-        return envelope(request, await execution.get(p, id))
+        return envelope(request, await legacy.command(p,id,'get'))
 
     @app.post('/api/tasks/{id}/cancel', response_model=Envelope[TaskResult], responses=errors)
     async def cancel(id: str, body: CancelRequest, request: Request, p: Principal = Depends(principal)):
@@ -206,6 +210,8 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
         if last_event_id is not None and (not last_event_id.isascii() or not last_event_id.isdigit() or len(last_event_id) > 20):
             raise AgentError('INVALID_REQUEST', 422)
         after = int(last_event_id or 0)
+        if after>len(store.events):
+            raise AgentError('EVENT_CURSOR_UNAVAILABLE',409,next_action='本实例没有该游标；重新查询权威任务，不能假定已恢复事件。')
         frames = store.replay(p, after)
 
         async def stream():
@@ -221,7 +227,8 @@ def create_app(*, authenticator=None, directory=None, analysis=None, planner=Non
         register_dag_routes(app, dag, principal, envelope, errors)
     if orchestrator:
         from .agent.orchestration.api import register_agent_routes
-        register_agent_routes(app,orchestrator,principal,envelope,errors)
+        from .agent.orchestration.replay import RequestReplay
+        register_agent_routes(app,orchestrator,principal,envelope,errors,RequestReplay() if enable_c4 else None)
     return app
 
 

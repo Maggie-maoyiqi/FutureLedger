@@ -7,6 +7,7 @@ import httpx
 from pydantic import BaseModel, ValidationError
 
 from ..errors import AgentError, forbidden
+from ..sensitive import contains_secret
 from ..schemas import AnalysisResult
 from ..dag.schemas import (ActionProposal, AnalysisInputs, BalanceInputs, BalanceResult, BOutcome,
     CashflowInputs, PreparedOperation, QuoteResult, RecipientInputs, RecipientResult, TransferInputs)
@@ -98,7 +99,7 @@ class ToolRegistry:
     async def invoke(self, name, raw, ctx: CallContext):
         spec = self.get(name)
         try:
-            inputs = spec.input_schema.model_validate(raw).model_copy(deep=True)
+            inputs = spec.input_schema.model_validate(raw.model_dump() if isinstance(raw,BaseModel) else raw).model_copy(deep=True)
         except (ValidationError, TypeError, ValueError) as exc:
             raise AgentError('INVALID_TOOL_INPUT', 422) from exc
         self._scope(ctx, inputs)
@@ -112,7 +113,8 @@ class ToolRegistry:
             try:
                 self._scope(ctx, inputs)
                 raw_result = await asyncio.wait_for(spec.handler(ctx, inputs.model_copy(deep=True)), spec.timeout_seconds)
-                result = spec.output_schema.model_validate(raw_result).model_copy(deep=True)
+                payload=raw_result.model_dump() if isinstance(raw_result,BaseModel) else raw_result
+                result = spec.output_schema.model_validate(payload).model_copy(deep=True)
                 self._check_result(inputs, result, ctx)
                 return result
             except (ValidationError, ValueError, TypeError) as exc:
@@ -131,9 +133,13 @@ class ToolRegistry:
                 raise AgentError('UPSTREAM_UNAVAILABLE', 503) from None
 
     def _check_result(self, inputs, result, ctx):
+        if contains_secret(result.model_dump_json()):
+            raise ValueError('sensitive tool result')
         if isinstance(result, TransactionsResult):
             if any(t.account_id != inputs.source_account_id for t in result.transactions):
                 raise forbidden()
+            if len(result.transactions)>inputs.limit or any(not inputs.start<=t.posted_on<inputs.end_exclusive for t in result.transactions):
+                raise ValueError('transaction date/limit mismatch')
         if isinstance(result, MandatesResult):
             if any(m.account_id != inputs.source_account_id for m in result.mandates):
                 raise forbidden()

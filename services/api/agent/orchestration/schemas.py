@@ -113,6 +113,9 @@ class CashflowReport(ClosedModel):
     def conflict_explanation(self):
         if not self.feasible and not self.conflicts:
             raise ValueError('infeasible scenario needs conflict reasons')
+        if self.feasible and (self.conflicts or (self.constraints.min_balance_cents is not None
+                and self.min_balance_cents<self.constraints.min_balance_cents)):
+            raise ValueError('feasibility contradicts declared constraints')
         return self
 
 
