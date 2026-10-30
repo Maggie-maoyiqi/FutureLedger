@@ -1,0 +1,432 @@
+{
+  "$defs": {
+    "AnalysisFilters": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "餐饮",
+            "交通",
+            "购物",
+            "娱乐",
+            "订阅",
+            "房租",
+            "医疗",
+            "其他",
+            "工资",
+            "转账"
+          ],
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "AnalysisFilters",
+      "type": "object"
+    },
+    "AnalysisInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "plan": {
+          "$ref": "#/$defs/AnalysisPlan"
+        }
+      },
+      "required": [
+        "plan"
+      ],
+      "title": "AnalysisInputs",
+      "type": "object"
+    },
+    "AnalysisPlan": {
+      "additionalProperties": false,
+      "description": "Existing static analysis-plan v1 subset, not the broader Demo IntentPlan.",
+      "properties": {
+        "kind": {
+          "const": "analysis",
+          "title": "Kind",
+          "type": "string"
+        },
+        "dataset_id": {
+          "const": "personal_ledger",
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "semantic_version": {
+          "const": 1,
+          "title": "Semantic Version",
+          "type": "integer"
+        },
+        "metric": {
+          "enum": [
+            "gross_expense",
+            "refund",
+            "net_expense"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end_exclusive": {
+          "title": "End Exclusive",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/$defs/AnalysisFilters"
+        },
+        "group_by": {
+          "title": "Group By",
+          "type": "null"
+        },
+        "limit": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "dataset_id",
+        "semantic_version",
+        "metric",
+        "start",
+        "end_exclusive",
+        "filters",
+        "group_by",
+        "limit"
+      ],
+      "title": "AnalysisPlan",
+      "type": "object"
+    },
+    "BalanceInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_account_id"
+      ],
+      "title": "BalanceInputs",
+      "type": "object"
+    },
+    "CashflowInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "amount_cents": {
+          "exclusiveMinimum": 0,
+          "maximum": 9223372036854775807,
+          "title": "Amount Cents",
+          "type": "integer"
+        },
+        "target_date": {
+          "title": "Target Date",
+          "type": "string"
+        },
+        "salary_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Salary Date"
+        }
+      },
+      "required": [
+        "source_account_id",
+        "amount_cents",
+        "target_date"
+      ],
+      "title": "CashflowInputs",
+      "type": "object"
+    },
+    "Expectation": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            "available_cents",
+            "verified",
+            "valid",
+            "fee_cents",
+            "min_balance_cents"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "field",
+        "value"
+      ],
+      "title": "Expectation",
+      "type": "object"
+    },
+    "MandateInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "mandate_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Id"
+        }
+      },
+      "required": [
+        "source_account_id"
+      ],
+      "title": "MandateInputs",
+      "type": "object"
+    },
+    "NodeDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "node_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Node Id",
+          "type": "string"
+        },
+        "tool_name": {
+          "enum": [
+            "bank.balance",
+            "bank.recipient",
+            "bank.quote",
+            "analytics.analysis",
+            "cashflow.simulate",
+            "execution.transfer",
+            "execution.cancel_mandate",
+            "execution.mandate_scope"
+          ],
+          "title": "Tool Name",
+          "type": "string"
+        },
+        "inputs": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TransferInputs"
+            },
+            {
+              "$ref": "#/$defs/RecipientInputs"
+            },
+            {
+              "$ref": "#/$defs/CashflowInputs"
+            },
+            {
+              "$ref": "#/$defs/MandateInputs"
+            },
+            {
+              "$ref": "#/$defs/BalanceInputs"
+            },
+            {
+              "$ref": "#/$defs/AnalysisInputs"
+            }
+          ],
+          "title": "Inputs"
+        },
+        "depends_on": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Depends On",
+          "type": "array"
+        },
+        "preconditions": {
+          "items": {
+            "$ref": "#/$defs/Precondition"
+          },
+          "maxItems": 20,
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "expected_result": {
+          "items": {
+            "$ref": "#/$defs/Expectation"
+          },
+          "maxItems": 10,
+          "title": "Expected Result",
+          "type": "array"
+        }
+      },
+      "required": [
+        "node_id",
+        "tool_name",
+        "inputs"
+      ],
+      "title": "NodeDraft",
+      "type": "object"
+    },
+    "Precondition": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "enum": [
+            "available_cents",
+            "verified",
+            "valid",
+            "fee_cents",
+            "min_balance_cents"
+          ],
+          "title": "Field",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Value"
+        },
+        "node_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Node Id",
+          "type": "string"
+        },
+        "op": {
+          "default": "eq",
+          "enum": [
+            "eq",
+            "gte"
+          ],
+          "title": "Op",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "value",
+        "node_id"
+      ],
+      "title": "Precondition",
+      "type": "object"
+    },
+    "RecipientInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "recipient_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Recipient Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_account_id",
+        "recipient_id"
+      ],
+      "title": "RecipientInputs",
+      "type": "object"
+    },
+    "TransferInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "recipient_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "amount_cents": {
+          "exclusiveMinimum": 0,
+          "maximum": 9223372036854775807,
+          "title": "Amount Cents",
+          "type": "integer"
+        },
+        "execution_date": {
+          "title": "Execution Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_account_id",
+        "recipient_id",
+        "amount_cents",
+        "execution_date"
+      ],
+      "title": "TransferInputs",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/NodeDraft"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Nodes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "nodes"
+  ],
+  "title": "GraphDefinition",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

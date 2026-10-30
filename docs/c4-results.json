@@ -1,0 +1,2566 @@
+{
+  "started_at_utc": "2026-10-29T14:33:57.405108+00:00",
+  "branch": "codex/agent-final-acceptance",
+  "commit": "726d3e65adc050342319074484e98ad613f0c23d",
+  "dirty": false,
+  "python": "3.12.14",
+  "commands": [
+    {
+      "name": "fixture",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "scripts/prepare_c4_fixture.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.079,
+      "log_file": "fixture.log",
+      "log_sha256": "23de9f7a76ed45d58b75fe6bd0dfef99902d2d7c79eb3ee9588bb80decd8e079"
+    },
+    {
+      "name": "dependencies",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.611,
+      "log_file": "dependencies.log",
+      "log_sha256": "9261363b733079a641c2e4cc9bc46ffa1d8336945a87f807b6cf68847dbc9b09"
+    },
+    {
+      "name": "static",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "--select",
+        "F821,F822,F823",
+        "services",
+        "tests",
+        "scripts",
+        "demo"
+      ],
+      "exit_code": 0,
+      "seconds": 0.076,
+      "log_file": "static.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "name": "api_export",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "services.api.export_contracts",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 2.654,
+      "log_file": "api_export.log",
+      "log_sha256": "547dfdbdb4282dc1dcc8e5258956b03962352b87cfe89a7aeca58ef27e849740"
+    },
+    {
+      "name": "unittest",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "coverage",
+        "run",
+        "--branch",
+        "--source=services/api",
+        "scripts/c4_unittest.py",
+        "--output",
+        "/tmp/futureledger-c4-release/unittest.json"
+      ],
+      "exit_code": 0,
+      "seconds": 83.567,
+      "log_file": "unittest.log",
+      "log_sha256": "3298692344799edc7a29ddaa45a36c229aeb7dc0970b60ca20153af71eaf9b4a"
+    },
+    {
+      "name": "coverage",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "coverage",
+        "json",
+        "-o",
+        "/tmp/futureledger-c4-release/coverage.json"
+      ],
+      "exit_code": 0,
+      "seconds": 1.326,
+      "log_file": "coverage.log",
+      "log_sha256": "c1d40be5e41a74ad8bcea69e32f1c6c61382d1b28cb7a30cc581c8b3421d3f04"
+    },
+    {
+      "name": "agent_benchmark",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "scripts/run_c4_benchmark.py",
+        "--output",
+        "/tmp/futureledger-c4-release/agent-benchmark.json"
+      ],
+      "exit_code": 0,
+      "seconds": 8.185,
+      "log_file": "agent_benchmark.log",
+      "log_sha256": "7a1995312f7c2dc45a0469bf34c7789e8717413706e5e72d7577c8ceee9f2c53"
+    },
+    {
+      "name": "reference_oracle",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "scripts/run_benchmark.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.317,
+      "log_file": "reference_oracle.log",
+      "log_sha256": "bafa6541d16d74bb248003b63ea1035611684e05e40e61ce867f48a6831e5a7e"
+    },
+    {
+      "name": "reference_self_checks",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_reference.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "seconds": 0.313,
+      "log_file": "reference_self_checks.log",
+      "log_sha256": "02f47f1ba94faf0bb161665533fce8c48f7b563a7b33eeb373a095d0ba3d55ab"
+    },
+    {
+      "name": "prototype",
+      "command": [
+        "node",
+        "scripts/check_prototype.cjs"
+      ],
+      "exit_code": 0,
+      "seconds": 0.088,
+      "log_file": "prototype.log",
+      "log_sha256": "9cbfeb0b12012fdfbc9259a4cbb2c673b7e813e139a713f59e7abe3e801df693"
+    },
+    {
+      "name": "process_restart",
+      "command": [
+        "/workspace/FutureLedger/.venv/bin/python",
+        "scripts/check_c4_restart.py"
+      ],
+      "exit_code": 0,
+      "seconds": 2.121,
+      "log_file": "process_restart.log",
+      "log_sha256": "15858712b1504af291582969fd88f3d01290e5a7145d7f735068d5d9e07a614c"
+    },
+    {
+      "name": "diff",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "seconds": 0.005,
+      "log_file": "diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "source_sha256": {
+    "services/__init__.py": "854a9c30ebd96416881f52e7b9aa4751ab76851c7c0368f9b0b60c76dc7dd49e",
+    "services/api/__init__.py": "407504385d73ace075205bea62bb7103282ba09a12a51ef4373b320ddaec2697",
+    "services/api/agent/__init__.py": "1c4822eeea08219b0f0cf49b94c5b74cc05ea2d6817fcfdc34497d3ec17ddffe",
+    "services/api/agent/adapters.py": "e5ab516434a219c901ac521df56cadf2543b68e30458eac1c45bad17f0a8f6f3",
+    "services/api/agent/auth.py": "bafd864c0cb9067a90e8a3018fea2b2a196b6b948d24030d416113f466eee3cc",
+    "services/api/agent/context.py": "9c13da91c53fae02261ca7d643351e2f54eda1fd4a4210554e1123e2f123bd64",
+    "services/api/agent/dag/__init__.py": "55edb702117a36ea6c7f778c07b711c20b2f0a9102987f7946bf7f90973eb755",
+    "services/api/agent/dag/api.py": "cbf703085c9100f9d794851290b28d718085989b3981f36eaf933b94b68f03e7",
+    "services/api/agent/dag/engine.py": "32b6c50826720b699c296ef2780fd30e928456803dbedd71fceac111a922a656",
+    "services/api/agent/dag/graph.py": "28affb04af47444afa0439053c792243c3a3b13c290bbfb6d5a08ee9906d3260",
+    "services/api/agent/dag/planner.py": "ec46767828ac7dda5f1eea9f91f4098022798a10b9e4cc3eeebf401eb0909314",
+    "services/api/agent/dag/ports.py": "35b050d3cf9299e15fb8fc4d9ed1e3a9b355a052d925d3ec502357ee9acddd55",
+    "services/api/agent/dag/schemas.py": "a05288041339c42092a97e104475f97c6459f08efa9fa0281707e0b979cddd92",
+    "services/api/agent/errors.py": "6745062fa2218eb69f8c4ba6073f5db737f63bd3bdbc1e2314f31a255afcae9f",
+    "services/api/agent/legacy.py": "ab0345d3df8647e7f045661d3e0bac68a9274cca58368ef573b48b0da17a8219",
+    "services/api/agent/money.py": "a252aa2c9c2024ff7aac6a41bef86ab105e41bb4559a3a7714c4e6f255d26f2d",
+    "services/api/agent/orchestration/__init__.py": "f43b981948322ba2dd14a0de22e5daa231278fb223d97503453099876cfd58d5",
+    "services/api/agent/orchestration/adapters.py": "bbd4b7c4b23c1a80c39ec199c35e2cb16a1bcab1c50e50a3c10b117a235ea64c",
+    "services/api/agent/orchestration/api.py": "6d70ec04df294958b82cf630f740142c7e5197032a9d0e7b3c0bfe3433b0f975",
+    "services/api/agent/orchestration/events.py": "61df6fc8a3852620c24bbaa346b2e4b67c865ad3c2e01d76e4ca55c690e5f2f1",
+    "services/api/agent/orchestration/provider.py": "ddd0876ae0d2b9ea64d3ac145891f91660db0de44a9c2e0e975da990ffa0bb75",
+    "services/api/agent/orchestration/registry.py": "289e950c69f56c04498ef6b070453a5f27a1b760030a551ac4023ba4c71dae62",
+    "services/api/agent/orchestration/replay.py": "23d32f308a6928de452e8549f179ca62b18f34383880075b7d523db831175bd8",
+    "services/api/agent/orchestration/runtime.py": "d320eca20b6c7c0ea497af1d83063369ea82fe4e1691308a8953de78b8953ac7",
+    "services/api/agent/orchestration/schemas.py": "054884921e2cd2eb0ea10c68256d4b2aae7056564110e1c066c7f33a6248e8ed",
+    "services/api/agent/orchestration/service.py": "c40e52a78675ef67324db59d4776646d5cb72381e988f5b21049e73d98989fab",
+    "services/api/agent/planner.py": "805e4717202cfe5d1230d7ce810e2bd3dc8b4889dc52cf34834bf92ea2115043",
+    "services/api/agent/ports.py": "f390d980933175086c7b4cea30ecb932801d56f546ff4fa462f63d5c185c1a97",
+    "services/api/agent/schemas.py": "42190e48e9030afe52473e34f2d66db2c4a70596e41aff96ef3754f777b20007",
+    "services/api/agent/sensitive.py": "6d172da7f8f0a86bde5b958f43ae804750e287481e9c05c288f2119fd77d4dbe",
+    "services/api/agent/service.py": "1519ec559d21a7c566bada487a53324b9fa2672e7627d138e689a16a46c2ef36",
+    "services/api/app.py": "4a2e9c4a662359f7e4bd3e8e4d27115bf8c24ee55f9d74328b9972e7b66e29ef",
+    "services/api/dev.py": "cdbb8000185d16696be815ba68e9c35c5015a15e28a6d8f73189d615594f89d7",
+    "services/api/export_contracts.py": "b3dc44890d49bc9090d6910da147ebea8a8316f8d361837ff39489a0c83120b7",
+    "tests/c3_fakes.py": "856181a19b5d4b1d143467a4c43655ba168ff99cbadce0b975d08b9fa6bb538b",
+    "tests/c4_benchmark.py": "ac4e9c84a673a4791e428ba05f002f6c6bf6534abcbfd43dd1665865b8e33ca8",
+    "tests/c4_support.py": "1cde40d431b237ec43fe449263fc55cb3a5b2ad991c750c3bf6c9ddbb91d6dd5",
+    "tests/test_agent_c1.py": "6c353710b4aa74fb72ee9d4f557c22228245990295fcb50f238d4d4aaf9c071b",
+    "tests/test_c4_contracts.py": "177f68894f281e868a0b0455b82525548896a35939988c745130aaf03608edac",
+    "tests/test_c4_faults.py": "1e7b986736ed23c4512b697fa95d44a7e5ce912f43b5e34ac2a47314bd0bfb4a",
+    "tests/test_c4_integration.py": "dceb50884e4030ee03ead45842e41c48ac33a449e9320fa46438154dad008582",
+    "tests/test_c4_security.py": "26615807502f716029e62a1a85b03b42ebba5c5bb251164876454ccc9a54f4b0",
+    "tests/test_c4_unit.py": "f24cc4985c91a975f903bc5d7807d8c868ac45cad097e7c4e56fb8aa9db1c543",
+    "tests/test_dag_api_c2.py": "bc8938044351f76dcf112dca86404cb9d0c529c1e0d3e1eb4d826c51e62dbb32",
+    "tests/test_dag_c2.py": "2977c9cc636182b7a422eb92471a5c3d22bcf59c62d6017b1991e21cee7c4808",
+    "tests/test_orchestration_c3.py": "5b4b79c96d692dcd72423de7dc6882cffab9f1bda9d59d235ca9c8e09f94e9a4",
+    "tests/test_reference.py": "479ed4f29ac4c7e2cb8ad15dbea762a9174f95cf650a84e70a39e704a76b0643",
+    "tests/test_text2sql_demo.py": "9bf1d177478737c1f648715c009e2dfa7bf2acea0d09322ca1e901b55728dd33",
+    "tests/test_tools_c3.py": "298b8eb2e3300a4075b0709849da7c1bf4e14550f606b034acd883ff46f194ac",
+    "scripts/c4_unittest.py": "9cae54b00f0df7dc0e0b973de6616d1e283a283f13e2e468c559c82078d49058",
+    "scripts/check_c4_restart.py": "056fbd26ce57a770ffb7a0eb77e6d145177b1c19f60c20710516819892d2f35e",
+    "scripts/generate_data.py": "86c4825c0a18105aa85f94f1e362c48e27f49a48e14b0842d573b21a67da7ef1",
+    "scripts/generate_scenarios.py": "0f7ed6a8b8b04901c0d336abbff87fbbc170e5e96e87b0b27fb61e3829b705b4",
+    "scripts/prepare_c4_fixture.py": "324f30e7f133cb2e210ed5e8ba6e7d1da97b1d1e91b03b230bcd2eff89d21c7e",
+    "scripts/reference_engine.py": "b308bcad5cf96dbdca7f4cc031f853804c7269c296915eb5b844bc89d0d75325",
+    "scripts/run_benchmark.py": "7acdfcb2a6a00b41ef081ff16f7e55e412b2524eb1fbe4d2e3512ab6827c9498",
+    "scripts/run_c4_benchmark.py": "dbdccda490fc1b9d867c9afa1e7cb62725fe8f59159100f138ccfcb1d9d7365e",
+    "scripts/run_c4_quality.py": "e05970e3a6ad4670660c89387c0660d1ece89545ff50ffb0f4fac49a1de2983c",
+    "contracts/agent-intent.c1.schema.json": "aa7e5ca49fb6175d2878c540334ef873f1e4a3be2b4a532005f0bab9d37676e8",
+    "contracts/agent-report.c3.schema.json": "e8bf079db6e93ff41b19887e3de5d582a4a7ca1b3001a3509f858a82e185d284",
+    "contracts/analysis-plan.schema.json": "4c95c09e7770b32dfc72274bd9e4f2374a854df00f4377695c1822638216f8fd",
+    "contracts/application-api.c1.openapi.json": "65df5df9dc9121bab88abcde0607d4ec9494031e7ed8fb547e058cfc588629db",
+    "contracts/application-api.c2.openapi.json": "96673b9668c2a88d32214e5d4ea30916afa46837e95c829646caac7cc20db3c1",
+    "contracts/application-api.c3.openapi.json": "1b851e1fecb328c793d15c398134ed5ca3a146f4e242f0b06dfa74d3b60d8795",
+    "contracts/application-api.c4.openapi.json": "679842ad4b3c091fe9bcc1bd7e8ed72aeea0f559fc7a147ab93b1b6d0a9e3a63",
+    "contracts/dag-plan.c2.schema.json": "8f3c932f1fdae82180779af0b33096a0aae527e4a62a563ce0b783649d0f4374",
+    "contracts/semantic_catalog.json": "e2fda57cbfee0131a61fb509c7c05e704ac78ae6d0d9b976289f0ddd7963b9c0",
+    "requirements-c4.txt": "5f672c691dbc6bb4ace154eab51adcce978647641a224a59547b2de2a937883c",
+    "requirements-demo.txt": "16a3103b4345e680f6916701bf390f76704e8a350c575d6e99906b36db3460fc",
+    ".github/workflows/c-module.yml": "9bc2713cec989eeee2f13ac40c3ae9a42f9520a55e2dc04a61d3791fbc5ff84d"
+  },
+  "test_matrix": {
+    "Regression Tests": {
+      "PASS": 145,
+      "FAIL": 0,
+      "SKIP": 0
+    },
+    "C Integration Tests": {
+      "PASS": 12,
+      "FAIL": 0,
+      "SKIP": 0
+    },
+    "Fault Injection Tests": {
+      "PASS": 16,
+      "FAIL": 0,
+      "SKIP": 0
+    },
+    "Security Tests": {
+      "PASS": 10,
+      "FAIL": 0,
+      "SKIP": 0
+    },
+    "C Unit Tests": {
+      "PASS": 6,
+      "FAIL": 0,
+      "SKIP": 0
+    }
+  },
+  "coverage_totals": {
+    "covered_lines": 2095,
+    "num_statements": 2295,
+    "percent_covered": 87.92703150912106,
+    "percent_covered_display": "88",
+    "missing_lines": 200,
+    "excluded_lines": 59,
+    "percent_statements_covered": 91.28540305010893,
+    "percent_statements_covered_display": "91",
+    "num_branches": 720,
+    "num_partial_branches": 142,
+    "covered_branches": 556,
+    "missing_branches": 164,
+    "percent_branches_covered": 77.22222222222223,
+    "percent_branches_covered_display": "77"
+  },
+  "reference_baseline": {
+    "mode": "offline_reference_oracle_agreement",
+    "total": 210,
+    "passed": 210,
+    "failed": 0,
+    "not_measured": [
+      "LLM intent accuracy",
+      "bank execution",
+      "authorization",
+      "concurrency",
+      "sandbox isolation",
+      "worker recovery"
+    ]
+  },
+  "completed_at_utc": "2026-10-29T14:35:36.789367+00:00",
+  "gates_passed": true,
+  "external_integration": "BLOCKED: formal A/B/D services unavailable",
+  "final_status": "PARTIAL",
+  "reason": "Implemented-scope offline gates passed; formal analysis expansion/public mandate flow/persistent state and A/B/D integration incomplete",
+  "unittest": {
+    "total": 189,
+    "duration_seconds": 82.491,
+    "groups": {
+      "Regression Tests": {
+        "PASS": 145,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "C Integration Tests": {
+        "PASS": 12,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "Fault Injection Tests": {
+        "PASS": 16,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "Security Tests": {
+        "PASS": 10,
+        "FAIL": 0,
+        "SKIP": 0
+      },
+      "C Unit Tests": {
+        "PASS": 6,
+        "FAIL": 0,
+        "SKIP": 0
+      }
+    },
+    "tests": [
+      {
+        "id": "test_agent_c1.ApplicationTests.test_analysis_default_is_unavailable_and_fixture_is_unchanged",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_analysis_honors_account_grants_and_never_counts_transfers",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_analysis_reference_preserves_nested_required_null",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_analysis_rejects_injected_filter_and_unknown_category",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_analysis_returns_static_contract_value_and_evidence",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_auth_required_and_no_default_dev_identity",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_body_cannot_choose_subject_or_dataset",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_cancel_stale_plan_and_reference_after_cancel",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_complete_transfer_is_only_a_proposal",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_constraint_changes_invalidate_older_proposals",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_cross_subject_sessions_plans_and_context_denied",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_current_grants_rechecked_after_session_created",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_dataset_grant_revocation_invalidates_session",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_events_scoped_and_resume_after_cursor",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_explicit_context_reuse_without_reusing_authority",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_fixture_analysis_refuses_demo_runtime",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_four_local_routes",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_invalid_minimum_balance_is_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_large_constraint_and_exponent_amount_fail_safely",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_local_invalid_amount_and_past_date",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_mandate_followup_replaces_inherited_identity",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_mandate_listing_does_not_return_unconfirmed_bank_facts",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_missing_fields_read_only_and_invalid_actions_never_reach_gateway",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_missing_transfer_fields_and_same_name_disambiguation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_new_grants_do_not_expand_existing_session",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_openapi_security_and_typed_envelopes",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_operations_revalidate_business_date_at_handoff",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_parameter_followup_resolves_selected_recipient",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_protection_cannot_be_dropped_by_followup",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_read_only_is_backend_enforced_and_sticky",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_same_subject_other_session_context_is_not_implicitly_visible",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_source_account_and_unverified_recipient_are_checked",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_transfer_amount_separate_from_minimum_balance_in_any_order",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_unavailable_integrations_never_return_success",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ApplicationTests.test_validation_errors_do_not_echo_secret_or_injection",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.IntentSchemaTests.test_amounts_reject_bool_float_strings_zero_negative_and_overflow",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.IntentSchemaTests.test_closed_schema_at_every_nested_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.IntentSchemaTests.test_invalid_date_and_entity_types",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.IntentSchemaTests.test_six_keys_required_and_irrelevant_entities_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_model_cannot_override_read_only_or_supply_authority",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_model_cannot_reference_unselected_history",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_model_invalid_json_and_schema_do_not_leak_content",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_model_mandate_id_name_mismatch_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_model_missing_fields_are_recomputed",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_prompt_injection_cannot_change_subject_or_accounts",
+        "status": "PASS"
+      },
+      {
+        "id": "test_agent_c1.ModelBoundaryTests.test_provider_timeout_and_http_error",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_contracts.ApiContracts.test_all_schema_files_are_valid_json_schema",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_contracts.ApiContracts.test_four_intents_missing_inputs_and_scope_rejection",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_contracts.ApiContracts.test_runtime_success_error_envelopes_validate_against_openapi",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_contracts.ApiContracts.test_unsupported_analysis_capabilities_are_not_silently_executed",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_01_llm_timeout",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_02_llm_invalid_json",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_03_llm_invalid_schema",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_04_provider_5xx_is_finitely_retried",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_05_d_unavailable",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_06_bank_read_timeout",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_07_b_creation_failure_is_unknown_without_retry",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_08_unknown_tool_status_never_becomes_success",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_09_one_node_failure_blocks_downstream",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_10_independent_partial_success_is_preserved",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_11_user_cancellation_blocks_future_dispatch",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_12_salary_change_replans_only_affected_branch",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_13_successful_write_is_never_proposed_again",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_14_submitted_response_loss_only_queries",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_15_client_replay_does_not_duplicate_proposal",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_faults.FaultTests.test_16_fresh_instance_has_no_durable_task_recovery",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.IntegrationTests.test_repeated_chat_key_returns_one_plan_and_one_b_proposal",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.IntegrationTests.test_successful_financial_branch_is_not_reported_as_wholly_failed",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_explicit_b_confirm_verify_execute_and_status_contract",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_lost_execution_response_does_not_resubmit",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_stale_b_read_cannot_erase_success_and_enable_second_execute",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_stale_ready_after_lost_response_does_not_allow_resubmit",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_unconfirmed_execute_never_reaches_gate",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_integration.LegacyBTests.test_wrong_owner_and_stale_version_rejected_before_b",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.ConcurrentReplayTests.test_concurrent_legacy_execute_submits_once",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.ConcurrentReplayTests.test_concurrent_same_key_shares_one_bounded_workflow",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_cached_replay_rechecks_current_grants",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_identity_dataset_session_and_history_forgery_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_injections_cannot_create_permissions_sql_or_unknown_tools",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_invalidated_auth_token_and_revoked_grants_fail_closed",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_old_b_credentials_cannot_cross_replanned_version",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_recognisable_credentials_never_reach_provider_or_error_output",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_sensitive_tool_fields_are_rejected_not_returned_or_logged",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_security.SecurityTests.test_sse_order_subject_isolation_and_current_instance_resume",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.AdapterBoundaryTests.test_all_seven_a_read_contracts_and_yellow_confirmation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.AdapterBoundaryTests.test_cashflow_feasibility_cannot_contradict_explicit_constraints",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.AdapterBoundaryTests.test_transaction_dates_and_requested_limit_are_enforced",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.AdapterBoundaryTests.test_typed_tool_response_cannot_bypass_strict_types",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.FixtureTimezoneTests.test_mutated_typed_b_response_is_revalidated",
+        "status": "PASS"
+      },
+      {
+        "id": "test_c4_unit.FixtureTimezoneTests.test_utc_instants_are_filtered_by_shanghai_business_date",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_api_results_cannot_be_used_to_submit_authority",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_c1_transfer_promotion_and_legacy_proposal_bypass_blocked",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_cross_subject_plans_history_results_and_events_are_isolated",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_default_adapters_are_explicitly_unsupported_not_mock_success",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_fake_provider_intent_enters_same_validated_dag_path",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_graph_validation_errors_unknown_tool_cycle_and_scope",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_old_bound_operations_cannot_use_c1_confirm_verify_execute",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_openapi_exposes_security_and_c2_models",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_preexisting_c1_operations_block_promotion_without_invalidation_protocol",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_read_only_c1_template_contains_no_write_node",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.DagApiTests.test_replan_api_blocks_old_version_and_records_diff",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_api_c2.LegacyRaceTests.test_inflight_c1_proposal_cannot_race_dag_promotion",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_bad_bank_parameters_and_false_invalidation_are_not_authority",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_concurrent_replans_have_one_winner",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_constraints_rechecked_after_waiting_for_session_lock",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_failed_invalidation_does_not_publish_new_version",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_failed_node_blocks_descendants_but_independent_nodes_run",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_false_invalidation_receipt_is_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_new_version_invalidates_old_proposals_and_never_copies_credentials",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_pending_unknown_blocks_replan_and_duplicate_proposal",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_precondition_failure_and_scope_revocation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_preparation_recovery_queries_b_instead_of_recreating",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_recipient_and_payment_date_changes_create_versions",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_replan_required_state_can_reconcile_pending_bank_outcome",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_replanning_only_resets_changed_nodes_and_downstream",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_run_and_replan_are_serialized",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_salary_date_only_recomputes_cashflow",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_successful_mock_financial_node_is_never_reexecuted_or_rewritten",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_successful_single_read_and_result_provenance",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_unauthorized_account_and_read_only_graph_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_unknown_prepare_survives_run_and_never_repeats_remote_prepare",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_untrusted_output_cannot_change_permissions_or_risk",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.EngineTests.test_valid_unexpected_upstream_result_automatically_versions_plan",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.ShapeTests.test_cycle_missing_dependency_duplicate_id_and_unknown_tool",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.ShapeTests.test_schema_rejects_permissions_state_bad_parameters_and_bad_preconditions",
+        "status": "PASS"
+      },
+      {
+        "id": "test_dag_c2.ShapeTests.test_single_and_multi_dependency_topological_order",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_authoritative_cancellation_resolves_previous_unknown",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_budget_returns_partial_report_and_preserves_node_state",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_cancellation_keeps_unknown_financial_fact_and_stops_dispatch",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_confirmed_unsubmitted_cancellation_is_stable_under_reconciliation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_events_correlated_and_sanitized",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_failed_registry_node_blocks_only_its_descendants",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_mock_success_label_is_not_real_bank_success",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_no_sensitive_credential_field_is_accepted_in_chat",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_node_count_and_depth_are_checked_before_dispatch",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_ready_authorization_is_not_reported_as_submitted",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_reconcile_budget_returns_unknown_instead_of_server_error",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_report_and_catalog_are_authenticated_and_scoped",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_01_analysis_calls_d_with_evidence",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_02_goal_preserves_minimum_and_d_assumptions",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_03_salary_delay_replans_and_old_confirmation_invalidated",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_04_transfer_is_pending_confirmation_never_executed",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_05_ambiguous_recipient_asks_without_tools",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_06_protected_cloud_cancellation_is_blocked",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_07_unknown_bank_outcome_only_queries_never_reproposes",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_08_untrusted_memo_never_becomes_instructions",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_09_other_account_from_model_rejected",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_scenario_10_provider_invalid_or_timeout_has_no_side_effects",
+        "status": "PASS"
+      },
+      {
+        "id": "test_orchestration_c3.ScenarioTests.test_success_after_cancel_is_not_reported_as_cancelled_money",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.AnalysisBoundary.test_empty_result_and_local_month_boundary",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.AnalysisBoundary.test_missing_and_invalid_dates",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.AnalysisBoundary.test_posted_only",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.AnalysisBoundary.test_scope_and_external_user_not_accepted_in_plan",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.AnalysisBoundary.test_unknown_enum_injection_and_missing_scope",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.CashflowAnchors.test_baseline_hand_calculation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.CashflowAnchors.test_delay_and_replan",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.CashflowAnchors.test_invalid_simulation_parameters",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.DataIntegrity.test_raw_import_deduplication",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.DataIntegrity.test_reconcile_each_account_and_nonnegative_history",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.DataIntegrity.test_refund_reference_and_category",
+        "status": "PASS"
+      },
+      {
+        "id": "test_reference.DataIntegrity.test_source_hashes",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_180_reference_cases_match_amount_and_evidence",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_aggregation_ranking_trend_detail_average",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_api_shapes_and_routes",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_clarification_followup_keeps_dataset_and_prior_question",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_export_is_session_scoped",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_missing_fixture_is_explicit",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_model_infers_year_and_grouping_from_meaning_with_current_date_context",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_model_plan_cannot_override_scope_or_drop_unknown_filter",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_scope_plan_and_sql_guards",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.DemoTest.test_transfer_requires_password_then_category_and_counts_as_inflow_outflow",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.ProviderTest.test_compatible_provider_uses_configured_base_and_model",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.ProviderTest.test_openai_compatible_request_and_response",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.ProviderTest.test_provider_failures_do_not_expose_secret",
+        "status": "PASS"
+      },
+      {
+        "id": "test_text2sql_demo.ProviderTest.test_provider_retries_truncated_json_with_larger_output_limit",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.ProviderTests.test_existing_http_client_openai_deepseek_compatible",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.ProviderTests.test_fake_transient_failure_is_bounded",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.ProviderTests.test_invalid_http_json_not_retried_as_success",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_compare_scenarios_delegates_to_d_preserving_constraints",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_cross_user_account_and_dataset_rejected_before_call",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_logical_capability_cannot_smuggle_cancellation_through_transfer",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_proposal_timeout_has_one_attempt_and_no_sensitive_error",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_read_transient_failure_retries_but_not_schema_failure",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_status_facts_must_match_requested_reference",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_status_tools_reject_wrong_business_status_enum",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_strict_input_and_output_validation",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_subscription_query_requires_b_scope_not_model_claim",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_transaction_memo_stays_untrusted_data",
+        "status": "PASS"
+      },
+      {
+        "id": "test_tools_c3.RegistryTests.test_unknown_direct_bank_write_and_duplicate_registration_rejected",
+        "status": "PASS"
+      }
+    ]
+  },
+  "agent_benchmark": {
+    "analysis": {
+      "mode": "LOCAL_AGENT_C1_FIXTURE_NO_LLM_NO_FORMAL_D",
+      "PASS": 180,
+      "FAIL": 0,
+      "results": [
+        {
+          "id": "analysis_001",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_002",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_003",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_004",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_005",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_006",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_007",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_008",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_009",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_010",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_011",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_012",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_013",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_014",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_015",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_016",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_017",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_018",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_019",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_020",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_021",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_022",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_023",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_024",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_025",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_026",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_027",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_028",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_029",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_030",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_031",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_032",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_033",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_034",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_035",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_036",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_037",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_038",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_039",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_040",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_041",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_042",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_043",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_044",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_045",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_046",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_047",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_048",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_049",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_050",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_051",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_052",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_053",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_054",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_055",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_056",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_057",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_058",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_059",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_060",
+          "split": "dev",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_061",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_062",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_063",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_064",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_065",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_066",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_067",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_068",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_069",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_070",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_071",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_072",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_073",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_074",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_075",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_076",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_077",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_078",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_079",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_080",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_081",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_082",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_083",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_084",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_085",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_086",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_087",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_088",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_089",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_090",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_091",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_092",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_093",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_094",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_095",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_096",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_097",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_098",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_099",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_100",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_101",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_102",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_103",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_104",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_105",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_106",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_107",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_108",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_109",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_110",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_111",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_112",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_113",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_114",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_115",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_116",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_117",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_118",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_119",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_120",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_121",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_122",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_123",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_124",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_125",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_126",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_127",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_128",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_129",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_130",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_131",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_132",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_133",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_134",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_135",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_136",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_137",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_138",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_139",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_140",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_141",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_142",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_143",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_144",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_145",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_146",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_147",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_148",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_149",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_150",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_151",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_152",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_153",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_154",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_155",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_156",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_157",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_158",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_159",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_160",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_161",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_162",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_163",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_164",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_165",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_166",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_167",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_168",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_169",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_170",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_171",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_172",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_173",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_174",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_175",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_176",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_177",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_178",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_179",
+          "split": "test",
+          "status": "PASS"
+        },
+        {
+          "id": "analysis_180",
+          "split": "test",
+          "status": "PASS"
+        }
+      ]
+    },
+    "cashflow": {
+      "mode": "MOCK_ORACLE_WIRE_ONLY_NOT_D_NUMERICAL_VALIDATION",
+      "PASS": 30,
+      "FAIL": 0,
+      "results": [
+        {
+          "id": "cashflow_001",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_002",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_003",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_004",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_005",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_006",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_007",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_008",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_009",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_010",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_011",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_012",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_013",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_014",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_015",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_016",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_017",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_018",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_019",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_020",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_021",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_022",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_023",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_024",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_025",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_026",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_027",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_028",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_029",
+          "status": "PASS"
+        },
+        {
+          "id": "cashflow_030",
+          "status": "PASS"
+        }
+      ]
+    },
+    "planner_calls": 210,
+    "acceptance": [
+      {
+        "id": "transfer_01",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_02",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_03",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_04",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_05",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_06",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_07",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_08",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_09",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "transfer_10",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_01",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_02",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_03",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_04",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_05",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_06",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_07",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_08",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_09",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "mandate_10",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_01",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_02",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_03",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_04",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_05",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_06",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_07",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_08",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_09",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "planning_10",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_01",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_02",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_03",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_04",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_05",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_06",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_07",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_08",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_09",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "security_10",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_01",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_02",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_03",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_04",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_05",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_06",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_07",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_08",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_09",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "recovery_10",
+        "source_status": "NOT_RUN",
+        "status": "BLOCKED",
+        "reason": "Full specification requires absent formal bank/gate/analytics and durable audit evidence"
+      },
+      {
+        "id": "sandbox_01",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_02",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_03",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_04",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_05",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_06",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_07",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_08",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_09",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      },
+      {
+        "id": "sandbox_10",
+        "source_status": "NOT_RUN",
+        "status": "NOT_RUN",
+        "reason": "Full sandbox suite belongs to E"
+      }
+    ],
+    "real_service_integration": {
+      "A": "BLOCKED",
+      "B": "BLOCKED",
+      "D": "BLOCKED",
+      "real_llm": "NOT_RUN"
+    }
+  },
+  "reference_self_checks": {
+    "PASS": 12,
+    "FAIL": 0,
+    "included_in_regression": true
+  },
+  "real_service_matrix": {
+    "PASS": 0,
+    "FAIL": 0,
+    "BLOCKED": 3,
+    "NOT_RUN": 0,
+    "unit": "external dependencies"
+  },
+  "acceptance_overlay_counts": {
+    "PASS": 0,
+    "FAIL": 0,
+    "BLOCKED": 50,
+    "NOT_RUN": 10,
+    "source_file_unmodified": true
+  },
+  "process_restart": {
+    "fresh_process_old_session": 403,
+    "fresh_process_old_plan": 403,
+    "unavailable_event_cursor": 409,
+    "durable_recovery": "NOT_IMPLEMENTED",
+    "state_loss_fail_closed": "PASS",
+    "processes": 2
+  },
+  "evidence_directory": "/tmp/futureledger-c4-release",
+  "files": {
+    ".github/workflows/c-module.yml": "新增：无密钥/无支付的本地质量 CI；保存可复现 artifacts",
+    "contracts/application-api.c4.openapi.json": "新增：C4 OpenAPI，新增可选 chat 重放键，保留旧版快照",
+    "docs/c4-integration.md": "新增：架构、工具/API/状态机、跨模块边界与本地接入",
+    "docs/superpowers/plans/2026-10-29-agent-c4.md": "新增：基线、缺口、验收与审查计划",
+    "requirements-c4.txt": "新增：沿用 runtime 依赖，加 Schema 校验/真实覆盖率/最小静态检查工具",
+    "scripts/c4_unittest.py": "新增：逐方法记录结果、互斥分组及耗时",
+    "scripts/check_c4_restart.py": "新增：双进程状态丢失验证，不冒称恢复",
+    "scripts/prepare_c4_fixture.py": "新增：临时重建并核对源/gold，只复制忽略的 SQLite",
+    "scripts/run_c4_benchmark.py": "新增：NL Agent/Mock cashflow 独立成绩 CLI",
+    "scripts/run_c4_quality.py": "新增：质量门、SHA/时间/退出码/日志摘要/覆盖率汇总",
+    "services/api/agent/adapters.py": "修改：Shanghai 日期归一化，固定只读分析口径不变",
+    "services/api/agent/legacy.py": "新增：C1 B 操作的主体/版本/状态/并发/不重复提交边界",
+    "services/api/agent/orchestration/api.py": "修改：可选 chat Idempotency-Key 接入，不影响冻结 C3 schema",
+    "services/api/agent/orchestration/registry.py": "修改：typed 对象重验、诊断脱敏、交易范围与敏感结果校验",
+    "services/api/agent/orchestration/replay.py": "新增：单实例有界请求合并、冲突检查与授权重检",
+    "services/api/agent/orchestration/schemas.py": "修改：拒绝与硬约束矛盾的 feasible 声明",
+    "services/api/agent/orchestration/service.py": "修改：成功业务节点与失败共存时返回 PARTIAL",
+    "services/api/agent/sensitive.py": "新增：识别凭证模式并拒绝，明确非通用 DLP",
+    "services/api/agent/service.py": "修改：模型前敏感输入/上下文拒绝、typed 意图重验",
+    "services/api/app.py": "修改：C4 版本、legacy/replay 接入、无法恢复的 SSE 游标错误",
+    "services/api/export_contracts.py": "修改：新增 C4 导出与漂移检查，旧快照保持原样",
+    "tests/c4_benchmark.py": "新增：盲输入规划器、真实 Local Agent 路径和标注 oracle-backed 的 Mock D",
+    "tests/c4_support.py": "新增：独立测试 Harness 与无账本 ContractGate",
+    "tests/test_c4_contracts.py": "新增：OpenAPI 响应/JSON Schema/四意图补参越权与未支持能力测试",
+    "tests/test_c4_faults.py": "新增：16 类故障注入与状态保留测试",
+    "tests/test_c4_integration.py": "新增：业务链、legacy B 及丢失/回退状态测试",
+    "tests/test_c4_security.py": "新增：认证/主体/注入/敏感数据/SSE/并发重放测试",
+    "tests/test_c4_unit.py": "新增：UTC 边界、typed 对象/诊断、A 七能力、交易范围和 D 矛盾测试",
+    "docs/c4-final-report.md": "新增：八部分最终验收与缺陷/兼容性结论",
+    "docs/c4-results.json": "新增：提交、代码哈希、全部测试/基准/阻塞的真实机器证据",
+    "docs/c4-pr.md": "新增：可直接用于 PR 的说明，未推送/未合并"
+  },
+  "report_commit_scope": "Subsequent evidence commit changes documentation only; source_sha256 remains matching",
+  "remote_ci": "NOT_RUN",
+  "real_llm": "NOT_RUN"
+}

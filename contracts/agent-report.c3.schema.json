@@ -1,0 +1,1027 @@
+{
+  "$defs": {
+    "AnalysisFilters": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "餐饮",
+            "交通",
+            "购物",
+            "娱乐",
+            "订阅",
+            "房租",
+            "医疗",
+            "其他",
+            "工资",
+            "转账"
+          ],
+          "title": "Category",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "AnalysisFilters",
+      "type": "object"
+    },
+    "AnalysisPlan": {
+      "additionalProperties": false,
+      "description": "Existing static analysis-plan v1 subset, not the broader Demo IntentPlan.",
+      "properties": {
+        "kind": {
+          "const": "analysis",
+          "title": "Kind",
+          "type": "string"
+        },
+        "dataset_id": {
+          "const": "personal_ledger",
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "semantic_version": {
+          "const": 1,
+          "title": "Semantic Version",
+          "type": "integer"
+        },
+        "metric": {
+          "enum": [
+            "gross_expense",
+            "refund",
+            "net_expense"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end_exclusive": {
+          "title": "End Exclusive",
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/$defs/AnalysisFilters"
+        },
+        "group_by": {
+          "title": "Group By",
+          "type": "null"
+        },
+        "limit": {
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "dataset_id",
+        "semantic_version",
+        "metric",
+        "start",
+        "end_exclusive",
+        "filters",
+        "group_by",
+        "limit"
+      ],
+      "title": "AnalysisPlan",
+      "type": "object"
+    },
+    "AnalysisResult": {
+      "additionalProperties": false,
+      "properties": {
+        "rows": {
+          "items": {
+            "$ref": "#/$defs/AnalysisRow"
+          },
+          "title": "Rows",
+          "type": "array"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "chart": {
+          "const": "metric_card",
+          "default": "metric_card",
+          "title": "Chart",
+          "type": "string"
+        },
+        "source": {
+          "const": "offline_fixture",
+          "default": "offline_fixture",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rows",
+        "evidence_ids"
+      ],
+      "title": "AnalysisResult",
+      "type": "object"
+    },
+    "AnalysisRow": {
+      "additionalProperties": false,
+      "properties": {
+        "value_cents": {
+          "title": "Value Cents",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value_cents"
+      ],
+      "title": "AnalysisRow",
+      "type": "object"
+    },
+    "BOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "plan_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_version": {
+          "minimum": 1,
+          "title": "Plan Version",
+          "type": "integer"
+        },
+        "node_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Node Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "NEEDS_CONFIRM",
+            "NEEDS_AUTH",
+            "READY",
+            "SCHEDULED",
+            "SUBMITTING",
+            "PENDING_UNKNOWN",
+            "SUCCEEDED",
+            "FAILED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TransferInputs"
+            },
+            {
+              "$ref": "#/$defs/MandateInputs"
+            }
+          ],
+          "title": "Parameters"
+        },
+        "bank_ref": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bank Ref"
+        }
+      },
+      "required": [
+        "operation_id",
+        "plan_id",
+        "plan_version",
+        "node_id",
+        "status",
+        "parameters"
+      ],
+      "title": "BOutcome",
+      "type": "object"
+    },
+    "BalanceResult": {
+      "additionalProperties": false,
+      "properties": {
+        "available_cents": {
+          "maximum": 9223372036854775807,
+          "minimum": 0,
+          "title": "Available Cents",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "available_cents"
+      ],
+      "title": "BalanceResult",
+      "type": "object"
+    },
+    "CancellationEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "enum": [
+            "B",
+            "mock_B"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "receipt": {
+          "$ref": "#/$defs/CancellationReceipt"
+        }
+      },
+      "required": [
+        "source",
+        "receipt"
+      ],
+      "title": "CancellationEvidence",
+      "type": "object"
+    },
+    "CancellationReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "operation_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "plan_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_version": {
+          "minimum": 1,
+          "title": "Plan Version",
+          "type": "integer"
+        },
+        "node_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Node Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "CANCELLED",
+            "ALREADY_SUBMITTED",
+            "PENDING_UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id",
+        "plan_id",
+        "plan_version",
+        "node_id",
+        "status"
+      ],
+      "title": "CancellationReceipt",
+      "type": "object"
+    },
+    "CashflowAssumptions": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "target_date": {
+          "title": "Target Date",
+          "type": "string"
+        },
+        "target_amount_cents": {
+          "exclusiveMinimum": 0,
+          "maximum": 9223372036854775807,
+          "title": "Target Amount Cents",
+          "type": "integer"
+        },
+        "salary_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Salary Date"
+        }
+      },
+      "required": [
+        "source_account_id",
+        "target_date",
+        "target_amount_cents"
+      ],
+      "title": "CashflowAssumptions",
+      "type": "object"
+    },
+    "CashflowReport": {
+      "additionalProperties": false,
+      "properties": {
+        "points": {
+          "items": {
+            "$ref": "#/$defs/DailyPoint"
+          },
+          "maxItems": 1096,
+          "title": "Points",
+          "type": "array"
+        },
+        "min_balance_cents": {
+          "title": "Min Balance Cents",
+          "type": "integer"
+        },
+        "conflicts": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "assumptions": {
+          "$ref": "#/$defs/CashflowAssumptions"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Constraints"
+        },
+        "feasible": {
+          "title": "Feasible",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "points",
+        "min_balance_cents",
+        "conflicts",
+        "assumptions",
+        "constraints",
+        "feasible"
+      ],
+      "title": "CashflowReport",
+      "type": "object"
+    },
+    "ChatResult": {
+      "additionalProperties": false,
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "plan_version": {
+          "title": "Plan Version",
+          "type": "integer"
+        },
+        "context_ref": {
+          "title": "Context Ref",
+          "type": "string"
+        },
+        "intent": {
+          "enum": [
+            "analysis",
+            "transfer",
+            "mandate",
+            "goal"
+          ],
+          "title": "Intent",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "NEEDS_INFO",
+            "READ_ONLY",
+            "PROPOSED",
+            "BLOCKED",
+            "AWAITING_SCOPE_CONFIRMATION",
+            "CANCELLED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "entities": {
+          "$ref": "#/$defs/Entities"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Constraints"
+        },
+        "missing_fields": {
+          "items": {
+            "enum": [
+              "analysis_plan",
+              "amount_cents",
+              "recipient_id",
+              "source_account_id",
+              "execution_date",
+              "mandate_id",
+              "mandate_action",
+              "goal_name",
+              "target_date"
+            ],
+            "type": "string"
+          },
+          "title": "Missing Fields",
+          "type": "array"
+        },
+        "questions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        },
+        "recipient_candidates": {
+          "items": {
+            "$ref": "#/$defs/RecipientCandidate"
+          },
+          "title": "Recipient Candidates",
+          "type": "array"
+        },
+        "proposed_steps": {
+          "items": {
+            "$ref": "#/$defs/ProposedStep"
+          },
+          "title": "Proposed Steps",
+          "type": "array"
+        },
+        "execution_available": {
+          "const": false,
+          "default": false,
+          "title": "Execution Available",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "task_id",
+        "plan_id",
+        "plan_version",
+        "context_ref",
+        "intent",
+        "status",
+        "entities",
+        "constraints",
+        "missing_fields",
+        "questions",
+        "recipient_candidates",
+        "proposed_steps"
+      ],
+      "title": "ChatResult",
+      "type": "object"
+    },
+    "Constraints": {
+      "additionalProperties": false,
+      "properties": {
+        "read_only": {
+          "default": false,
+          "title": "Read Only",
+          "type": "boolean"
+        },
+        "protected_mandate_ids": {
+          "items": {
+            "maxLength": 128,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Protected Mandate Ids",
+          "type": "array"
+        },
+        "min_balance_cents": {
+          "anyOf": [
+            {
+              "maximum": 9223372036854775807,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Balance Cents"
+        }
+      },
+      "title": "Constraints",
+      "type": "object"
+    },
+    "DailyPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "day": {
+          "title": "Day",
+          "type": "string"
+        },
+        "balance_cents": {
+          "title": "Balance Cents",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "day",
+        "balance_cents"
+      ],
+      "title": "DailyPoint",
+      "type": "object"
+    },
+    "Entities": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_plan": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnalysisPlan"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "amount_cents": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 9223372036854775807,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount Cents"
+        },
+        "recipient_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Id"
+        },
+        "recipient_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recipient Name"
+        },
+        "source_account_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Account Id"
+        },
+        "execution_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Execution Date"
+        },
+        "mandate_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Id"
+        },
+        "mandate_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Name"
+        },
+        "mandate_action": {
+          "anyOf": [
+            {
+              "enum": [
+                "list",
+                "cancel"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Action"
+        },
+        "goal_name": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Goal Name"
+        },
+        "target_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        }
+      },
+      "title": "Entities",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "node_id": {
+          "title": "Node Id",
+          "type": "string"
+        },
+        "result_ref": {
+          "title": "Result Ref",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "node_id",
+        "result_ref",
+        "source"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "MandateInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "mandate_id": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mandate Id"
+        }
+      },
+      "required": [
+        "source_account_id"
+      ],
+      "title": "MandateInputs",
+      "type": "object"
+    },
+    "ProposedStep": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "analyze",
+            "propose_transfer",
+            "request_mandate_scope",
+            "propose_mandate_cancel",
+            "simulate_goal"
+          ],
+          "title": "Action",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "title": "ProposedStep",
+      "type": "object"
+    },
+    "QuoteResult": {
+      "additionalProperties": false,
+      "properties": {
+        "valid": {
+          "title": "Valid",
+          "type": "boolean"
+        },
+        "fee_cents": {
+          "maximum": 9223372036854775807,
+          "minimum": 0,
+          "title": "Fee Cents",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "valid",
+        "fee_cents"
+      ],
+      "title": "QuoteResult",
+      "type": "object"
+    },
+    "RecipientCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "alias": {
+          "title": "Alias",
+          "type": "string"
+        },
+        "tail4": {
+          "title": "Tail4",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "alias",
+        "tail4"
+      ],
+      "title": "RecipientCandidate",
+      "type": "object"
+    },
+    "RecipientResult": {
+      "additionalProperties": false,
+      "properties": {
+        "recipient_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "verified": {
+          "title": "Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "recipient_id",
+        "verified"
+      ],
+      "title": "RecipientResult",
+      "type": "object"
+    },
+    "TransferInputs": {
+      "additionalProperties": false,
+      "properties": {
+        "source_account_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Account Id",
+          "type": "string"
+        },
+        "recipient_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "amount_cents": {
+          "exclusiveMinimum": 0,
+          "maximum": 9223372036854775807,
+          "title": "Amount Cents",
+          "type": "integer"
+        },
+        "execution_date": {
+          "title": "Execution Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_account_id",
+        "recipient_id",
+        "amount_cents",
+        "execution_date"
+      ],
+      "title": "TransferInputs",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "plan_version": {
+      "title": "Plan Version",
+      "type": "integer"
+    },
+    "node_statuses": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Node Statuses",
+      "type": "object"
+    },
+    "execution_status": {
+      "enum": [
+        "NEEDS_INFO",
+        "BLOCKED",
+        "AWAITING_CONFIRMATION",
+        "NEEDS_AUTH",
+        "READY_FOR_EXECUTION",
+        "SUBMITTED",
+        "PENDING_UNKNOWN",
+        "COMPLETED",
+        "MOCK_COMPLETED",
+        "PARTIAL",
+        "FAILED",
+        "CANCELLED",
+        "CANCEL_REQUESTED",
+        "INTERRUPTED"
+      ],
+      "title": "Execution Status",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence Refs",
+      "type": "array"
+    },
+    "assumptions": {
+      "items": {
+        "$ref": "#/$defs/CashflowAssumptions"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "next_action": {
+      "title": "Next Action",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "outputs": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/AnalysisResult"
+          },
+          {
+            "$ref": "#/$defs/CashflowReport"
+          },
+          {
+            "$ref": "#/$defs/BalanceResult"
+          },
+          {
+            "$ref": "#/$defs/RecipientResult"
+          },
+          {
+            "$ref": "#/$defs/QuoteResult"
+          },
+          {
+            "$ref": "#/$defs/BOutcome"
+          }
+        ]
+      },
+      "title": "Outputs",
+      "type": "object"
+    },
+    "clarification": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ChatResult"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "cancellations": {
+      "items": {
+        "$ref": "#/$defs/CancellationEvidence"
+      },
+      "title": "Cancellations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "task_id",
+    "plan_id",
+    "plan_version",
+    "node_statuses",
+    "execution_status",
+    "summary",
+    "evidence_refs",
+    "assumptions",
+    "next_action",
+    "request_id"
+  ],
+  "title": "ExecutionReport",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

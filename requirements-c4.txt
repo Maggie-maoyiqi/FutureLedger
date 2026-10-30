@@ -1,0 +1,4 @@
+-r requirements-demo.txt
+jsonschema>=4.23,<5
+coverage>=7.6,<8
+ruff>=0.14,<1
