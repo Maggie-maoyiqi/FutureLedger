@@ -9,21 +9,32 @@ from pathlib import Path
 from .semantic import CATEGORIES, IntentPlan
 
 AMOUNT = {
-    "gross_expense": "COALESCE(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
+    "gross_expense": "COALESCE(SUM(CASE WHEN kind='expense' AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
     "refund": "COALESCE(SUM(CASE WHEN kind='refund' AND direction='IN' THEN amount_cents ELSE 0 END),0)",
-    "net_expense": "COALESCE(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents WHEN kind='refund' AND direction='IN' THEN -amount_cents ELSE 0 END),0)",
-    "income": "COALESCE(SUM(CASE WHEN kind IN ('income','transfer') AND direction='IN' THEN amount_cents ELSE 0 END),0)",
-    "transaction_count": "COALESCE(SUM(CASE WHEN kind IN ('expense','refund','transfer') THEN 1 ELSE 0 END),0)",
-    "avg_expense": "ROUND(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents ELSE 0 END)*1.0/NULLIF(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN 1 ELSE 0 END),0),2)",
+    "net_expense": "COALESCE(SUM(CASE WHEN kind='expense' AND direction='OUT' THEN amount_cents WHEN kind='refund' AND direction='IN' THEN -amount_cents ELSE 0 END),0)",
+    "income": "COALESCE(SUM(CASE WHEN kind='income' AND direction='IN' THEN amount_cents ELSE 0 END),0)",
+    "transaction_count": "COALESCE(SUM(CASE WHEN kind IN ('expense','refund') THEN 1 ELSE 0 END),0)",
+    "avg_expense": "ROUND(SUM(CASE WHEN kind='expense' AND direction='OUT' THEN amount_cents ELSE 0 END)*1.0/NULLIF(SUM(CASE WHEN kind='expense' AND direction='OUT' THEN 1 ELSE 0 END),0),2)",
     "transfer_amount": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
     "transfer_count": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN 1 ELSE 0 END),0)",
 }
 GROUP = {"category": "category", "merchant": "merchant", "month": "substr(posted_at,1,7)", "account": "account_id"}
 KINDS = {
-    "gross_expense": ("expense", "transfer"), "refund": ("refund",),
-    "net_expense": ("expense", "transfer", "refund"), "income": ("income", "transfer"),
-    "transaction_count": ("expense", "refund", "transfer"), "avg_expense": ("expense", "transfer"),
+    "gross_expense": ("expense",), "refund": ("refund",),
+    "net_expense": ("expense", "refund"), "income": ("income",),
+    "transaction_count": ("expense", "refund"), "avg_expense": ("expense",),
     "transfer_amount": ("transfer",), "transfer_count": ("transfer",),
+}
+# Detail views are ledger activity views. They keep transfer rows visible for
+# the existing demo's auditability, while aggregate expense metrics exclude
+# transfers from consumption calculations.
+DETAIL_KINDS = {
+    **KINDS,
+    "gross_expense": ("expense", "transfer"),
+    "net_expense": ("expense", "transfer", "refund"),
+    "income": ("income", "transfer"),
+    "transaction_count": ("expense", "refund", "transfer"),
+    "avg_expense": ("expense", "transfer"),
 }
 FORBIDDEN = ("delete", "update", "insert", "drop", "alter", "truncate", "attach", "pragma", "--", "/*", ";")
 
@@ -95,21 +106,21 @@ class Ledger:
 
         marks = ",".join("?" for _ in account_ids)
         where = f"user_id=? AND account_id IN ({marks}) AND status='POSTED' AND substr(posted_at,1,10)>=? AND substr(posted_at,1,10)<?"
-        params: list[object] = [user_id, *account_ids, plan.start.isoformat(), plan.end_exclusive.isoformat()]
+        where_params: list[object] = [user_id, *account_ids, plan.start.isoformat(), plan.end_exclusive.isoformat()]
         if plan.filters.category is not None:
-            where += " AND category=?"; params.append(plan.filters.category)
+            where += " AND category=?"; where_params.append(plan.filters.category)
         if plan.filters.merchant is not None:
-            where += " AND merchant=?"; params.append(plan.filters.merchant)
+            where += " AND merchant=?"; where_params.append(plan.filters.merchant)
         if plan.filters.account_id is not None:
-            where += " AND account_id=?"; params.append(plan.filters.account_id)
+            where += " AND account_id=?"; where_params.append(plan.filters.account_id)
 
         if plan.kind == "detail":
-            kinds = KINDS[plan.metric]
+            kinds = DETAIL_KINDS[plan.metric]
             kind_marks = ",".join("?" for _ in kinds)
             sql = ("SELECT posted_at, category, merchant, kind, direction, amount_cents "
                    f"FROM transactions WHERE {where} AND kind IN ({kind_marks}) "
                    f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
-            params.extend((*kinds, plan.limit))
+            params = [*where_params, *kinds, plan.limit]
         elif plan.group_by:
             dimension = GROUP[plan.group_by]
             series = f", {GROUP[plan.series_by]} AS series_key" if plan.series_by else ""
@@ -123,27 +134,32 @@ class Ledger:
             sql = (f"SELECT {dimension} AS group_key{series}, {AMOUNT[plan.metric]} AS value_cents "
                    f"FROM transactions WHERE {where} AND kind IN ({','.join('?' for _ in KINDS[plan.metric])}) "
                    f"GROUP BY {grouped} ORDER BY {order} LIMIT ?")
-            params.extend((*KINDS[plan.metric], plan.limit))
+            params = [*where_params, *KINDS[plan.metric], plan.limit]
         else:
             sql = f"SELECT {AMOUNT[plan.metric]} AS value_cents FROM transactions WHERE {where} AND kind IN ({','.join('?' for _ in KINDS[plan.metric])})"
-            params.extend(KINDS[plan.metric])
+            params = [*where_params, *KINDS[plan.metric]]
         audit_sql(sql)
-        return sql, tuple(params), where
+        return sql, tuple(params), where, tuple(where_params)
 
     def execute(self, plan: IntentPlan, user_id: str):
         accounts = self.accounts(user_id)
         merchants = self.merchants(user_id, accounts)
-        sql, params, where = self.compile(plan, user_id, accounts, merchants)
+        sql, params, where, where_params = self.compile(plan, user_id, accounts, merchants)
         with closing(self.connect()) as conn:
             conn.execute("PRAGMA query_only=ON")
             rows = [dict(r) for r in conn.execute(sql, params)]
             if plan.kind == "detail":
-                evidence = [1 for _ in rows]
+                kinds = DETAIL_KINDS[plan.metric]
+                evidence_sql = (f"SELECT id FROM transactions WHERE {where} "
+                                f"AND kind IN ({','.join('?' for _ in kinds)}) "
+                                f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
+                audit_sql(evidence_sql)
+                evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, *kinds, plan.limit))]
             else:
                 marks = ",".join("?" for _ in KINDS[plan.metric])
                 evidence_sql = f"SELECT id FROM transactions WHERE {where} AND kind IN ({marks}) ORDER BY id LIMIT 5001"
                 audit_sql(evidence_sql)
-                evidence = [r[0] for r in conn.execute(evidence_sql, (*params[:len(params)-len(KINDS[plan.metric])-(1 if plan.group_by else 0)], *KINDS[plan.metric]))]
+                evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, *KINDS[plan.metric]))]
         if len(evidence) > 5000:
             raise QueryError("TOO_MANY_EVIDENCE_ROWS", "凭据过多，请缩小日期范围")
         return {"rows": rows, "evidence_ids": evidence, "sql": sql}

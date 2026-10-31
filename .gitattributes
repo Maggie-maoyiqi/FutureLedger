@@ -1,0 +1,4 @@
+# Generated fixture hashes are recorded in data/manifest.json. Keep text
+# fixtures in LF form so the manifest remains valid on Windows and Linux.
+data/*.json text eol=lf
+data/*.jsonl text eol=lf

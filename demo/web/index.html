@@ -36,7 +36,7 @@
     <div class="side-footer">
       <label>当前登录</label>
       <div class="user-row"><span id="activeUser">未登录</span><button id="logout" class="logout" type="button">退出登录</button></div>
-      <div class="local-note">查询路由只提供当前用户的有限账单上下文；转账需确认并再次输入 FutureLedger 密码。规划请求有独立路由，本地 demo 暂未接入现金流模拟。</div>
+      <div class="local-note">查询路由只提供当前用户的有限账单上下文；转账需确认并再次输入 FutureLedger 密码。规划请求有独立路由，现金流由后端模拟接口计算。</div>
     </div>
   </aside>
   <main class="main">
@@ -44,7 +44,7 @@
     <section class="messages" id="messages" aria-live="polite"></section>
     <div class="composer-wrap">
       <form id="form" class="composer"><input id="question" autocomplete="off" maxlength="500" aria-label="输入账单问题" placeholder="问问你的支出、收入或交易记录…"><button id="send" type="submit">发送</button></form>
-      <div class="composer-help" id="help">回车发送 · 查询只读；转账需确认和密码复核；存钱规划目前未接入</div>
+      <div class="composer-help" id="help">回车发送 · 查询只读；转账需确认和密码复核；现金流规划使用独立模拟接口</div>
     </div>
   </main>
 </div>
@@ -108,7 +108,7 @@ function showError(text){if(!activeChat){const box=$('messages');box.replaceChil
 async function sendQuestion(raw){const question=raw.trim();if(!authToken){$('authGate').hidden=false;return}if(!question||busy)return;if(!activeChat||activeChat.user!==userId())await newChat();if(!activeChat)return;busy=true;$('send').disabled=true;$('help').textContent='正在判断请求类型…';if(activeChat.title==='新对话')activeChat.title=titleFor(question);addMessage({role:'user',text:question});$('question').value='';
   try{let response;try{response=await api('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:activeChat.sessionId,question})})}catch(error){if(error.status!==403)throw error;activeChat.sessionId=await createServerSession();saveChats();response=await api('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:activeChat.sessionId,question})})}
     const text=response.status==='answer'?response.answer:(response.message||'请换一种方式描述问题。');const result=response.status==='answer'?{answer:text,chart:response.chart,rows:response.rows,valueFormat:response.value_format,queryId:response.query_id}:null;const assistantMessage={role:'assistant',text,result,actionId:response.action_id,actionStatus:response.status==='confirmation_required'?'pending':undefined};addMessage(assistantMessage);if(assistantMessage.actionStatus==='pending')confirmAction(assistantMessage)
-  }catch(error){addMessage({role:'assistant',text:error.message||'请求失败，请稍后重试。'})}finally{busy=false;$('send').disabled=false;$('help').textContent='回车发送 · 查询只读；转账需确认和密码复核；存钱规划目前未接入';$('question').focus()}}
+  }catch(error){addMessage({role:'assistant',text:error.message||'请求失败，请稍后重试。'})}finally{busy=false;$('send').disabled=false;$('help').textContent='回车发送 · 查询只读；转账需确认和密码复核；现金流规划使用独立模拟接口';$('question').focus()}}
 function confirmAction(message){if(!authToken||busy||!activeChat)return;reauthMessage=message;$('reauthPassword').value='';$('transferCategory').hidden=true;$('transferCategoryLabel').hidden=true;$('reauthForm').querySelector('button[type="submit"]').textContent='验证密码';$('reauthMessage').textContent='';$('reauthGate').hidden=false;$('reauthPassword').focus()}
 $('form').addEventListener('submit',event=>{event.preventDefault();sendQuestion($('question').value)});
 $('newChat').addEventListener('click',newChat);

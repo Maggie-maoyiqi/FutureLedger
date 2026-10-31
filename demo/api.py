@@ -12,12 +12,14 @@ import shutil
 from datetime import date, datetime
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, Response
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError
 
 from .planner import classify_route, make_intent, parse_transfer
 from .provider import ChatProvider, ProviderError
+from .cashflow import simulate_cashflow
 from .query import Ledger, QueryError
 from .semantic import GROUPS, METRICS, IntentPlan, public_catalog
 
@@ -45,6 +47,18 @@ class AskRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     session_id: str
     question: str = Field(min_length=1, max_length=500)
+
+
+class PlanSimulationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    session_id: str = Field(min_length=1, max_length=128)
+    plan_version: int = Field(ge=1)
+    salary_day: int = Field(ge=1, le=30)
+    purchase_day: int = Field(ge=1, le=30)
+    daily_budget_cents: int = Field(default=8000, ge=0)
+    floor_cents: int = Field(default=300000, ge=0)
+    goal_cents: int = Field(default=600000, ge=0)
 
 
 class ActionAuthorizeRequest(BaseModel):
@@ -103,8 +117,40 @@ def csv_safe(value):
     return "'" + text if isinstance(value, str) and text.startswith(("=", "+", "-", "@")) else text
 
 
+def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str) -> dict[str, object]:
+    """Build a deterministic simulation response without changing ledger state."""
+    result = simulate_cashflow(
+        salary_day=request.salary_day,
+        purchase_day=request.purchase_day,
+        daily_budget_cents=request.daily_budget_cents,
+        floor_cents=request.floor_cents,
+        goal_cents=request.goal_cents,
+    )
+    return {
+        "status": "simulated",
+        "route": "planning",
+        "plan_id": plan_id,
+        "plan_version": request.plan_version,
+        "result": result.to_dict(),
+    }
+
+
 def create_app(*, db_path=None, provider=None, today=None):
     app = FastAPI(title="FutureLedger Text2SQL demo", version="0.2.0")
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(request: Request, exc: RequestValidationError):
+        is_simulation = request.url.path.startswith("/api/plans/") and request.url.path.endswith("/simulate")
+        detail = {
+            "code": "INVALID_SIMULATION" if is_simulation else "VALIDATION_ERROR",
+            "message": "计划模拟参数无效" if is_simulation else "请求参数无效",
+            "errors": [
+                {"loc": list(error.get("loc", ())), "type": error.get("type"), "msg": error.get("msg")}
+                for error in exc.errors()
+            ],
+        }
+        return JSONResponse(status_code=422, content={"detail": detail})
+
     source_path = Path(db_path or ROOT / "data/benchmark.sqlite").resolve()
     runtime_path = source_path.with_name(source_path.stem + "_runtime.sqlite")
     if source_path.is_file() and not runtime_path.exists():
@@ -197,6 +243,16 @@ def create_app(*, db_path=None, provider=None, today=None):
         return {"session_id": token, "dataset_id": "personal_ledger", "semantic_version": 1,
                 "demo_user": user, "warning": "本地演示身份，不是生产鉴权"}
 
+    @app.post("/api/plans/{plan_id}/simulate")
+    def simulate_plan(plan_id: str, request: PlanSimulationRequest):
+        user = sessions.get(request.session_id)
+        if user is None:
+            raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
+        try:
+            return simulate_plan_payload(plan_id, request, user_id=user)
+        except ValueError as exc:
+            raise HTTPException(422, {"code": "INVALID_SIMULATION", "message": str(exc)}) from exc
+
     @app.post("/api/ask")
     async def ask(request: AskRequest):
         user = sessions.get(request.session_id)
@@ -210,8 +266,9 @@ def create_app(*, db_path=None, provider=None, today=None):
             raise HTTPException(502, {"code": "INVALID_ROUTE", "message": "模型路由结果无效，请重试。"}) from exc
         route, route_message = decision["route"], decision.get("message")
         if route == "planning":
-            route_message = ("已识别为存钱目标／省钱规划请求。当前 demo 尚未接入现金流模拟；不会把全量流水交给模型，"
-                             "也不会据此执行转账。规划功能接入后会先明确目标与账户范围，再由后端查询必要数据并进行确定性模拟。")
+            route_message = ("已识别为存钱目标／省钱规划请求。当前聊天入口只负责识别意图；"
+                             "请由后端校验计划参数后调用 /api/plans/{plan_id}/simulate 获取逐日现金流结果。"
+                             "不会把全量流水交给模型，也不会据此执行转账。")
         if route == "execution":
             if "取消代扣" in request.question or "取消订阅" in request.question:
                 return {"status": "unsupported", "route": "execution", "message": "此演示版只实现双方账户间的转账确认；取消代扣暂不执行。"}
