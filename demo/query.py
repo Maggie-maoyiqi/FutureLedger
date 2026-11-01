@@ -37,6 +37,7 @@ DETAIL_KINDS = {
     "avg_expense": ("expense", "transfer"),
 }
 FORBIDDEN = ("delete", "update", "insert", "drop", "alter", "truncate", "attach", "pragma", "--", "/*", ";")
+ACCOUNT_NAMES = {"acc_daily": "主账户", "acc_savings": "储蓄账户", "acc_other": "演示账户"}
 
 
 class QueryError(ValueError):
@@ -68,6 +69,19 @@ class Ledger:
     def accounts(self, user_id: str):
         with closing(self.connect()) as conn:
             return tuple(row[0] for row in conn.execute("SELECT id FROM accounts WHERE user_id=? ORDER BY id", (user_id,)))
+
+    def account_snapshot(self, user_id: str):
+        """Return current balances for the authenticated user's accounts only."""
+        with closing(self.connect()) as conn:
+            rows = conn.execute(
+                "SELECT id,balance_cents FROM accounts WHERE user_id=? ORDER BY id",
+                (user_id,),
+            )
+            return [
+                {"account_id": row["id"], "account_name": ACCOUNT_NAMES.get(row["id"], "银行账户"),
+                 "balance_cents": row["balance_cents"]}
+                for row in rows
+            ]
 
     def merchants(self, user_id: str, account_ids: tuple[str, ...]):
         if not account_ids:

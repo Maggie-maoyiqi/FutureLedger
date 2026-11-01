@@ -93,6 +93,7 @@ assert(!mobileCss.includes('.nav-user,.nav-note'), 'mobile layout must keep the 
 
 (async () => {
   let sessionCalls = 0;
+  let accountCalls = 0;
   context.fetch = async path => {
     if (path === '/api/auth/login') {
       return {ok: true, status: 200, json: async () => ({auth_token: 'token', username: 'test_user'})};
@@ -101,12 +102,30 @@ assert(!mobileCss.includes('.nav-user,.nav-note'), 'mobile layout must keep the 
       sessionCalls += 1;
       return {ok: true, status: 200, json: async () => ({session_id: 'session-' + sessionCalls})};
     }
+    if (path.startsWith('/api/accounts?')) {
+      accountCalls += 1;
+      return {ok: true, status: 200, json: async () => ({
+        status: 'ready', total_balance_cents: 1397500,
+        accounts: [
+          {account_id: 'acc_daily', account_name: '主账户', balance_cents: 897500},
+          {account_id: 'acc_savings', account_name: '储蓄账户', balance_cents: 500000},
+        ],
+      })};
+    }
     return {ok: true, status: 200, json: async () => ({status: 'ready', provider: 'local'})};
   };
   document.getElementById('authUser').value = 'test_user';
   document.getElementById('authPassword').value = 'test-password-123';
   await nodes.authForm.listeners.submit({preventDefault() {}});
   assert.strictEqual(sessionCalls, 1, 'login must create or renew exactly one server session');
+  assert.strictEqual(accountCalls, 1, 'login must load the authoritative account snapshot');
+  vm.runInContext("show('home')", context);
+  assert(nodes.content.innerHTML.includes('¥8,975.00'), 'home must render the runtime checking balance');
+  assert(nodes.content.innerHTML.includes('¥5,000.00'), 'home must render the runtime savings balance');
+  vm.runInContext("accountSnapshot=[{account_id:'acc_other',account_name:'演示账户',balance_cents:702500}]; show('home')", context);
+  assert(nodes.content.innerHTML.includes('演示账户'), 'home must label a single alternate user account');
+  assert(nodes.content.innerHTML.includes('¥7,025.00'), 'home must render a single alternate user balance');
+  vm.runInContext("accountSnapshot=[{account_id:'acc_daily',account_name:'主账户',balance_cents:897500},{account_id:'acc_savings',account_name:'储蓄账户',balance_cents:500000}]", context);
 
   const submit = node('button');
   const transferForm = node('form');
@@ -124,12 +143,56 @@ assert(!mobileCss.includes('.nav-user,.nav-note'), 'mobile layout must keep the 
   assert.strictEqual(nodes.reauthPassword.disabled, true, 'verified password input must remain disabled during final confirmation');
 
   context.fetch = async path => {
-    assert(path.endsWith('/confirm'));
-    return {ok: true, status: 200, json: async () => ({message: '转账成功'})};
+    if (path.endsWith('/confirm')) {
+      return {ok: true, status: 200, json: async () => ({message: '转账成功'})};
+    }
+    assert(path.startsWith('/api/accounts?'));
+    accountCalls += 1;
+    return {ok: true, status: 200, json: async () => ({
+      status: 'ready', total_balance_cents: 1395000,
+      accounts: [
+        {account_id: 'acc_daily', account_name: '主账户', balance_cents: 895000},
+        {account_id: 'acc_savings', account_name: '储蓄账户', balance_cents: 500000},
+      ],
+    })};
   };
   await nodes.reauthForm.listeners.submit({preventDefault() {}, target: transferForm});
   assert.strictEqual(nodes.reauthGate.hidden, true, 'successful final confirmation must close reauthentication');
   assert.strictEqual(nodes.reauthPassword.required, true, 'a later transfer must require its own password');
+  assert.strictEqual(accountCalls, 2, 'confirmed transfer must refresh the account snapshot');
+  vm.runInContext("show('home')", context);
+  assert(nodes.content.innerHTML.includes('¥8,950.00'), 'home must show the post-transfer checking balance');
+
+  context.accountCard = node('section');
+  vm.runInContext("renderResult(accountCard,{answer:'余额',chart:'table',rows:[{account_id:'acc_savings',account_name:'储蓄账户',balance_cents:500000}],valueFormat:'money'})", context);
+  const accountTableText = descendants(context.accountCard).map(item => item.textContent).filter(Boolean);
+  assert(accountTableText.includes('账户'), 'account result tables must label the account-name column');
+  assert(accountTableText.includes('¥5,000.00'), 'account result tables must format balance cents as currency');
+
+  context.refreshFailureMessage = {role: 'assistant', text: '确认转账', actionId: 'action-refresh', actionStatus: 'pending', authorizationId: 'authorization-refresh'};
+  vm.runInContext('confirmAction(refreshFailureMessage)', context);
+  context.refreshFailureMessage.authorizationId = 'authorization-refresh';
+  context.fetch = async path => path.endsWith('/confirm') ? ({
+    ok: true,
+    status: 200,
+    json: async () => ({message: '转账成功'}),
+  }) : Promise.reject(new Error('account refresh offline'));
+  await nodes.reauthForm.listeners.submit({preventDefault() {}, target: transferForm});
+  assert.strictEqual(context.refreshFailureMessage.actionStatus, 'done', 'a completed transfer must remain completed when balance refresh fails');
+  assert.strictEqual(nodes.reauthGate.hidden, true, 'a completed transfer must close confirmation even when balance refresh fails');
+  assert(context.refreshFailureMessage.text.includes('余额刷新失败'), 'a completed transfer must report a separate balance refresh warning');
+
+  let finishStaleAccountRequest;
+  context.fetch = () => new Promise(resolve => { finishStaleAccountRequest = resolve; });
+  vm.runInContext("activeChat={sessionId:'session-a',messages:[]}; loggedInUser='user-a'; accountSnapshot=[]", context);
+  const staleRefresh = vm.runInContext('refreshAccounts()', context);
+  vm.runInContext("activeChat={sessionId:'session-b',messages:[]}; loggedInUser='user-b'; accountSnapshot=[{account_id:'acc_other',account_name:'演示账户',balance_cents:702500}]", context);
+  finishStaleAccountRequest({ok: true, status: 200, json: async () => ({
+    status: 'ready',
+    accounts: [{account_id: 'acc_daily', account_name: '主账户', balance_cents: 111100}],
+  })});
+  await staleRefresh;
+  assert.strictEqual(vm.runInContext('accountSnapshot[0].account_id', context), 'acc_other', 'a stale account response must not overwrite the new login');
 
   context.wrongPasswordMessage = {role: 'assistant', text: '确认转账', actionId: 'action-2', actionStatus: 'pending'};
   vm.runInContext("authToken='token'; confirmAction(wrongPasswordMessage)", context);

@@ -10,7 +10,7 @@ from pathlib import Path
 import httpx
 from fastapi.testclient import TestClient
 
-from demo.api import create_app
+from demo.api import create_app, requested_balance_account
 from demo.provider import ChatProvider, ProviderError
 from demo.query import Ledger, QueryError, audit_sql
 from demo.semantic import IntentPlan
@@ -231,6 +231,60 @@ class DemoTest(unittest.TestCase):
         incoming = self.client.post("/api/ask", json={"session_id": recipient_session, "question": "本月的收入明细"}).json()
         self.assertTrue(any(r["kind"] == "transfer" and r["category"] == "购物" and r["direction"] == "OUT" for r in outgoing["rows"]))
         self.assertTrue(any(r["kind"] == "transfer" and r["direction"] == "IN" for r in incoming["rows"]))
+
+    def test_account_snapshot_and_balance_answers_follow_transfer(self):
+        before = self.client.get("/api/accounts", params={"session_id": self.session})
+        self.assertEqual(before.status_code, 200, before.text)
+        self.assertEqual(
+            {row["account_id"]: row["balance_cents"] for row in before.json()["accounts"]},
+            {"acc_daily": 900000, "acc_savings": 500000},
+        )
+        savings = self.ask("我的储蓄账户有多少钱？")
+        self.assertEqual(savings["status"], "answer")
+        self.assertEqual(savings["rows"], [{
+            "account_id": "acc_savings", "account_name": "储蓄账户", "balance_cents": 500000,
+        }])
+        self.assertIn("¥5,000.00", savings["answer"])
+        account_list = self.ask("我有几个银行账户？")
+        self.assertEqual(account_list["status"], "answer")
+        self.assertEqual(len(account_list["rows"]), 2)
+
+        preview = self.ask("给测试用户B转 25 元")
+        authorized = self.client.post(f"/api/actions/{preview['action_id']}/authorize", json={
+            "session_id": self.session, "password": "test-password-123",
+        }).json()
+        done = self.client.post(f"/api/actions/{preview['action_id']}/confirm", json={
+            "session_id": self.session, "authorization_id": authorized["authorization_id"], "category": "购物",
+        })
+        self.assertEqual(done.status_code, 200, done.text)
+
+        after = self.client.get("/api/accounts", params={"session_id": self.session})
+        self.assertEqual(after.status_code, 200, after.text)
+        self.assertEqual(after.json()["total_balance_cents"], 1397500)
+        self.assertEqual(
+            {row["account_id"]: row["balance_cents"] for row in after.json()["accounts"]},
+            {"acc_daily": 897500, "acc_savings": 500000},
+        )
+        all_balances = self.ask("我的银行账户余额是多少？")
+        self.assertIn("¥13,975.00", all_balances["answer"])
+        self.assertEqual(
+            {row["account_id"]: row["balance_cents"] for row in all_balances["rows"]},
+            {"acc_daily": 897500, "acc_savings": 500000},
+        )
+
+    def test_balance_detection_does_not_preempt_transactions_or_transfers(self):
+        self.assertEqual(requested_balance_account("上个月主账户支出金额是多少？"), (False, None))
+        self.assertEqual(requested_balance_account("从我的账户给测试用户B转25元，转完告诉我余额"), (False, None))
+        self.assertEqual(requested_balance_account("2026年9月底主账户余额是多少？"), (False, None))
+        self.assertEqual(requested_balance_account("昨天我的主账户余额是多少？"), (False, None))
+        self.assertEqual(requested_balance_account("去年储蓄账户余额是多少？"), (False, None))
+        self.assertEqual(requested_balance_account("主账户和储蓄账户分别有多少钱？"), (True, None))
+
+        both = self.ask("主账户和储蓄账户分别有多少钱？")
+        self.assertEqual(
+            {row["account_id"] for row in both["rows"]},
+            {"acc_daily", "acc_savings"},
+        )
 
     def test_missing_fixture_is_explicit(self):
         with tempfile.TemporaryDirectory() as folder:

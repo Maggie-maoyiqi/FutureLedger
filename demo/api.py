@@ -117,6 +117,46 @@ def csv_safe(value):
     return "'" + text if isinstance(value, str) and text.startswith(("=", "+", "-", "@")) else text
 
 
+def requested_balance_account(question: str):
+    """Return (is account snapshot question, optional requested account id)."""
+    q = question.strip().lower()
+    account_words = re.search(r"账户|银行卡|余额|储蓄|存款|活期|account|balance|savings", q, re.I)
+    fact_words = re.search(r"余额|多少钱|多少余额|剩(?:下)?多少|还有多少|金额|哪些账户|账户列表|几(?:个|张)(?:银行)?账户|多少个(?:银行)?账户|账户信息|查看.{0,4}账户|balance", q, re.I)
+    planning_words = re.search(r"目标|规划|计划|以后|未来|想存|要存|攒|买", q)
+    transaction_words = re.search(r"支出|收入|流水|交易|消费|退款|转|汇款|付款|支付|扣款|收款", q)
+    historical_words = re.search(
+        r"上(?:个|一)(?:月|周|季度|年)|过去|历史|之前|截至|昨天|前天|去年|前年|"
+        r"\d{4}\s*年|\d{1,2}\s*月(?:\s*\d{1,2}\s*[日号]|\s*(?:初|中|末|底))",
+        q,
+    )
+    if not account_words or not fact_words or planning_words or transaction_words or historical_words:
+        return False, None
+    wants_savings = re.search(r"储蓄|存款|savings|acc_savings", q, re.I)
+    wants_daily = re.search(r"主账户|日常账户|活期|acc_daily", q, re.I)
+    if wants_savings and wants_daily:
+        return True, None
+    if wants_savings:
+        return True, "acc_savings"
+    if wants_daily:
+        return True, "acc_daily"
+    return True, None
+
+
+def account_snapshot_payload(ledger: Ledger, user: str, account_id: str | None = None):
+    rows = ledger.account_snapshot(user)
+    if account_id is not None:
+        rows = [row for row in rows if row["account_id"] == account_id]
+    if not rows:
+        raise QueryError("ACCOUNT_NOT_FOUND", "当前登录用户没有这个账户")
+    if len(rows) == 1:
+        answer = f"{rows[0]['account_name']}当前余额为 ¥{rows[0]['balance_cents'] / 100:,.2f}。"
+    else:
+        total = sum(row["balance_cents"] for row in rows)
+        details = "，".join(f"{row['account_name']} ¥{row['balance_cents'] / 100:,.2f}" for row in rows)
+        answer = f"你的账户总余额为 ¥{total / 100:,.2f}（{details}）。"
+    return rows, answer
+
+
 def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str) -> dict[str, object]:
     """Build a deterministic simulation response without changing ledger state."""
     result = simulate_cashflow(
@@ -253,11 +293,34 @@ def create_app(*, db_path=None, provider=None, today=None):
         except ValueError as exc:
             raise HTTPException(422, {"code": "INVALID_SIMULATION", "message": str(exc)}) from exc
 
+    @app.get("/api/accounts")
+    def accounts_snapshot(session_id: str = Query(...)):
+        user = sessions.get(session_id)
+        if user is None:
+            raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
+        try:
+            rows, _ = account_snapshot_payload(ledger, user)
+        except QueryError as exc:
+            raise HTTPException(503, {"code": exc.code, "message": str(exc)}) from exc
+        return {"status": "ready", "accounts": rows,
+                "total_balance_cents": sum(row["balance_cents"] for row in rows)}
+
     @app.post("/api/ask")
     async def ask(request: AskRequest):
         user = sessions.get(request.session_id)
         if user is None:
             raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
+        is_balance_question, requested_account_id = requested_balance_account(request.question)
+        if is_balance_question:
+            try:
+                rows, answer = account_snapshot_payload(ledger, user, requested_account_id)
+            except QueryError as exc:
+                return {"status": "clarification", "route": "query", "code": exc.code, "message": str(exc)}
+            query_id = secrets.token_urlsafe(18)
+            queries[query_id] = {"session_id": request.session_id, "rows": rows}
+            return {"status": "answer", "route": "query", "answer": answer, "rows": rows,
+                    "chart": "metric_card" if len(rows) == 1 else "table", "value_format": "money",
+                    "query_id": query_id}
         try:
             decision = await classify_route(request.question, model)
         except ProviderError as exc:
