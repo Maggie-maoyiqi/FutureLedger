@@ -268,18 +268,16 @@ async def build_chat_plan(question, ledger, user, provider, previous=None):
             if default_floor
             else "本次不含购买支出；最低保留余额使用已明确的约束。"
         ) + "这里只模拟余额，不修改账本或执行转账。"
+    if projection:
+        message = f"已完成未来{days}天余额模拟。"
+    elif earliest:
+        message = f"建议在第{earliest}天或之后购买。"
+    else:
+        message = f"未来{days}天内没有满足最低保留余额的购买日期。"
     return {
         "status": "simulated",
         "route": "planning",
-        "message": f"已按当前主账户余额运行未来{days}天合成情景比较。在上述假设下，"
-        + (
-            "本次仅模拟余额，不含购买支出。"
-            if projection
-            else f"最早可在第{earliest}天购买。"
-            if earliest
-            else "本期限内没有满足最低余额要求的购买日期。"
-        )
-        + "请先查看假设；结果不是实际日期预测。",
+        "message": message,
         "earliest_purchase_day": earliest,
         "result": scenarios[0 if projection else 1]["result"],
         "scenarios": scenarios,
