@@ -176,7 +176,7 @@ class Ledger:
         return {"rows": rows, "evidence_ids": evidence, "sql": sql}
 
     def execute_demo_transfer(self, action_id: str, sender_user: str, recipient_user: str, amount_cents: int,
-                              category: str, posted_at: str | None = None):
+                              category: str, posted_at: str | None = None, *, source_account_id: str | None = None):
         """Atomically update two synthetic accounts and append their paired ledger entries."""
         if sender_user == recipient_user:
             raise QueryError("INVALID_RECIPIENT", "不能向当前演示用户本人转账")
@@ -189,7 +189,10 @@ class Ledger:
             if prior:
                 conn.commit()
                 return {"status": prior["status"]}
-            sender = conn.execute("SELECT id,balance_cents FROM accounts WHERE user_id=? ORDER BY id LIMIT 1", (sender_user,)).fetchone()
+            if source_account_id is None:
+                sender = conn.execute("SELECT id,balance_cents FROM accounts WHERE user_id=? ORDER BY id LIMIT 1", (sender_user,)).fetchone()
+            else:
+                sender = conn.execute("SELECT id,balance_cents FROM accounts WHERE user_id=? AND id=?", (sender_user, source_account_id)).fetchone()
             recipient = conn.execute("SELECT id,balance_cents FROM accounts WHERE user_id=? ORDER BY id LIMIT 1", (recipient_user,)).fetchone()
             if not sender or not recipient:
                 raise QueryError("DEMO_ACCOUNT_MISSING", "找不到演示账户")
