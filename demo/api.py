@@ -17,7 +17,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError
 
-from .planner import classify_route, make_intent, parse_transfer, PLANNING_REQUEST
+from .planner import classify_route, route_question, make_intent, parse_transfer, PLANNING_REQUEST
 from .safety import blocked_question, query_followup, CREDENTIAL
 from .planning import build_chat_plan
 from .explain import compare_period
@@ -234,7 +234,9 @@ def create_app(*, db_path=None, provider=None, today=None):
     clock = today or date.fromisoformat(os.getenv("FUTURELEDGER_TODAY", date.today().isoformat()))
     sessions: dict[str, str] = {}
     auth_tokens: dict[str, str] = {}
-    pending: dict[str, str] = {}
+    # One structured pending state per chat.  It is created only after the
+    # router/intent model says that a query needs clarification.
+    pending: dict[str, dict] = {}
     planning_context: dict[str, dict] = {}
     planning_pending: set[str] = set()
     actions: dict[str, dict] = {}
@@ -359,21 +361,55 @@ def create_app(*, db_path=None, provider=None, today=None):
             raise HTTPException(503, {'code': exc.code, 'message': str(exc)}) from exc
         if blocked:
             return {'status': 'blocked', 'code': blocked[0], 'message': blocked[1]}
-        previous = pending.get(request.session_id)
-        effective_question = query_followup(previous, request.question)
+        previous_state = pending.get(request.session_id)
+        previous_question = (previous_state or {}).get("question") if isinstance(previous_state, dict) else previous_state
         planning_followup = (request.session_id in planning_pending
             and bool(re.match(r'^(?:目标|至少|保留|最低|余额|每天|每日|工资|改为|改成|30天|三个月|\d+\s*(?:元|天)|主账户|用主账户)', request.question))
             and not bool(re.search(r'支出|收入|退款|账单|明细|交易|笔数', request.question)))
         if re.search(r'重新规划|新目标|重置方案|从头规划', request.question):
             planning_context.pop(request.session_id, None)
         try:
-            decision = await classify_route(effective_question, model,
-                recent_context={'pending_query': previous} if previous and effective_question != request.question else None)
+            decision = await classify_route(request.question, model,
+                recent_context={'pending': previous_state} if previous_state else None)
         except ProviderError as exc:
             raise HTTPException(502, {"code": "PROVIDER_ERROR", "message": str(exc)}) from exc
         except ValueError as exc:
             raise HTTPException(502, {"code": "INVALID_ROUTE", "message": "模型路由结果无效，请重试。"}) from exc
-        route, route_message = decision["route"], decision.get("message")
+        input_mode = decision.get("input_mode")
+        # Local mode remains deterministic for unit tests; production LLM
+        # mode uses the explicit input_mode returned by the router.
+        if previous_question and input_mode is None:
+            input_mode = "supplement" if query_followup(previous_question, request.question) != request.question else "new"
+        elif model.provider == "local" and previous_question:
+            if re.search(r"算了|取消|不用了|重新|新问题|换个问题|不查上次|重来", request.question):
+                input_mode = "cancel"
+            elif query_followup(previous_question, request.question) != request.question:
+                input_mode = "supplement"
+            else:
+                input_mode = "new"
+        input_mode = input_mode or "new"
+        if input_mode == "cancel":
+            pending.pop(request.session_id, None)
+            return {"status": "view", "route": "view", "message": "已取消当前待补充查询。你可以直接提出新的问题。"}
+        if input_mode == "supplement" and previous_question:
+            effective_question = previous_question + "；补充条件：" + request.question
+        else:
+            effective_question = request.question
+            if input_mode == "new":
+                pending.pop(request.session_id, None)
+        # A local fallback needs the merged question re-routed; the LLM router
+        # already classified the raw question with its pending context.
+        if model.provider == "local" and input_mode == "supplement":
+            route, route_message = route_question(effective_question)
+        else:
+            route, route_message = decision["route"], decision.get("message")
+        # A short supplement such as “按净支出” is still completing the
+        # pending query; do not let the router reinterpret the metric word as
+        # a standalone explanation request.
+        if input_mode == "supplement" and route == "explain" and not re.search(
+            r"解释|说明|是什么意思|定义|怎么算", request.question
+        ):
+            route, route_message = "query", None
         if planning_followup and route in {'view', 'clarification', 'query'}:
             route = 'planning'
         is_balance_question, requested_account_id = requested_balance_account(request.question)
@@ -428,6 +464,13 @@ def create_app(*, db_path=None, provider=None, today=None):
             amount = parsed["amount_cents"] / 100
             return {"status": "confirmation_required", "route": "execution", "action_id": action_id,
                     "message": f"请确认演示转账：从{labels[user]}转出 ¥{amount:,.2f}，转入{labels[recipient]}。确认后会同时更新双方模拟账户余额和流水。"}
+        if route == "clarification":
+            pending[request.session_id] = {
+                "question": effective_question[:500],
+                "missing_slots": [],
+                "message": route_message or "请补充查询条件。",
+            }
+            return {"status": "clarification", "route": "clarification", "message": route_message or "请补充查询条件。"}
         if route != "query":
             pending.pop(request.session_id, None)
             return {"status": route, "route": route, "message": route_message or "请重新描述。"}
@@ -449,7 +492,11 @@ def create_app(*, db_path=None, provider=None, today=None):
         route = intent["route"]
         if route != "analysis":
             if route == "clarification":
-                pending[request.session_id] = effective_question[:500]
+                pending[request.session_id] = {
+                    "question": effective_question[:500],
+                    "missing_slots": intent.get("missing_slots", []),
+                    "message": str(intent.get("message", "请补充查询条件。"))[:300],
+                }
             else:
                 pending.pop(request.session_id, None)
             return {"status": route, "route": "query", "message": str(intent.get("message", "请重新表述。"))[:300]}
