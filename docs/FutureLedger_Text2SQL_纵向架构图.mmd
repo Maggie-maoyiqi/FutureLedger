@@ -2,7 +2,7 @@
 flowchart TD
     U[用户问题]
     S[安全检查\n初步拦截敏感信息、危险指令和越权请求]
-    R[LLM 路由分类\nquery · explain · execution · planning · view · blocked]
+    R[LLM 路由分类\n查询（query） · 解释（explain） · 执行（execution）\n规划（planning） · 视图（view） · 拦截（blocked）]
     I[LLM 意图理解与 IntentPlan 生成\n结合用户授权范围、语义目录和问题\n生成结构化 IntentPlan]
     V[后端校验 IntentPlan\n指标 · 日期 · 分组 · 枚举值 · 权限]
     C[后端编译生成 SQL\n固定指标口径 · 参数化 SQL]
