@@ -55,6 +55,9 @@ function descendants(item) {
   return [item, ...(item.children || []).flatMap(descendants)];
 }
 vm.runInContext("loggedInUser='test_user'; activeChat={sessionId:'session-chart',messages:[]}", context);
+// The live future-planning view now requires an authoritative account snapshot.
+// Seed the smoke-test context with the same kind of data a successful login loads.
+vm.runInContext("accountSnapshot=[{account_id:'acc_daily',account_name:'主账户',balance_cents:897500}]", context);
 context.chartCard = node('section');
 vm.runInContext("renderResult(chartCard,{answer:'分类',chart:'bar',rows:[{group_key:'餐饮',value_cents:1200}],valueFormat:'money'})", context);
 assert(descendants(context.chartCard).some(item => item.style?.cssText?.includes('height:9px')), 'bar results must render bars');

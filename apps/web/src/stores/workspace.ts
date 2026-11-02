@@ -17,6 +17,7 @@ export type ChatResult = {
   series_label?: string
   result?: PlanningSimulation
   scenarios?: PlanningScenario[]
+  earliest_purchase_day?: number | null
   assumptions?: string[]
 }
 export type ChatMessage = ChatResult & { role: 'user' | 'assistant'; text: string }

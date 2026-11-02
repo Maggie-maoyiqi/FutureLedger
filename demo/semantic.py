@@ -8,6 +8,11 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 DATASET_ID = "personal_ledger"
 VERSION = 1
 CATEGORIES = ("餐饮", "交通", "购物", "娱乐", "订阅", "房租", "医疗", "其他", "工资", "转账")
+CATEGORY_ALIASES = {
+    "吃饭": "餐饮", "用餐": "餐饮", "饭钱": "餐饮", "餐费": "餐饮", "外卖": "餐饮", "食堂": "餐饮",
+    "打车": "交通", "地铁": "交通", "公交": "交通", "通勤": "交通",
+    "网购": "购物", "买东西": "购物", "采购": "购物",
+}
 METRICS = {
     "gross_expense": "总支出",
     "refund": "退款",
@@ -19,6 +24,7 @@ METRICS = {
     "transfer_amount": "转账金额",
     "transfer_count": "转出笔数",
     "transfer_income": "转入金额",
+    "transfer_income_count": "转入笔数",
     "avg_transfer": "平均每笔转出",
 }
 METRIC_DEFINITIONS = {
@@ -32,6 +38,7 @@ METRIC_DEFINITIONS = {
     "transfer_amount": "已入账 transfer/OUT 金额之和；可按选定用途类别统计",
     "transfer_count": "已入账 transfer/OUT 转出流水的条数",
     "transfer_income": "已入账 transfer/IN 转入金额之和",
+    "transfer_income_count": "已入账 transfer/IN 转入流水的条数",
     "avg_transfer": "已入账 transfer/OUT 金额之和除以转出笔数；无转出时为空值",
 }
 GROUPS = {"category": "类别", "merchant": "商户", "month": "月份", "account": "账户"}
@@ -42,6 +49,7 @@ class Filters(BaseModel):
     category: str | None = None
     merchant: str | None = None
     account_id: str | None = None
+    direction: Literal["IN", "OUT"] | None = None
 
 
 class IntentPlan(BaseModel):
@@ -49,13 +57,13 @@ class IntentPlan(BaseModel):
     kind: Literal["aggregate", "detail"]
     dataset_id: Literal["personal_ledger"]
     semantic_version: Literal[1]
-    metric: Literal["gross_expense", "refund", "net_expense", "income", "transaction_count", "activity_count", "avg_expense", "transfer_amount", "transfer_count", "transfer_income", "avg_transfer"]
+    metric: Literal["gross_expense", "refund", "net_expense", "income", "transaction_count", "activity_count", "avg_expense", "transfer_amount", "transfer_count", "transfer_income", "transfer_income_count", "avg_transfer"]
     start: date
     end_exclusive: date
     filters: Filters = Field(default_factory=Filters)
     group_by: Literal["category", "merchant", "month", "account"] | None = None
     series_by: Literal["category", "merchant", "account"] | None = None
-    sort: Literal["metric_desc", "metric_asc", "date_desc", "date_asc"] = "metric_desc"
+    sort: Literal["metric_desc", "metric_asc", "date_desc", "date_asc", "amount_desc", "amount_asc"] = "metric_desc"
     limit: int = Field(default=20, ge=1, le=100)
 
     @model_validator(mode="after")
@@ -74,6 +82,8 @@ class IntentPlan(BaseModel):
             raise ValueError("单值聚合没有日期排序")
         if self.kind == "aggregate" and self.group_by != "month" and self.sort.startswith("date_"):
             raise ValueError("日期排序只适用于月度分组")
+        if self.kind == "aggregate" and self.sort.startswith("amount_"):
+            raise ValueError("金额排序只适用于明细")
         return self
 
 
@@ -87,5 +97,6 @@ def public_catalog():
         "metric_definitions": METRIC_DEFINITIONS,
         "dimensions": GROUPS,
         "categories": CATEGORIES,
+        "category_aliases": CATEGORY_ALIASES,
         "query_policy": "Only POSTED facts; refund by posting date; outgoing transfers count as outflows and incoming transfers count as inflows.",
     }

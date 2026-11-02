@@ -32,3 +32,18 @@ test('group labels fall back to answer semantics and lines follow each series',a
  const paths=[...line.matchAll(/<path d="([^"]+)"/g)].map(match=>match[1])
  assert.equal(paths.length,2);assert.notEqual(paths[0],paths[1]);assert.match(line,/¥-2.00/)
 })
+
+test('purchase recommendation stays primary with deterministic evidence collapsed',async()=>{
+ const result={points_cents:[400000,500000],min_balance_cents:400000,min_day:1,feasible:true,assumptions:{floor_cents:300000,goal_cents:600000},events:[{day:1,source:'salary',signed_cents:100000}],conflicts:[]}
+ const html=await render('PlanningResult',{result,earliestPurchaseDay:17,assumptions:['工资按时到账']})
+ assert.match(html,/建议在第17天或之后购买/)
+ assert.match(html,/<details[^>]*><summary>查看模拟依据与方案比较<\/summary>/)
+ assert.ok(html.indexOf('建议在第17天')<html.indexOf('<details'))
+ assert.match(html,/工资按时到账/);assert.match(html,/工资/);assert.match(html,/¥1,000.00/)
+})
+test('zero goal is a cashflow projection without a purchase rejection',async()=>{
+ const result={points_cents:[400000,500000],min_balance_cents:400000,min_day:1,feasible:true,assumptions:{floor_cents:300000,goal_cents:0},events:[],conflicts:[]}
+ const html=await render('PlanningResult',{result,earliestPurchaseDay:null})
+ assert.match(html,/现金流预测/);assert.match(html,/最低余额为¥4,000.00/)
+ assert.doesNotMatch(html,/购买建议|没有满足.*购买日期|如果现在购买/)
+})

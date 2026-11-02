@@ -1,0 +1,51 @@
+flowchart LR
+    U[用户 / Chat UI] --> AUTH[认证与会话层\nLogin · Session · User Scope]
+    AUTH --> SAFE[安全预检查\nCredentials · SQL mutation · Scope]
+    SAFE --> ROUTER[LLM Semantic Router\ninput_mode + route]
+
+    ROUTER --> Q[查询路由]
+    ROUTER --> EX[解释路由]
+    ROUTER --> X[执行路由]
+    ROUTER --> P[规划路由]
+    ROUTER --> V[View / 无关问题]
+    ROUTER --> CL[Clarification / Pending]
+
+    Q --> CTX[授权范围内有限上下文\nSemantic Catalog + Current User Sample]
+    CTX --> IP[LLM IntentPlan\nNo SQL]
+    IP --> VAL[Pydantic + Business Validation\nMetric · Date · Group · Enum]
+    VAL --> COMP[Deterministic SQL Compiler]
+    COMP --> RO[Read-only SQLite / PostgreSQL]
+    RO --> RES[Result Formatter\nMetric Card · Table · Bar · Line]
+
+    EX --> DEF[Published Metric Definitions\nNo database query]
+    DEF --> RES
+
+    P --> PARAM[LLM Parameter Extraction\nGoal · Floor · Horizon · Salary Delay]
+    PARAM --> PV[Plan Parameter Validation]
+    PV --> DATA[Read only required authorized data]
+    DATA --> SIM[Deterministic Cashflow Simulator]
+    SIM --> RES
+
+    X --> PREVIEW[Transfer Preview\nRecipient · Amount]
+    PREVIEW --> AUTHZ[Password Re-authentication\nCategory Selection]
+    AUTHZ --> GATE[Deterministic Execution Gate]
+    GATE --> ATOMIC[Atomic Synthetic Ledger Update\nPaired IN / OUT Entries]
+    ATOMIC --> RES
+
+    CL --> PSTATE[Structured Pending State\nKnown Slots · Missing Slots]
+    PSTATE --> ROUTER
+    V --> REJECT[Scope Response / Refusal\nNo ledger access]
+
+    RES --> UI[Chat Response UI\nCards · Charts · Export]
+    REJECT --> UI
+
+    classDef user fill:#e8f3f0,stroke:#2b6f62,color:#143f39,stroke-width:1.5px;
+    classDef llm fill:#f1eafe,stroke:#7956b3,color:#33205b,stroke-width:1.5px;
+    classDef secure fill:#fff2dc,stroke:#b9791e,color:#5b3c0b,stroke-width:1.5px;
+    classDef data fill:#eaf0f7,stroke:#52769f,color:#203954,stroke-width:1.5px;
+    classDef result fill:#e8f5e8,stroke:#4d8b55,color:#234b28,stroke-width:1.5px;
+    class U,UI user;
+    class ROUTER,IP,PARAM llm;
+    class SAFE,AUTHZ,GATE,VAL,PV,PSTATE secure;
+    class CTX,COMP,RO,DATA,ATOMIC data;
+    class RES,DEF,SIM,REJECT result;

@@ -32,9 +32,14 @@ class FinalPlanningParametersTests(unittest.TestCase):
                 self.assertEqual(plan(question, previous)["_planning_context"][key], expected)
 
     def test_invalid_explicit_money_is_never_partially_parsed(self):
-        for amount in ("-100", "100.001", "1,000", "+100", "一千", ".50"):
+        for amount in ("-100", "100.001", "1,000", "+100", "一千点五", ".50"):
             with self.subTest(amount=amount):
                 self.assertEqual(plan("目标改为" + amount + "元", {"goal_cents": 600000, "floor_cents": 300000})["status"], "clarification")
+
+    def test_chinese_money_and_decimal_cents(self):
+        for text, expected in (("一千", 100000), ("1000.25", 100025)):
+            card = plan("目标改为" + text + "元", {"goal_cents": 600000, "floor_cents": 300000})
+            self.assertEqual(card["_planning_context"]["goal_cents"], expected)
 
     def test_account_confirmation_retains_context(self):
         first = plan("用储蓄账户模拟未来90天余额，不购买，每天花100元")

@@ -18,6 +18,7 @@ AMOUNT = {
     "avg_expense": "ROUND(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents ELSE 0 END)*1.0/NULLIF(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN 1 ELSE 0 END),0),2)",
     "transfer_amount": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
     "transfer_income": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='IN' THEN amount_cents ELSE 0 END),0)",
+    "transfer_income_count": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='IN' THEN 1 ELSE 0 END),0)",
     "avg_transfer": "ROUND(AVG(CASE WHEN kind='transfer' AND direction='OUT' THEN amount_cents END),2)",
     "transfer_count": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN 1 ELSE 0 END),0)",
 }
@@ -34,9 +35,10 @@ PREDICATES = {
     "transfer_amount": "(kind='transfer' AND direction='OUT')",
     "transfer_count": "(kind='transfer' AND direction='OUT')",
     "transfer_income": "(kind='transfer' AND direction='IN')",
+    "transfer_income_count": "(kind='transfer' AND direction='IN')",
     "avg_transfer": "(kind='transfer' AND direction='OUT')",
 }
-DETAIL_PREDICATES = {**PREDICATES, "transfer_amount": "kind='transfer'", "transfer_count": "kind='transfer'"}
+DETAIL_PREDICATES = {**PREDICATES, "transfer_amount": "kind='transfer'", "transfer_count": "kind='transfer'", "transfer_income_count": "kind='transfer' AND direction='IN'"}
 FORBIDDEN = ("delete", "update", "insert", "drop", "alter", "truncate", "attach", "pragma", "--", "/*", ";")
 ACCOUNT_NAMES = {"acc_daily": "主账户", "acc_savings": "储蓄账户", "acc_other": "演示账户"}
 
@@ -128,11 +130,16 @@ class Ledger:
             where += " AND merchant=?"; where_params.append(plan.filters.merchant)
         if plan.filters.account_id is not None:
             where += " AND account_id=?"; where_params.append(plan.filters.account_id)
+        if plan.filters.direction is not None:
+            where += " AND direction=?"; where_params.append(plan.filters.direction)
 
         if plan.kind == "detail":
+            detail_order = {"date_desc": "posted_at DESC, id ASC", "date_asc": "posted_at ASC, id ASC",
+                            "amount_desc": "amount_cents DESC, posted_at DESC, id ASC",
+                            "amount_asc": "amount_cents ASC, posted_at ASC, id ASC"}.get(plan.sort, "posted_at DESC, id ASC")
             sql = ("SELECT posted_at, category, merchant, kind, direction, amount_cents "
                    f"FROM transactions WHERE {where} AND {DETAIL_PREDICATES[plan.metric]} "
-                   f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
+                   f"ORDER BY {detail_order} LIMIT ?")
             params = [*where_params, plan.limit]
         elif plan.group_by:
             dimension = GROUP[plan.group_by]
@@ -162,9 +169,12 @@ class Ledger:
             conn.execute("PRAGMA query_only=ON")
             rows = [dict(r) for r in conn.execute(sql, params)]
             if plan.kind == "detail":
+                detail_order = {"date_desc": "posted_at DESC, id ASC", "date_asc": "posted_at ASC, id ASC",
+                                "amount_desc": "amount_cents DESC, posted_at DESC, id ASC",
+                                "amount_asc": "amount_cents ASC, posted_at ASC, id ASC"}.get(plan.sort, "posted_at DESC, id ASC")
                 evidence_sql = (f"SELECT id FROM transactions WHERE {where} "
                                 f"AND {DETAIL_PREDICATES[plan.metric]} "
-                                f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
+                                f"ORDER BY {detail_order} LIMIT ?")
                 audit_sql(evidence_sql)
                 evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, plan.limit))]
             else:
