@@ -24,7 +24,7 @@ from .explain import compare_period
 from .provider import ChatProvider, ProviderError
 from .cashflow import simulate_cashflow
 from .query import Ledger, QueryError, ACCOUNT_NAMES
-from .semantic import GROUPS, METRICS, IntentPlan, public_catalog
+from .semantic import GROUPS, METRICS, METRIC_DEFINITIONS, IntentPlan, public_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -98,7 +98,7 @@ def verify_password(password: str, encoded: str):
 def display_value(value, metric):
     if value is None:
         return "没有可计算的消费记录"
-    if metric in {"transaction_count", "transfer_count", "activity_count"}:
+    if metric in {"transaction_count", "transfer_count", "transfer_income_count", "activity_count"}:
         return f"{int(value)} 笔"
     return f"¥{value / 100:,.2f}"
 
@@ -110,7 +110,7 @@ def chart_for(plan: IntentPlan, question: str):
         return "metric_card"
     if plan.group_by == "month":
         return "line"
-    if re.search(r"排名|排行|前\s*[一二三四五六七八九十\d]+|\btop\b|比较|对比", question, re.I):
+    if re.search(r"排名|排行|最多|最高|最低|前\s*[一二三四五六七八九十\d]+|\btop\b|比较|对比", question, re.I):
         return "bar"
     return "table"
 
@@ -123,8 +123,10 @@ def csv_safe(value):
 def requested_balance_account(question: str):
     """Return (is account snapshot question, optional requested account id)."""
     q = question.strip().lower()
+    if re.search(r"(?:储蓄|主|日常|活期)?账户.{0,8}(?:够不够|能不能|可不可以).{0,8}(?:支付|付款)", q):
+        return True, "acc_savings" if "储蓄" in q else "acc_daily"
     account_words = re.search(r"账户|银行卡|余额|储蓄|存款|活期|account|balance|savings", q, re.I)
-    fact_words = re.search(r"余额|多少钱|多少余额|剩(?:下)?多少|还有多少|金额|哪些账户|账户列表|几(?:个|张)(?:银行)?账户|多少个(?:银行)?账户|账户信息|查看.{0,4}账户|balance", q, re.I)
+    fact_words = re.search(r"余额|多少钱|多少余额|剩(?:下)?多少|还有多少|金额|哪些账户|账户列表|几(?:个|张)(?:银行)?(?:账户|卡)|多少个(?:银行)?(?:账户|卡)|账户信息|查看.{0,4}账户|balance", q, re.I)
     planning_words = re.search(r"目标|规划|计划|以后|未来|想存|要存|攒|买", q)
     transaction_words = re.search(r"支出|收入|流水|交易|消费|退款|转|汇款|付款|支付|扣款|收款", q)
     historical_words = re.search(
@@ -142,7 +144,7 @@ def requested_balance_account(question: str):
         'acc_savings', 'acc_daily', 'acc_other', '储蓄账户', '主账户', '日常账户',
         '演示账户', '储蓄', '存款', '活期', 'savings', 'accounts', 'account',
         'balance', 'total', 'list', 'how much', 'my', 'show', 'what is', 'me',
-        '主', '日常', '演示', '能告诉', '告诉', '能否', '可以', '麻烦', '显示',
+        '主', '日常', '演示', '总', '总共', '可用', '只看', '看', '列表', '编号', '不要', '但', '能告诉', '告诉', '能否', '可以', '麻烦', '显示',
         '多少钱', '多少余额', '多少个', '几个', '哪些', '各自', '分别', '银行账户',
         '账户列表', '账户信息', '银行卡', '账户', '总余额', '余额', '金额',
         '剩下多少钱', '剩多少钱', '还有多少钱', '剩下多少', '剩多少', '还有多少', '是多少', '有多少', '请问',
@@ -364,21 +366,6 @@ def create_app(*, db_path=None, provider=None, today=None):
             and not bool(re.search(r'支出|收入|退款|账单|明细|交易|笔数', request.question)))
         if re.search(r'重新规划|新目标|重置方案|从头规划', request.question):
             planning_context.pop(request.session_id, None)
-        is_balance_question, requested_account_id = requested_balance_account(request.question)
-        if is_balance_question and not PLANNING_REQUEST.search(request.question) and not planning_followup:
-            try:
-                rows, answer = account_snapshot_payload(ledger, user, requested_account_id)
-            except QueryError as exc:
-                return {"status": "clarification", "route": "query", "code": exc.code, "message": str(exc)}
-            query_id = secrets.token_urlsafe(18)
-            rows = [{key: value for key, value in row.items() if key != 'account_id'} for row in rows]
-            pending.pop(request.session_id, None)
-            if re.search(r'几(?:个|张).*账户|多少个.*账户', request.question):
-                answer = f'你有 {len(rows)} 个授权账户。'
-            queries[query_id] = {"session_id": request.session_id, "rows": rows}
-            return {"status": "answer", "route": "query", "answer": answer, "rows": rows,
-                    "chart": "metric_card" if len(rows) == 1 else "table", "value_format": "money",
-                    "query_id": query_id}
         try:
             decision = await classify_route(effective_question, model,
                 recent_context={'pending_query': previous} if previous and effective_question != request.question else None)
@@ -389,6 +376,22 @@ def create_app(*, db_path=None, provider=None, today=None):
         route, route_message = decision["route"], decision.get("message")
         if planning_followup and route in {'view', 'clarification', 'query'}:
             route = 'planning'
+        is_balance_question, requested_account_id = requested_balance_account(request.question)
+        if (route == 'account' or is_balance_question) and not PLANNING_REQUEST.search(request.question) and not planning_followup:
+            try:
+                rows, answer = account_snapshot_payload(ledger, user, requested_account_id)
+            except QueryError as exc:
+                return {"status": "clarification", "route": "account", "code": exc.code, "message": str(exc)}
+            query_id = secrets.token_urlsafe(18)
+            rows = [{key: value for key, value in row.items() if key != 'account_id'} for row in rows]
+            pending.pop(request.session_id, None)
+            account_count = bool(re.search(r'几(?:个|张).*(?:账户|卡)|多少个.*(?:账户|卡)|(?:账户|银行卡).{0,8}(?:几张|几个|多少个)', request.question))
+            if account_count:
+                answer = f'你有 {len(rows)} 个授权账户。'
+            queries[query_id] = {"session_id": request.session_id, "rows": rows}
+            return {"status": "answer", "route": "account", "answer": answer, "rows": rows,
+                    "chart": "metric_card" if account_count or len(rows) == 1 else "table", "value_format": "count" if account_count else "money",
+                    "query_id": query_id}
         if route != 'planning':
             planning_pending.discard(request.session_id)
         if route == "planning":
@@ -405,6 +408,9 @@ def create_app(*, db_path=None, provider=None, today=None):
             else:
                 planning_pending.discard(request.session_id)
             return payload
+        if route == "explain":
+            topic = next((key for key in METRICS if key in request.question), "net_expense")
+            return {"status": "answer", "route": "explain", "answer": METRIC_DEFINITIONS.get(topic, "这是一个已发布的账本指标。"), "chart": "metric_card"}
         if route == "execution":
             if "取消代扣" in request.question or "取消订阅" in request.question:
                 return {"status": "unsupported", "route": "execution", "message": "此演示版只实现双方账户间的转账确认；取消代扣暂不执行。"}
@@ -487,11 +493,11 @@ def create_app(*, db_path=None, provider=None, today=None):
         queries[query_id] = {"session_id": request.session_id, "rows": rows,
                            'group_label': GROUPS.get(plan.group_by, '项目'),
                            'series_label': GROUPS.get(plan.series_by, '系列'),
-                           'value_format': 'count' if plan.metric in {'transaction_count', 'transfer_count', 'activity_count'} else 'money'}
+                           'value_format': 'count' if plan.metric in {'transaction_count', 'transfer_count', 'transfer_income_count', 'activity_count'} else 'money'}
         return {
             "status": "answer", "route": "query", "answer": answer, "rows": rows,
             "chart": 'bar' if comparison else chart_for(plan, effective_question),
-            "value_format": "count" if plan.metric in {"transaction_count", "transfer_count", "activity_count"} else "money",
+            "value_format": "count" if plan.metric in {"transaction_count", "transfer_count", "transfer_income_count", "activity_count"} else "money",
             "query_id": query_id,
             'group_label': GROUPS.get(plan.group_by, '项目'),
             'series_label': GROUPS.get(plan.series_by, '系列'),

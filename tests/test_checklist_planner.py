@@ -178,7 +178,7 @@ class RecurringPlanningTests(unittest.TestCase):
         self.assertEqual(ledger.user, "u")
         context = {"goal_cents": 600000, "floor_cents": 300000}
         self.assertEqual(plan("使用acc_savings", context)["status"], "clarification")
-        self.assertEqual(plan("模拟60天", context)["status"], "clarification")
+        self.assertEqual(plan("模拟60天", context)["status"], "simulated")
 
 
 if __name__ == "__main__":
