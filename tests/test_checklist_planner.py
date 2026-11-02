@@ -151,7 +151,7 @@ class RecurringPlanningTests(unittest.TestCase):
             [e["day"] for e in events if e["source"] == "computer_goal"], [90]
         )
         self.assertTrue(any("30天周期" in a for a in p["assumptions"]))
-        self.assertIn("假设", p["message"])
+        self.assertTrue(any("假设第" in item for item in p["assumptions"]))
         self.assertIsInstance(p["earliest_purchase_day"], int)
         self.assertGreaterEqual(p["result"]["min_balance_cents"], 300000)
         self.assertEqual(len(p["scenarios"]), 3)

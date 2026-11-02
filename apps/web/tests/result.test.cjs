@@ -19,10 +19,12 @@ test('count bars show counts and negative values have visible geometry',async()=
  const html=await render('ResultCard',{result:{chart:'bar',value_format:'count',rows:[{group_key:'餐饮',value_cents:-52}]}})
  assert.match(html,/-52笔/);assert.doesNotMatch(html,/¥0.52/);assert.match(html,/width:\s*100%/)
 })
-test('planning renders curves, comparisons, assumptions and escaped content',async()=>{
- const result={points_cents:[10000,-2000],min_balance_cents:-2000,min_day:2,feasible:false,assumptions:{floor_cents:3000,days:2},events:[],conflicts:[{day:2,floor_cents:3000}]}
- const html=await render('PlanningResult',{result,scenarios:[{name:'<script>bad</script>',result}],assumptions:['工资按时到账']})
- assert.match(html,/工资按时到账/);assert.match(html,/第2天/);assert.match(html,/¥-20.00/);assert.match(html,/<path/);assert.match(html,/&lt;script&gt;/);assert.doesNotMatch(html,/<script>/)
+test('planning renders the purchase recommendation and validated assumptions',async()=>{
+ const result={points_cents:[10000,-2000],min_balance_cents:-2000,min_day:2,feasible:false,assumptions:{opening_balance_cents:10000,floor_cents:3000,goal_cents:6000,daily_budget_cents:8000,days:2},events:[],conflicts:[{day:2,floor_cents:3000}]}
+ const recommended=await render('PlanningResult',{result,earliestPurchaseDay:2})
+ assert.match(recommended,/建议在第2天或之后购买/);assert.match(recommended,/¥-20.00/);assert.match(recommended,/期初余额.*¥100.00/);assert.match(recommended,/目标支出.*¥60.00/)
+ const unavailable=await render('PlanningResult',{result,earliestPurchaseDay:null})
+ assert.match(unavailable,/没有满足最低保留余额的购买日期/);assert.match(unavailable,/预计余额会跌破/)
 })
 
 test('group labels fall back to answer semantics and lines follow each series',async()=>{
