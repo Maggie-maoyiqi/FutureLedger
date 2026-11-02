@@ -19,51 +19,59 @@ class Parameters(BaseModel):
 
 
 def _local_parameters(question):
+    from decimal import Decimal
+
     values = {}
+
     def number_value(raw):
-        if raw.isdigit():
-            return int(raw)
+        if re.fullmatch(r"\d+(?:\.\d{1,2})?", raw):
+            return Decimal(raw)
+        if not re.fullmatch(r"[零〇一二两三四五六七八九十百千万]+", raw):
+            raise ValueError("Unsupported explicit monetary amount")
         digits = {"零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
         units = {"十": 10, "百": 100, "千": 1000, "万": 10000}
         total = section = number = 0
         for char in raw:
             if char in digits:
                 number = digits[char]
-            elif char in units:
+            else:
                 unit = units[char]
-                if unit >= 10000:
-                    section = (section + number) * unit; total += section; section = number = 0
+                if unit == 10000:
+                    total += (section + number) * unit
+                    section = number = 0
                 else:
-                    section += (number or 1) * unit; number = 0
-        return total + section + number
-    for key, pattern in (
-        ("goal_cents", r"(?:存|攒|目标|买)(?:下|到)?\s*([零〇一二两三四五六七八九十百千万亿\d]+(?:\.\d{1,2})?)\s*(?:元|块)"),
-        ("floor_cents", r"(?:至少留|保留|低于|余额不少于|不能低于)\s*([零〇一二两三四五六七八九十百千万亿\d]+(?:\.\d{1,2})?)\s*(?:元|块)"),
-        (
-            "daily_budget_cents",
-            r"(?:每天最多花|每日预算|每天花)\s*(\d+(?:\.\d{1,2})?)\s*元",
-        ),
-    ):
-        match = re.search(pattern, question)
-        if match:
-            from decimal import Decimal
+                    section += (number or 1) * unit
+                    number = 0
+        return Decimal(total + section + number)
 
-            values[key] = int(Decimal(number_value(match.group(1))) * 100)
-    days = [int(value) for value in re.findall(r"第\s*(\d+)\s*天", question)]
-    if len(days) >= 2 and re.search(r"比较|方案|购买|买", question):
-        values["scenario_purchase_days"] = days[:5]
-    month_horizon = re.search(r"(一|两|二|三|四|五|六|七|八|九|十|半)个?月", question)
+    for key, prefix in (
+        ("goal_cents", r"(?:存|攒|目标(?:改为|改成|调整为)?|买)(?:下|到)?"),
+        ("floor_cents", r"(?:至少留|保留|低于|余额不少于|不能低于)"),
+        ("daily_budget_cents", r"(?:每天最多花|每日预算|每天花)"),
+    ):
+        # Validate whole amounts, never a valid suffix of an unsupported value.
+        for match in re.finditer(prefix + r"\s*([^，。；、]{1,30}?)\s*(?:元|块)", question):
+            values[key] = int(number_value(match.group(1).strip()) * 100)
+    purchase_days = [int(value) for value in re.findall(r"第\s*(\d+)\s*天", question)]
+    if len(purchase_days) >= 2 and re.search(r"比较|方案|购买|买", question):
+        values["scenario_purchase_days"] = purchase_days[:5]
+    month_horizon = re.search(r"([一两二三四五六七八九十半]|\d+)个?月", question)
     if month_horizon:
         word = month_horizon.group(1)
-        values["horizon_days"] = {"一": 30, "两": 60, "二": 60, "三": 90, "半": 15}.get(word, 30 * int(word) if word.isdigit() else 30)
-    horizon = re.search(r"(\d+)\s*天", question)
-    if horizon and not re.search(r"工资晚\s*\d+\s*天", question) and "scenario_purchase_days" not in values:
+        values["horizon_days"] = 15 if word == "半" else int(number_value(word)) * 30
+    # Salary delay and proposed purchase days do not define the horizon.
+    remainder = re.sub(r"工资晚\s*(?:[+\-]?\d+(?:\.\d+)?|五)\s*天", "", question)
+    remainder = re.sub(r"第\s*\d+\s*天", "", remainder)
+    horizon = re.search(r"(?<![\d.+\-])(\d+)\s*天", remainder)
+    if horizon:
+
         values["horizon_days"] = int(horizon.group(1))
-    match = re.search(r"工资晚\s*(\d+|五)\s*天", question)
+    match = re.search(r"工资晚\s*([+\-]?\d+(?:\.\d+)?|五)\s*天", question)
     if match:
-        values["salary_delay_days"] = (
-            5 if match.group(1) == "五" else int(match.group(1))
-        )
+        token = match.group(1)
+        if token != "五" and not re.fullmatch(r"\d+", token):
+            raise ValueError("Unsupported salary delay")
+        values["salary_delay_days"] = 5 if token == "五" else int(token)
     return Parameters.model_validate(values).model_dump(exclude_none=True)
 
 
@@ -133,7 +141,7 @@ def _simulate_recurring(**parameters):
     )
 
 
-async def build_chat_plan(question, ledger, user, provider, previous=None):
+async def build_chat_plan(question, ledger, user, provider, previous=None, *, purchase_required=False):
     """Return a public planning card plus internal, validated continuation context."""
     try:
         context = Parameters.model_validate(previous or {}).model_dump(
@@ -164,9 +172,12 @@ async def build_chat_plan(question, ledger, user, provider, previous=None):
             # Deterministic explicit amounts/dates take precedence over model extraction.
             values.update(_local_parameters(question))
         context.update(values)
+        if purchase_required and not pure_projection and context.get('goal_cents') == 0:
+            context.pop('goal_cents')
         if (
             pure_projection
             or "goal_cents" not in context
+            and not purchase_required
             and not re.search(r"买|购买|目标|存|攒", question)
         ):
             context["goal_cents"] = 0
@@ -202,8 +213,13 @@ async def build_chat_plan(question, ledger, user, provider, previous=None):
         return clarify("当前用户没有可用于模拟的账户。")
     # Account selection is explicit in the disclosure; ambiguous named accounts are not guessed.
     requested_accounts = re.findall(r"(?<![A-Za-z0-9_])acc_[A-Za-z0-9_]+", question)
-    if any(word in question for word in ("储蓄账户", "所有账户", "其他账户")) or any(
-        account_id != accounts[0]["account_id"] for account_id in requested_accounts
+    named_accounts = re.findall(r"(?:使用|用|从|以)\s*([^，。；、\s]{1,20}?账户)", question)
+    specific_names = {row["account_name"] for row in accounts if row["account_name"] != "主账户"}
+    if (
+        any(word in question for word in ("储蓄账户", "所有账户", "其他账户", "工资账户", "信用卡账户"))
+        or any(name != "主账户" for name in named_accounts)
+        or any(name in question for name in specific_names)
+        or any(account_id != accounts[0]["account_id"] for account_id in requested_accounts)
     ):
         return clarify("此演示以排序后的第一个授权账户作为主账户，请确认使用主账户。")
     account = accounts[0]
@@ -271,7 +287,7 @@ async def build_chat_plan(question, ledger, user, provider, previous=None):
     if projection:
         message = f"已完成未来{days}天余额模拟。"
     elif earliest:
-        message = f"建议在第{earliest}天或之后购买。"
+        message = f"按上述假设，建议在第{earliest}天或之后购买。"
     else:
         message = f"未来{days}天内没有满足最低保留余额的购买日期。"
     return {

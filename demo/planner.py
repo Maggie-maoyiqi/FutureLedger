@@ -116,9 +116,20 @@ async def classify_route(question: str, provider: ChatProvider, recent_context: 
 def parse_transfer(question: str):
     """Parse a deliberately narrow transfer request for the two synthetic users."""
     q = question.strip()
-    amount_match = re.search(r"(?:转账|转款|转给|转|汇款|付款|支付|打钱)[^0-9零〇一二两三四五六七八九十百千万亿¥￥]{0,16}(?:人民币|¥|￥)?\s*([0-9零〇一二两三四五六七八九十百千万亿]+(?:\.\d{1,2})?)\s*(?:元|块)?", q)
-    if amount_match is None:
-        amount_match = re.search(r"(?:人民币|¥|￥)?\s*([0-9零〇一二两三四五六七八九十百千万亿]+(?:\.\d{1,2})?)\s*(?:元|块)?[^0-9零〇一二两三四五六七八九十百千万亿¥￥]{0,16}(?:转给|转账给|转款给|汇款给|付款给|支付给|打钱给)", q)
+    # Tokenize the entire numeric expression so malformed suffixes cannot be
+    # accepted as a smaller, valid transfer. Unsupported notation is clarified.
+    number_pattern = r"[+-]?(?:\d[\d.,，]*(?:\s*[万千百亿])?|[零〇一二两三四五六七八九十百千万亿]+)"
+    amounts = re.findall(number_pattern, q)
+    if len(amounts) != 1 or not (re.fullmatch(r"\d+(?:\.\d{1,2})?", amounts[0]) or re.fullmatch(r"(?:[一二两三四五六七八九]千)?(?:零?[一二两三四五六七八九]百)?(?:零?[一二两三四五六七八九]?十)?(?:零?[一二两三四五六七八九])?|一万", amounts[0])):
+        return None, "请提供一个明确的正数金额，最多两位小数，不使用分组符或万等单位。"
+    token = re.search(number_pattern, q)
+    before, after = q[:token.start()].rstrip(), q[token.end():].lstrip()
+    # Require a supported currency/unit boundary, including Unicode signs.
+    # A bare number may end the request or precede a transfer verb.
+    if (re.search(r"(?:[−﹣－–—+＋±$€£a-zA-Z.,，]|[负負](?:数)?)$", before)
+            or re.search(r"美元|美金|欧元|港币|港元|日元|英镑|分(?:钱)?|角(?:钱)?", q)
+            or (after and not re.match(r"^(?:元|块)(?![a-zA-Z])|^(?:转|汇款|付款|支付|打钱)|^[，,。！!？?\s]", after))):
+        return None, "请使用人民币元或块，提供一个明确的正数金额，最多两位小数。"
     def chinese_amount(value: str) -> Decimal:
         if re.fullmatch(r"\d+(?:\.\d{1,2})?", value):
             return Decimal(value)
@@ -138,7 +149,8 @@ def parse_transfer(question: str):
                     section += (number or 1) * unit
                     number = 0
         return Decimal(total + section + number)
-    amount_cents = int(chinese_amount(amount_match.group(1)) * 100) if amount_match else None
+    amount_cents = int(chinese_amount(amounts[0]) * 100)
+
     recipient = None
     if any(name in q for name in ("isolation_user", "隔离测试用户", "测试用户B", "用户B")):
         recipient = "isolation_user"
@@ -166,12 +178,37 @@ def shift_month(year: int, month: int, delta: int):
 def local_plan(question: str, today: date, merchants: tuple[str, ...]):
     """A disclosed, limited offline planner for no-key demos and deterministic tests."""
     q = question.strip()
+    # Day-level requests are outside this intentionally month-based demo.
+    # Reject them before month extraction instead of silently widening scope.
+    if re.search(r"[\d一二三四五六七八九十廿三零〇]+\s*(?:日|号)|(?:上|中|下)旬|月\s*(?:初|中|末|底)|20\d{2}\s*[-/]\s*\d{1,2}\s*[-/]\s*\d{1,2}", q):
+        return {"route": "clarification", "message": "当前离线查询不支持指定某一天；请确认改为整月查询。"}
+    if any(not 1 <= int(m) <= 12 for m in re.findall(r"(\d+)\s*月", q)) or any(
+        not 1 <= int(m) <= 12 for m in re.findall(r"20\d{2}\s*[-/]\s*(\d+)", q)
+    ):
+        return {"route": "clarification", "message": "月份无效，请提供有效的年月。"}
+    account_aliases = {
+        "主账户": "acc_daily", "日常账户": "acc_daily", "活期账户": "acc_daily",
+        "储蓄账户": "acc_savings", "演示账户": "acc_other",
+        "acc_daily": "acc_daily", "acc_savings": "acc_savings", "acc_other": "acc_other",
+    }
+    named_accounts = {account for alias, account in account_aliases.items() if alias in q}
+    if len(named_accounts) > 1:
+        return {"route": "clarification", "message": "请指定一个账户，或明确查询全部账户。"}
+    account_id = next(iter(named_accounts), None)
+    account_text = q
+    for alias in account_aliases:
+        account_text = account_text.replace(alias, "")
+    account_text = re.sub(r"(?:各|按|所有|全部|每个|我的|分别)账户", "", account_text)
+    if ("账户" in account_text or re.search(r"acc_[a-z0-9_]+", account_text, re.I)
+            or re.search(r"信用卡|工资卡|银行卡|储蓄卡", account_text)):
+        return {"route": "clarification", "message": "未识别该账户，请指定主账户、储蓄账户或演示账户。"}
     if re.search(r"占|比例|百分比", q):
         return {"route": "clarification", "message": "当前不支持占比指标，请分别查询部分支出和全部支出后确认计算口径。"}
     latest = re.search(r"最近\s*(\d+|[一二三四五六七八九十])\s*笔", q)
     months = list(re.finditer(r"(?:(20\d{2})\s*年\s*)?(1[0-2]|0?[1-9])\s*月", q))
     match = re.search(r"(20\d{2})\s*[-年/]\s*(1[0-2]|0?[1-9])\s*(?:月)?", q)
     if months:
+        enumerated = bool(re.search(r"和|、|及|与", q)) and not re.search(r"到|至|—|~|～", q)
         year = next((int(m.group(1)) for m in months if m.group(1)), today.year)
         pairs = []
         previous_month = None
@@ -179,12 +216,16 @@ def local_plan(question: str, today: date, merchants: tuple[str, ...]):
             month = int(item.group(2))
             if item.group(1):
                 year = int(item.group(1))
-            elif previous_month is not None and month < previous_month:
+            elif not enumerated and previous_month is not None and month < previous_month:
                 year += 1
             pairs.append((year, month))
             previous_month = month
         if not any(m.group(1) for m in months) and max(pairs) > (today.year, today.month):
             pairs = [(y - 1, m) for y, m in pairs]
+        if enumerated:
+            indices = sorted({y * 12 + m for y, m in pairs})
+            if indices[-1] - indices[0] + 1 != len(indices):
+                return {"route": "clarification", "message": "当前离线查询不支持不连续月份，请分别查询这些月份。"}
         start, _ = month_bounds(*min(pairs))
         _, end = month_bounds(*max(pairs))
     elif latest:
@@ -309,7 +350,8 @@ def local_plan(question: str, today: date, merchants: tuple[str, ...]):
             "metric": metric,
             "start": start.isoformat(),
             "end_exclusive": end.isoformat(),
-            "filters": {"category": category, "merchant": merchant, "account_id": None, "direction": direction},
+            "filters": {"category": category, "merchant": merchant, "account_id": account_id, "direction": direction},
+
             "group_by": group,
             "series_by": series_by,
             "sort": sort,

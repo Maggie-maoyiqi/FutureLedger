@@ -184,6 +184,23 @@ def account_snapshot_payload(ledger: Ledger, user: str, account_id: str | None =
     return rows, answer
 
 
+def transfer_source_account(question: str, ledger: Ledger, user: str):
+    """Resolve source scope before creating an immutable confirmation action."""
+    accounts = sorted(ledger.account_snapshot(user), key=lambda row: row['account_id'])
+    if not accounts:
+        raise QueryError('ACCOUNT_NOT_FOUND', '当前用户没有可用于转账的账户。')
+    source = re.search(r'(?:从|使用|用(?!户))(.{1,48}?)(?=给|向|转账|转款|转\s*[-+¥￥\d])', question)
+    if source:
+        _, account_id = requested_balance_account(f"查看{source.group(1)}余额")
+        selected = [row for row in accounts if row['account_id'] == account_id]
+        if len(selected) != 1:
+            raise QueryError('UNKNOWN_SOURCE_ACCOUNT', '请明确选择一个属于你的转出账户，例如从主账户或储蓄账户转出。')
+        return selected[0]
+    if re.search(r'账户|银行卡|acc_', question):
+        raise QueryError('UNKNOWN_SOURCE_ACCOUNT', '请明确转出账户，例如从储蓄账户给测试用户B转25元；暂不指定收款账户。')
+    return accounts[0]
+
+
 def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str,
                           opening_balance_cents: int = 900000) -> dict[str, object]:
     """Build a deterministic simulation response without changing ledger state."""
@@ -239,6 +256,7 @@ def create_app(*, db_path=None, provider=None, today=None):
     pending: dict[str, dict] = {}
     planning_context: dict[str, dict] = {}
     planning_pending: set[str] = set()
+    purchase_pending: set[str] = set()
     actions: dict[str, dict] = {}
     action_authorizations: dict[str, dict] = {}
     queries: dict[str, dict] = {}
@@ -364,10 +382,11 @@ def create_app(*, db_path=None, provider=None, today=None):
         previous_state = pending.get(request.session_id)
         previous_question = (previous_state or {}).get("question") if isinstance(previous_state, dict) else previous_state
         planning_followup = (request.session_id in planning_pending
-            and bool(re.match(r'^(?:目标|至少|保留|最低|余额|每天|每日|工资|改为|改成|30天|三个月|\d+\s*(?:元|天)|主账户|用主账户)', request.question))
+            and bool(re.match(r'^(?:目标|至少|保留|最低|余额不少于|每天|每日|工资|改为|改成|30天|90天|三个月|\d+\s*(?:元|天)|(?:确认)?(?:使用|用)?主账户)', request.question))
             and not bool(re.search(r'支出|收入|退款|账单|明细|交易|笔数', request.question)))
         if re.search(r'重新规划|新目标|重置方案|从头规划', request.question):
             planning_context.pop(request.session_id, None)
+            purchase_pending.discard(request.session_id)
         try:
             decision = await classify_route(request.question, model,
                 recent_context={'pending': previous_state} if previous_state else None)
@@ -430,16 +449,23 @@ def create_app(*, db_path=None, provider=None, today=None):
                     "query_id": query_id}
         if route != 'planning':
             planning_pending.discard(request.session_id)
+            purchase_pending.discard(request.session_id)
         if route == "planning":
             pending.pop(request.session_id, None)
+            purchase_required = (request.session_id in purchase_pending or bool(
+                re.search(r'买|购买|目标|存钱|攒钱|(?:存|攒)\s*\d', request.question)))
             try:
                 payload = await build_chat_plan(request.question, ledger, user, model,
-                    previous=planning_context.get(request.session_id))
+                    previous=planning_context.get(request.session_id), purchase_required=purchase_required)
             except ProviderError as exc:
                 raise HTTPException(502, {'code': 'PROVIDER_ERROR', 'message': str(exc)}) from exc
             context = payload.pop('_planning_context', {})
             planning_context[request.session_id] = context
-            if payload['status'] == 'clarification':
+            if purchase_required and payload['status'] == 'clarification' and 'goal_cents' not in context:
+                purchase_pending.add(request.session_id)
+            else:
+                purchase_pending.discard(request.session_id)
+            if payload['status'] in {'clarification', 'simulated'}:
                 planning_pending.add(request.session_id)
             else:
                 planning_pending.discard(request.session_id)
@@ -456,14 +482,19 @@ def create_app(*, db_path=None, provider=None, today=None):
             recipient = parsed["recipient_user"]
             if recipient == user:
                 return {"status": "clarification", "route": "execution", "message": "收款方不能是当前演示用户本人；请选择另一位演示用户。"}
+            try:
+                source = transfer_source_account(request.question, ledger, user)
+            except QueryError as exc:
+                return {'status': 'clarification', 'route': 'execution', 'code': exc.code, 'message': str(exc)}
             action_id = secrets.token_urlsafe(18)
             actions[action_id] = {"session_id": request.session_id, "sender_user": user,
                                   "recipient_user": recipient, "amount_cents": parsed["amount_cents"],
+                                  "source_account_id": source['account_id'],
                                   "status": "PENDING"}
             labels = {"test_user": "测试用户A", "isolation_user": "测试用户B"}
             amount = parsed["amount_cents"] / 100
             return {"status": "confirmation_required", "route": "execution", "action_id": action_id,
-                    "message": f"请确认演示转账：从{labels[user]}转出 ¥{amount:,.2f}，转入{labels[recipient]}。确认后会同时更新双方模拟账户余额和流水。"}
+                    "message": f"请确认演示转账：从{labels[user]}的{source['account_name']}转出 ¥{amount:,.2f}，转入{labels[recipient]}。确认后会同时更新双方模拟账户余额和流水。"}
         if route == "clarification":
             pending[request.session_id] = {
                 "question": effective_question[:500],
@@ -593,6 +624,7 @@ def create_app(*, db_path=None, provider=None, today=None):
             result = ledger.execute_demo_transfer(
                 action_id, action["sender_user"], action["recipient_user"], action["amount_cents"], request.category,
                 posted_at=f"{clock.isoformat()}T12:00:00+08:00",
+                source_account_id=action['source_account_id'],
             )
         except QueryError as exc:
             raise HTTPException(409, {"code": exc.code, "message": str(exc)}) from exc
