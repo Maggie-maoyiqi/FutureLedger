@@ -1,0 +1,26 @@
+%%{init: {'flowchart': {'nodeSpacing': 34, 'rankSpacing': 42, 'curve': 'basis'}, 'theme': 'base', 'themeVariables': {'fontFamily': 'Arial, sans-serif', 'fontSize': '16px', 'primaryColor': '#eaf3f1', 'primaryTextColor': '#173b37', 'primaryBorderColor': '#39766d', 'lineColor': '#5b6d70', 'secondaryColor': '#f3edff', 'tertiaryColor': '#fff4dd'}}}%%
+flowchart TD
+    U[用户问题]
+    S[安全检查\n初步拦截敏感信息、危险指令和越权请求]
+    R[LLM 路由分类\nquery · explain · execution · planning · view · blocked]
+    I[LLM 意图理解与 IntentPlan 生成\n结合用户授权范围、语义目录和问题\n生成结构化 IntentPlan]
+    V[后端校验 IntentPlan\n指标 · 日期 · 分组 · 枚举值 · 权限]
+    C[后端编译生成 SQL\n固定指标口径 · 参数化 SQL]
+    A[SQL 安全检查\n拦截删除、修改、写入、越权读取、\n隐私泄露和危险 SQL]
+    D[只读数据库执行]
+    F[结果格式化\n数字卡片 · 表格 · 柱状图 · 折线图]
+    O[返回聊天结果]
+
+    U --> S --> R --> I --> V --> C --> A --> D --> F --> O
+
+    classDef input fill:#e7f4f1,stroke:#39766d,stroke-width:2px,color:#173b37;
+    classDef llm fill:#f0eaff,stroke:#7656b3,stroke-width:2px,color:#32205a;
+    classDef backend fill:#fff3dc,stroke:#b77a1f,stroke-width:2px,color:#5b3c0b;
+    classDef database fill:#eaf0f8,stroke:#52769f,stroke-width:2px,color:#203954;
+    classDef output fill:#e8f5e9,stroke:#4d8b55,stroke-width:2px,color:#234b28;
+
+    class U input;
+    class S,V,C,A backend;
+    class R,I llm;
+    class D database;
+    class F,O output;
