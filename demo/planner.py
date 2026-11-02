@@ -12,11 +12,11 @@ from .provider import ChatProvider
 from .semantic import CATEGORIES, GROUPS, METRICS, METRIC_DEFINITIONS
 
 WRITE_SQL = re.compile(r"\b(?:delete|drop|truncate|alter|insert|update|create|grant|revoke)\b|删(?:除|库|表)|修改数据库|清空(?:表|数据库)", re.I)
-WRITE_BANK = re.compile(r"转(?:账|帐|款)(?:给|到|出)|转给|汇款给|付款给|支付给|打钱给|给.{0,16}转(?:账|帐)|给.{0,12}转(?:账|帐|款)?\s*(?:人民币|[¥￥]?\d)|转\s*(?:人民币)?[¥￥]?\d|取消代扣|取消订阅|我要转(?:账|帐)|发起转(?:账|帐)|转(?:账|帐)\s*(?:人民币|[¥￥]?\d)", re.I)
+WRITE_BANK = re.compile(r"给.{0,16}转一笔(?:钱|款)|转(?:账|帐|款)(?:给|到|出)|转给|汇款给|付款给|支付给|打钱给|给.{0,16}转(?:账|帐)|给.{0,12}转(?:账|帐|款)?\s*(?:人民币|[¥￥]?\d)|转\s*(?:人民币)?[¥￥]?\d|取消代扣|取消订阅|我要转(?:账|帐)|发起转(?:账|帐)|转(?:账|帐)\s*(?:人民币|[¥￥]?\d)", re.I)
 ACTION_QUESTION = re.compile(r"怎么|如何|为什么|为啥|怎么回事|流程|是什么|记录|查询|统计|多少|几笔", re.I)
 SMALL_TALK = re.compile(r"^(你好|您好|hi|hello|谢谢|早上好|晚上好)[!！。.　 ]*$", re.I)
 LEDGER_TOPIC = re.compile(r"账单|流水|交易|支出|消费|花费|花了|净支出|退款|收入|工资|笔数|每笔|商户|账户|各项|各类|类别|分类|餐饮|交通|购物|娱乐|订阅|房租|医疗|转(?:了)?(?:账|帐|款)")
-PLANNING_REQUEST = re.compile(r"存钱|攒钱|储蓄目标|存款目标|省钱建议|怎么省钱|如何省钱|攒.*买|存.*买|买.{0,12}(?:需要|要).*钱|现金流规划|存到.{0,12}(?:元|块)")
+PLANNING_REQUEST = re.compile(r"(?:存|攒)\s*\d+(?:\.\d{1,2})?\s*(?:元|块)|存钱|攒钱|储蓄目标|存款目标|省钱建议|怎么省钱|如何省钱|攒.*买|存.*买|买.{0,12}(?:需要|要).*钱|现金流|模拟未来|预算|省钱方案|每天最多花|工资晚|比较现在买|什么时候可以买|多久能买|存到.{0,12}(?:元|块)")
 
 
 class RouteDecision(BaseModel):
@@ -40,6 +40,8 @@ def route_question(question: str):
         return "execution", None
     if SMALL_TALK.fullmatch(q):
         return "view", "我可以查询这份模拟账单，例如：2026 年 9 月餐饮净支出是多少？"
+    if re.search(r"排名|排行", q):
+        return "query", None
     if not LEDGER_TOPIC.search(q):
         return "view", "这个入口用于查询模拟账单或执行已确认的演示转账；你也可以问收入、支出或流水。"
     return "query", None
@@ -110,8 +112,31 @@ def shift_month(year: int, month: int, delta: int):
 def local_plan(question: str, today: date, merchants: tuple[str, ...]):
     """A disclosed, limited offline planner for no-key demos and deterministic tests."""
     q = question.strip()
+    if re.search(r"占|比例|百分比", q):
+        return {"route": "clarification", "message": "当前不支持占比指标，请分别查询部分支出和全部支出后确认计算口径。"}
+    latest = re.search(r"最近\s*(\d+|十)\s*笔", q)
+    months = list(re.finditer(r"(?:(20\d{2})\s*年\s*)?(1[0-2]|0?[1-9])\s*月", q))
     match = re.search(r"(20\d{2})\s*[-年/]\s*(1[0-2]|0?[1-9])\s*(?:月)?", q)
-    if match:
+    if months:
+        year = next((int(m.group(1)) for m in months if m.group(1)), today.year)
+        pairs = []
+        previous_month = None
+        for item in months:
+            month = int(item.group(2))
+            if item.group(1):
+                year = int(item.group(1))
+            elif previous_month is not None and month < previous_month:
+                year += 1
+            pairs.append((year, month))
+            previous_month = month
+        if not any(m.group(1) for m in months) and max(pairs) > (today.year, today.month):
+            pairs = [(y - 1, m) for y, m in pairs]
+        start, _ = month_bounds(*min(pairs))
+        _, end = month_bounds(*max(pairs))
+    elif latest:
+        end = today + timedelta(days=1)
+        start = end - timedelta(days=1096)
+    elif match:
         start, end = month_bounds(int(match.group(1)), int(match.group(2)))
     elif "上个月" in q or "上月" in q:
         y, m = (today.year - 1, 12) if today.month == 1 else (today.year, today.month - 1)
@@ -136,16 +161,21 @@ def local_plan(question: str, today: date, merchants: tuple[str, ...]):
     else:
         return {"route": "clarification", "message": "请说明查询日期，例如‘2026 年 9 月’或‘最近 30 天’。"}
 
-    category = next((c for c in CATEGORIES if c in q), None)
+    # “转账” normally names a transaction type, independently of purpose.
+    category = next((c for c in CATEGORIES if c != "转账" and c in q), None)
+    if category is None and re.search(r"(?:类别|分类|用途)(?:为|是|[:：])[‘'\"“]?转账", q):
+        category = "转账"
     merchant = next((m for m in merchants if m in q), None)
     explicit_merchant = re.search(r"(?:商户|商家)[是为：:]?\s*([^\s，,。！？!?]+)", q)
-    if explicit_merchant and merchant is None:
+    if explicit_merchant and merchant is None and not any(w in q for w in ("各商户", "按商户", "商户排名", "商户排行")):
         return {"route": "clarification", "message": "这份模拟账单里没有识别到该商户；请检查名称或换一个已出现的商户。"}
     if "平均" in q or "均值" in q:
-        if "每天" in q or "每日" in q or "每月" in q:
+        if not any(w in q for w in ("每笔", "按笔")) or any(w in q for w in ("每天", "每日", "每月")):
             return {"route": "clarification", "message": "请确认平均值的分母：当前支持‘平均每笔消费’，每日／每月平均需要另选口径。"}
-        metric = "avg_expense"
-    elif "转账" in q and not any(w in q for w in ("消费", "支出")):
+        metric = "avg_transfer" if "转账" in q else "avg_expense"
+    elif "转账" in q and "收入" in q:
+        metric = "transfer_income"
+    elif "转账" in q:
         metric = "transfer_count" if any(w in q for w in ("笔数", "多少笔", "几笔")) else "transfer_amount"
     elif "退款" in q and "净" not in q:
         metric = "refund"
@@ -157,28 +187,30 @@ def local_plan(question: str, today: date, merchants: tuple[str, ...]):
         metric = "transaction_count"
     elif "支出" in q or "花" in q or "消费" in q:
         metric = "gross_expense"
+    elif latest:
+        metric = "activity_count"
     else:
         return {"route": "clarification", "message": "请说明指标：消费支出、净支出、退款、收入、笔数或平均每笔消费？"}
 
     if re.search(r"排名|前\s*[一二三四五六七八九十\d]+", q) and not re.search(r"支出|退款|收入|花|消费|笔数|平均|净", q):
         return {"route": "clarification", "message": "排名需要指定指标，例如‘按净支出排名前五的类别’。"}
-    detail = any(w in q for w in ("明细", "哪些交易", "列出流水", "记录列表", "转账记录", "交易记录", "账单明细"))
+    detail = bool(latest) or ("列出" in q and "退款" in q) or any(w in q for w in ("明细", "哪些交易", "列出流水", "记录列表", "转账记录", "交易记录", "账单明细"))
     group = None
     series_by = None
     if not detail:
         if any(w in q for w in ("各类别", "各项", "各类", "不同类别", "按类别", "类别排名", "分类排行", "各分类")):
-            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势")):
+            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势", "变化")) or len(months) > 1:
                 group = "month"
                 series_by = "category"
             else:
                 group = "category"
         elif any(w in q for w in ("各商户", "按商户", "商户排名", "商户排行")):
-            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势")):
+            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势", "变化")) or len(months) > 1:
                 group, series_by = "month", "merchant"
             else:
                 group = "merchant"
         elif any(w in q for w in ("各账户", "按账户")):
-            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势")):
+            if any(w in q for w in ("几个月", "几月", "最近", "过去", "按月", "每月", "月度", "趋势", "变化")) or len(months) > 1:
                 group, series_by = "month", "account"
             else:
                 group = "account"
@@ -187,6 +219,8 @@ def local_plan(question: str, today: date, merchants: tuple[str, ...]):
     n = re.search(r"前\s*(\d{1,2}|[一二三四五六七八九十])", q)
     cn = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "七": 7, "八": 8, "九": 9, "十": 10}
     limit = min(int(n.group(1)) if n.group(1).isdigit() else cn[n.group(1)], 100) if n else 100 if series_by else 20
+    if latest:
+        limit = min(int(latest.group(1)) if latest.group(1).isdigit() else 10, 100)
     return {
         "route": "analysis",
         "plan": {

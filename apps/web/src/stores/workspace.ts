@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import type { PlanningSimulation, PlanningScenario } from '../types/planning'
 
 export type ChatResult = {
   status: string
@@ -12,10 +13,16 @@ export type ChatResult = {
   query_id?: string
   action_id?: string
   categories?: string[]
+  group_label?: string
+  series_label?: string
+  result?: PlanningSimulation
+  scenarios?: PlanningScenario[]
+  assumptions?: string[]
 }
 export type ChatMessage = ChatResult & { role: 'user' | 'assistant'; text: string }
 export type AccountSnapshot = { account_id: string; account_name: string; balance_cents: number }
 type ApiError = Error & { status?: number; code?: string }
+const credentialText = /(?:\bsk-[a-z0-9_-]{12,}|\b(?:api[ _-]?key|bearer)\s*[:：=]\s*[^\s,，]+|(?:密码|验证码|password|passwd|otp)\s*(?:[:：=]|是|为|\bis\b)\s*[^\s,，。]+|(?:密码|password|passwd)\s+(?!help\b|reset\b|verify\b|length\b|policy\b)[a-z0-9!@#$%^&*_.-]{4,}|(?:验证码|\botp)\s*\d{4,8}(?!\d)|\bbearer\s+[a-z0-9_.-]{12,})/i
 
 function errorFromResponse(status: number, body: unknown): ApiError {
   const detail = typeof body === 'object' && body !== null && 'detail' in body ? (body as { detail?: unknown }).detail : body
@@ -124,6 +131,11 @@ export const useWorkspace = defineStore('workspace', () => {
   }
   async function send(text: string) {
     if (!authenticated.value) throw new Error('请先登录')
+    if (credentialText.test(text)) {
+      const blocked: ChatResult = { status: 'blocked', message: '请移除密码、验证码或 API key；验证只在独立密码框进行。' }
+      messages.value.push({ ...blocked, role: 'assistant', text: blocked.message! })
+      return blocked
+    }
     if (loading.value) throw new Error('请等待当前查询完成')
     const requestedGeneration = generation
     loading.value = true; error.value = ''
@@ -156,7 +168,7 @@ export const useWorkspace = defineStore('workspace', () => {
     return response
   }
   async function simulate(planId: string, body: Record<string, number>) {
-    return api<{ result: Record<string, unknown>; status: string }>(`/api/plans/${planId}/simulate`, { method: 'POST', body: JSON.stringify({ session_id: sessionId.value, plan_version: 1, ...body }) })
+    return api<{ result: Record<string, unknown>; status: string; assumptions?: string[] }>(`/api/plans/${planId}/simulate`, { method: 'POST', body: JSON.stringify({ session_id: sessionId.value, plan_version: 1, ...body }) })
   }
   return { username, sessionId, messages, loading, error, authLoading, pendingAction, authenticated, accounts, accountError, totalBalanceCents, refreshAccounts, register, login, logout, send, authorizeAction, confirmAction, simulate, simulateDemo, mode, apiToken, minBalance, salaryDelay, dailyBudget, tasks, mandates, transactions, activeMandates, toggleProtected, requestCancel, approveDemoTask }
 })

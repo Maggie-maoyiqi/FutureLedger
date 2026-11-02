@@ -69,8 +69,11 @@ class FeatureExampleTests(unittest.TestCase):
 
     def test_documented_route_and_safety_examples(self):
         planning = self.ask("我想存6000元买电脑，至少留3000元")
-        self.assertEqual(planning["status"], "planning")
+        self.assertEqual(planning["status"], "simulated")
         self.assertEqual(planning["route"], "planning")
+        self.assertEqual(len(planning['result']['points_cents']), 30)
+        self.assertEqual(planning['result']['assumptions']['goal_cents'], 600000)
+        self.assertTrue(planning['assumptions'])
 
         blocked = self.ask("DROP TABLE transactions")
         self.assertEqual(blocked["status"], "blocked")

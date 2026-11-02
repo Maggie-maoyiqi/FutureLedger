@@ -197,7 +197,7 @@ class DemoTest(unittest.TestCase):
         qid = answer["query_id"]
         own = self.client.get(f"/api/queries/{qid}/export.csv", params={"session_id": self.session})
         self.assertEqual(own.status_code, 200)
-        self.assertIn("value_cents", own.text)
+        self.assertIn("金额（分）", own.text)
         second = self.client.post("/api/sessions", json={"auth_token": self.other_auth}).json()["session_id"]
         denied = self.client.get(f"/api/queries/{qid}/export.csv", params={"session_id": second})
         self.assertEqual(denied.status_code, 404)
@@ -248,7 +248,7 @@ class DemoTest(unittest.TestCase):
         savings = self.ask("我的储蓄账户有多少钱？")
         self.assertEqual(savings["status"], "answer")
         self.assertEqual(savings["rows"], [{
-            "account_id": "acc_savings", "account_name": "储蓄账户", "balance_cents": 500000,
+            "account_name": "储蓄账户", "balance_cents": 500000,
         }])
         self.assertIn("¥5,000.00", savings["answer"])
         account_list = self.ask("我有几个银行账户？")
@@ -274,8 +274,8 @@ class DemoTest(unittest.TestCase):
         all_balances = self.ask("我的银行账户余额是多少？")
         self.assertIn("¥13,975.00", all_balances["answer"])
         self.assertEqual(
-            {row["account_id"]: row["balance_cents"] for row in all_balances["rows"]},
-            {"acc_daily": 897500, "acc_savings": 500000},
+            {row["account_name"]: row["balance_cents"] for row in all_balances["rows"]},
+            {"主账户": 897500, "储蓄账户": 500000},
         )
 
     def test_balance_detection_does_not_preempt_transactions_or_transfers(self):
@@ -288,8 +288,8 @@ class DemoTest(unittest.TestCase):
 
         both = self.ask("主账户和储蓄账户分别有多少钱？")
         self.assertEqual(
-            {row["account_id"] for row in both["rows"]},
-            {"acc_daily", "acc_savings"},
+            {row["account_name"] for row in both["rows"]},
+            {"主账户", "储蓄账户"},
         )
 
     def test_missing_fixture_is_explicit(self):

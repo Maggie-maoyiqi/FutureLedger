@@ -1,5 +1,5 @@
 import unittest
-from datetime import date
+from datetime import date, datetime, timezone
 
 from fastapi.testclient import TestClient
 
@@ -25,13 +25,14 @@ class BankReadsReviewTests(unittest.TestCase):
                 return {'fee_cents': 0}
 
         bank = Bank()
-        service = ExecutionService(ExecutionService.connect(), RoleABankAdapter(bank))
+        service = ExecutionService(ExecutionService.connect(), RoleABankAdapter(bank),
+                                   clock=lambda: datetime(2026, 11, 1, tzinfo=timezone.utc))
         self.addCleanup(service.db.close)
         gate = ExecutionGateAdapter(service)
         principal = Principal('test_user', ('acc_daily', 'acc_savings'), ('personal_ledger',))
         app = create_app(authenticator=DevelopmentTokens({'token': principal}),
             bank_read_adapter=RoleABankReads(bank, request_factory=dict), execution=gate, execution_gate_adapter=gate,
-            clock=lambda: date.today())
+            clock=lambda: date(2026, 11, 1))
         with TestClient(app) as client:
             headers = {'Authorization': 'Bearer token'}
             sid = client.post('/api/sessions', headers=headers, json={}).json()['data']['session_id']

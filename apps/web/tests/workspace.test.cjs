@@ -135,3 +135,25 @@ test('old session rejection cannot log out the next user', async () => {
   assert.equal(store.username, 'isolation_user')
   assert.equal(store.messages.length, 0)
 })
+
+test('credentials in a chat draft never enter messages or network requests', async () => {
+  pinia.setActivePinia(pinia.createPinia())
+  let calls = 0
+  const { useWorkspace } = load('src/stores/workspace.ts', async url => {
+    calls++
+    if (url === '/api/auth/login') return response({ auth_token: 'token', username: 'test_user' })
+    if (url === '/api/sessions') return response({ session_id: 'session' })
+    if (url.startsWith('/api/accounts')) return response({ accounts: [] })
+    throw Error(url)
+  })
+  const store = useWorkspace()
+  await store.login('test_user', 'synthetic-password')
+  const before = calls
+  for (const text of ['2026年9月支出，密码：chat-sensitive-password', '我的密码 123456，请查支出', 'password synthetic-password', '验证码123456']) {
+    const result = await store.send(text)
+    assert.equal(result.status, 'blocked')
+    assert.equal(calls, before)
+  }
+  assert.equal(JSON.stringify(store.messages).includes('chat-sensitive-password'), false)
+  assert.equal(JSON.stringify(store.messages).includes('123456'), false)
+})

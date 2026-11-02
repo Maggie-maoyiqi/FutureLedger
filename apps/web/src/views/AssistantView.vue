@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useWorkspace } from '../stores/workspace'
 import ResultCard from '../components/ResultCard.vue'
+import PlanningResult from '../components/PlanningResult.vue'
 import TransferCard from '../components/TransferCard.vue'
 
 const workspace = useWorkspace(); const draft = ref('')
@@ -20,6 +21,7 @@ async function send(value = draft.value) { const text = value.trim(); if (!text)
             <p>{{ message.text }}</p>
             <ResultCard v-if="message.role === 'assistant' && (message.rows?.length || message.chart === 'metric_card')" :result="message" />
             <a v-if="message.role === 'assistant' && message.query_id" class="text-link" :href="`/api/queries/${message.query_id}/export.csv?session_id=${encodeURIComponent(workspace.sessionId)}`" target="_blank">导出 CSV</a>
+            <PlanningResult v-if="message.status === 'simulated'" :result="message.result" :scenarios="message.scenarios" :assumptions="message.assumptions" />
             <TransferCard v-if="message.status === 'confirmation_required' && message.action_id" :key="message.action_id" :action-id="message.action_id" />
           </div>
         </div>

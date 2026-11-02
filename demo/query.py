@@ -9,6 +9,7 @@ from pathlib import Path
 from .semantic import CATEGORIES, IntentPlan
 
 AMOUNT = {
+    "activity_count": "COUNT(*)",
     "gross_expense": "COALESCE(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
     "refund": "COALESCE(SUM(CASE WHEN kind='refund' AND direction='IN' THEN amount_cents ELSE 0 END),0)",
     "net_expense": "COALESCE(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents WHEN kind='refund' AND direction='IN' THEN -amount_cents ELSE 0 END),0)",
@@ -16,26 +17,26 @@ AMOUNT = {
     "transaction_count": "COALESCE(SUM(CASE WHEN kind IN ('expense','refund','transfer') THEN 1 ELSE 0 END),0)",
     "avg_expense": "ROUND(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN amount_cents ELSE 0 END)*1.0/NULLIF(SUM(CASE WHEN kind IN ('expense','transfer') AND direction='OUT' THEN 1 ELSE 0 END),0),2)",
     "transfer_amount": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN amount_cents ELSE 0 END),0)",
+    "transfer_income": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='IN' THEN amount_cents ELSE 0 END),0)",
+    "avg_transfer": "ROUND(AVG(CASE WHEN kind='transfer' AND direction='OUT' THEN amount_cents END),2)",
     "transfer_count": "COALESCE(SUM(CASE WHEN kind='transfer' AND direction='OUT' THEN 1 ELSE 0 END),0)",
 }
 GROUP = {"category": "category", "merchant": "merchant", "month": "substr(posted_at,1,7)", "account": "account_id"}
-KINDS = {
-    "gross_expense": ("expense", "transfer"), "refund": ("refund",),
-    "net_expense": ("expense", "transfer", "refund"), "income": ("income", "transfer"),
-    "transaction_count": ("expense", "refund", "transfer"), "avg_expense": ("expense", "transfer"),
-    "transfer_amount": ("transfer",), "transfer_count": ("transfer",),
+# One predicate governs values and evidence, including direction.
+PREDICATES = {
+    "activity_count": "((kind='expense' AND direction='OUT') OR (kind IN ('income','refund') AND direction='IN') OR (kind='transfer' AND direction IN ('IN','OUT')))",
+    "gross_expense": "(kind IN ('expense','transfer') AND direction='OUT')",
+    "net_expense": "((kind IN ('expense','transfer') AND direction='OUT') OR (kind='refund' AND direction='IN'))",
+    "income": "(kind IN ('income','transfer') AND direction='IN')",
+    "refund": "(kind='refund' AND direction='IN')",
+    "transaction_count": "((kind='expense' AND direction='OUT') OR (kind='refund' AND direction='IN') OR kind='transfer')",
+    "avg_expense": "(kind IN ('expense','transfer') AND direction='OUT')",
+    "transfer_amount": "(kind='transfer' AND direction='OUT')",
+    "transfer_count": "(kind='transfer' AND direction='OUT')",
+    "transfer_income": "(kind='transfer' AND direction='IN')",
+    "avg_transfer": "(kind='transfer' AND direction='OUT')",
 }
-# Detail views are ledger activity views. They keep transfer rows visible for
-# the existing demo's auditability, while aggregate expense metrics exclude
-# transfers from consumption calculations.
-DETAIL_KINDS = {
-    **KINDS,
-    "gross_expense": ("expense", "transfer"),
-    "net_expense": ("expense", "transfer", "refund"),
-    "income": ("income", "transfer"),
-    "transaction_count": ("expense", "refund", "transfer"),
-    "avg_expense": ("expense", "transfer"),
-}
+DETAIL_PREDICATES = {**PREDICATES, "transfer_amount": "kind='transfer'", "transfer_count": "kind='transfer'"}
 FORBIDDEN = ("delete", "update", "insert", "drop", "alter", "truncate", "attach", "pragma", "--", "/*", ";")
 ACCOUNT_NAMES = {"acc_daily": "主账户", "acc_savings": "储蓄账户", "acc_other": "演示账户"}
 
@@ -129,12 +130,10 @@ class Ledger:
             where += " AND account_id=?"; where_params.append(plan.filters.account_id)
 
         if plan.kind == "detail":
-            kinds = DETAIL_KINDS[plan.metric]
-            kind_marks = ",".join("?" for _ in kinds)
             sql = ("SELECT posted_at, category, merchant, kind, direction, amount_cents "
-                   f"FROM transactions WHERE {where} AND kind IN ({kind_marks}) "
+                   f"FROM transactions WHERE {where} AND {DETAIL_PREDICATES[plan.metric]} "
                    f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
-            params = [*where_params, *kinds, plan.limit]
+            params = [*where_params, plan.limit]
         elif plan.group_by:
             dimension = GROUP[plan.group_by]
             series = f", {GROUP[plan.series_by]} AS series_key" if plan.series_by else ""
@@ -146,12 +145,12 @@ class Ledger:
             if plan.series_by:
                 order = "group_key ASC, series_key ASC"
             sql = (f"SELECT {dimension} AS group_key{series}, {AMOUNT[plan.metric]} AS value_cents "
-                   f"FROM transactions WHERE {where} AND kind IN ({','.join('?' for _ in KINDS[plan.metric])}) "
+                   f"FROM transactions WHERE {where} AND {PREDICATES[plan.metric]} "
                    f"GROUP BY {grouped} ORDER BY {order} LIMIT ?")
-            params = [*where_params, *KINDS[plan.metric], plan.limit]
+            params = [*where_params, plan.limit]
         else:
-            sql = f"SELECT {AMOUNT[plan.metric]} AS value_cents FROM transactions WHERE {where} AND kind IN ({','.join('?' for _ in KINDS[plan.metric])})"
-            params = [*where_params, *KINDS[plan.metric]]
+            sql = f"SELECT {AMOUNT[plan.metric]} AS value_cents FROM transactions WHERE {where} AND {PREDICATES[plan.metric]}"
+            params = [*where_params]
         audit_sql(sql)
         return sql, tuple(params), where, tuple(where_params)
 
@@ -163,17 +162,15 @@ class Ledger:
             conn.execute("PRAGMA query_only=ON")
             rows = [dict(r) for r in conn.execute(sql, params)]
             if plan.kind == "detail":
-                kinds = DETAIL_KINDS[plan.metric]
                 evidence_sql = (f"SELECT id FROM transactions WHERE {where} "
-                                f"AND kind IN ({','.join('?' for _ in kinds)}) "
+                                f"AND {DETAIL_PREDICATES[plan.metric]} "
                                 f"ORDER BY posted_at {'DESC' if plan.sort=='date_desc' else 'ASC'}, id ASC LIMIT ?")
                 audit_sql(evidence_sql)
-                evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, *kinds, plan.limit))]
+                evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, plan.limit))]
             else:
-                marks = ",".join("?" for _ in KINDS[plan.metric])
-                evidence_sql = f"SELECT id FROM transactions WHERE {where} AND kind IN ({marks}) ORDER BY id LIMIT 5001"
+                evidence_sql = f"SELECT id FROM transactions WHERE {where} AND {PREDICATES[plan.metric]} ORDER BY id LIMIT 5001"
                 audit_sql(evidence_sql)
-                evidence = [r[0] for r in conn.execute(evidence_sql, (*where_params, *KINDS[plan.metric]))]
+                evidence = [r[0] for r in conn.execute(evidence_sql, where_params)]
         if len(evidence) > 5000:
             raise QueryError("TOO_MANY_EVIDENCE_ROWS", "凭据过多，请缩小日期范围")
         return {"rows": rows, "evidence_ids": evidence, "sql": sql}

@@ -1,7 +1,7 @@
 import asyncio
 import sqlite3
 import unittest
-from datetime import date
+from datetime import datetime, timezone
 
 from services.api.agent.auth import Principal
 from services.api.agent.dag.schemas import ActionProposal, TransferInputs
@@ -13,13 +13,14 @@ class BCApiIntegrationTests(unittest.TestCase):
     def test_c_proposal_uses_b_confirmation_and_worker(self):
         bank = InMemoryBank({("alice", "a"): 100_000, ("rec_1", "r"): 0})
         service = ExecutionService(ExecutionService.connect(), bank,
-                                   password_checker=lambda value, user: value == "secret")
+                                   password_checker=lambda value, user: value == "secret",
+                                   clock=lambda: datetime(2026, 11, 1, tzinfo=timezone.utc))
         adapter = ExecutionGateAdapter(service, worker=service)
         principal = Principal("alice", ("a",), ("personal_ledger",))
         proposal = ActionProposal(
             plan_id="plan-1", plan_version=1, node_id="transfer-1", tool_name="execution.transfer",
             inputs=TransferInputs(source_account_id="a", recipient_id="rec_1", amount_cents=1_000,
-                                  execution_date=date.today().isoformat()), constraints=Constraints())
+                                  execution_date="2026-11-01"), constraints=Constraints())
 
         binding = asyncio.run(adapter.create_operation(principal, proposal))
         raw = service.status(binding.operation_id, user_id="alice")

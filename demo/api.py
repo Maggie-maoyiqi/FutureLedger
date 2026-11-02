@@ -17,10 +17,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, ValidationError
 
-from .planner import classify_route, make_intent, parse_transfer
+from .planner import classify_route, make_intent, parse_transfer, PLANNING_REQUEST
+from .safety import blocked_question, query_followup, CREDENTIAL
+from .planning import build_chat_plan
+from .explain import compare_period
 from .provider import ChatProvider, ProviderError
 from .cashflow import simulate_cashflow
-from .query import Ledger, QueryError
+from .query import Ledger, QueryError, ACCOUNT_NAMES
 from .semantic import GROUPS, METRICS, IntentPlan, public_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -95,7 +98,7 @@ def verify_password(password: str, encoded: str):
 def display_value(value, metric):
     if value is None:
         return "没有可计算的消费记录"
-    if metric in {"transaction_count", "transfer_count"}:
+    if metric in {"transaction_count", "transfer_count", "activity_count"}:
         return f"{int(value)} 笔"
     return f"¥{value / 100:,.2f}"
 
@@ -133,6 +136,28 @@ def requested_balance_account(question: str):
         return False, None
     wants_savings = re.search(r"储蓄|存款|savings|acc_savings", q, re.I)
     wants_daily = re.search(r"主账户|日常账户|活期|acc_daily", q, re.I)
+    # A balance shortcut may only broaden to all accounts when no named
+    # account was requested. Unknown names must not silently lose their scope.
+    generic_words = (
+        'acc_savings', 'acc_daily', 'acc_other', '储蓄账户', '主账户', '日常账户',
+        '演示账户', '储蓄', '存款', '活期', 'savings', 'accounts', 'account',
+        'balance', 'total', 'list', 'how much', 'my', 'show', 'what is', 'me',
+        '主', '日常', '演示', '能告诉', '告诉', '能否', '可以', '麻烦', '显示',
+        '多少钱', '多少余额', '多少个', '几个', '哪些', '各自', '分别', '银行账户',
+        '账户列表', '账户信息', '银行卡', '账户', '总余额', '余额', '金额',
+        '剩下多少钱', '剩多少钱', '还有多少钱', '剩下多少', '剩多少', '还有多少', '是多少', '有多少', '请问',
+        '帮我', '查询', '查看', '我的', '银行', '列表', '信息', '总共',
+        '合计', '全部', '所有', '当前', '现在', '多少', '请', '我', '有',
+        '和', '的', '是', '呢', '吗', '张', '个',
+    )
+    mentions = re.findall(r'([a-z0-9\u4e00-\u9fff_ ]*?)(?:账户|银行卡|卡|余额|accounts?\b|balance\b)', q)
+    for remainder in mentions:
+        for word in sorted(generic_words, key=len, reverse=True):
+            remainder = remainder.replace(word, '')
+        if re.search(r'[a-z0-9\u4e00-\u9fff_]', remainder):
+            return True, '__unknown_account__'
+    if 'acc_other' in q or '演示账户' in q:
+        return True, 'acc_other'
     if wants_savings and wants_daily:
         return True, None
     if wants_savings:
@@ -157,9 +182,11 @@ def account_snapshot_payload(ledger: Ledger, user: str, account_id: str | None =
     return rows, answer
 
 
-def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str) -> dict[str, object]:
+def simulate_plan_payload(plan_id: str, request: PlanSimulationRequest, *, user_id: str,
+                          opening_balance_cents: int = 900000) -> dict[str, object]:
     """Build a deterministic simulation response without changing ledger state."""
     result = simulate_cashflow(
+        opening_balance_cents=opening_balance_cents,
         salary_day=request.salary_day,
         purchase_day=request.purchase_day,
         daily_budget_cents=request.daily_budget_cents,
@@ -206,6 +233,8 @@ def create_app(*, db_path=None, provider=None, today=None):
     sessions: dict[str, str] = {}
     auth_tokens: dict[str, str] = {}
     pending: dict[str, str] = {}
+    planning_context: dict[str, dict] = {}
+    planning_pending: set[str] = set()
     actions: dict[str, dict] = {}
     action_authorizations: dict[str, dict] = {}
     queries: dict[str, dict] = {}
@@ -289,7 +318,19 @@ def create_app(*, db_path=None, provider=None, today=None):
         if user is None:
             raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
         try:
-            return simulate_plan_payload(plan_id, request, user_id=user)
+            accounts = sorted(ledger.account_snapshot(user), key=lambda row: row['account_id'])
+            if not accounts:
+                raise QueryError('ACCOUNT_NOT_FOUND', '当前用户没有可用于模拟的账户。')
+            payload = simulate_plan_payload(plan_id, request, user_id=user,
+                opening_balance_cents=accounts[0]['balance_cents'])
+            payload['assumptions'] = [
+                f"使用当前授权主账户（{accounts[0]['account_name']}）余额，未合并其他账户。",
+                '固定合成事件：房租3500元、云存储30元、视频订阅68元、工资8000元；不是历史预测。',
+                '金额、日期和预算仅用于情景模拟，不执行转账。',
+            ]
+            return payload
+        except QueryError as exc:
+            raise HTTPException(422, {'code': exc.code, 'message': str(exc)}) from exc
         except ValueError as exc:
             raise HTTPException(422, {"code": "INVALID_SIMULATION", "message": str(exc)}) from exc
 
@@ -310,28 +351,60 @@ def create_app(*, db_path=None, provider=None, today=None):
         user = sessions.get(request.session_id)
         if user is None:
             raise HTTPException(403, {"code": "FORBIDDEN", "message": "无效或已失效的演示会话"})
+        try:
+            blocked = blocked_question(request.question, user, ledger.accounts(user))
+        except QueryError as exc:
+            raise HTTPException(503, {'code': exc.code, 'message': str(exc)}) from exc
+        if blocked:
+            return {'status': 'blocked', 'code': blocked[0], 'message': blocked[1]}
+        previous = pending.get(request.session_id)
+        effective_question = query_followup(previous, request.question)
+        planning_followup = (request.session_id in planning_pending
+            and bool(re.match(r'^(?:目标|至少|保留|最低|余额|每天|每日|工资|改为|改成|30天|三个月|\d+\s*(?:元|天)|主账户|用主账户)', request.question))
+            and not bool(re.search(r'支出|收入|退款|账单|明细|交易|笔数', request.question)))
+        if re.search(r'重新规划|新目标|重置方案|从头规划', request.question):
+            planning_context.pop(request.session_id, None)
         is_balance_question, requested_account_id = requested_balance_account(request.question)
-        if is_balance_question:
+        if is_balance_question and not PLANNING_REQUEST.search(request.question) and not planning_followup:
             try:
                 rows, answer = account_snapshot_payload(ledger, user, requested_account_id)
             except QueryError as exc:
                 return {"status": "clarification", "route": "query", "code": exc.code, "message": str(exc)}
             query_id = secrets.token_urlsafe(18)
+            rows = [{key: value for key, value in row.items() if key != 'account_id'} for row in rows]
+            pending.pop(request.session_id, None)
+            if re.search(r'几(?:个|张).*账户|多少个.*账户', request.question):
+                answer = f'你有 {len(rows)} 个授权账户。'
             queries[query_id] = {"session_id": request.session_id, "rows": rows}
             return {"status": "answer", "route": "query", "answer": answer, "rows": rows,
                     "chart": "metric_card" if len(rows) == 1 else "table", "value_format": "money",
                     "query_id": query_id}
         try:
-            decision = await classify_route(request.question, model)
+            decision = await classify_route(effective_question, model,
+                recent_context={'pending_query': previous} if previous and effective_question != request.question else None)
         except ProviderError as exc:
             raise HTTPException(502, {"code": "PROVIDER_ERROR", "message": str(exc)}) from exc
         except ValueError as exc:
             raise HTTPException(502, {"code": "INVALID_ROUTE", "message": "模型路由结果无效，请重试。"}) from exc
         route, route_message = decision["route"], decision.get("message")
+        if planning_followup and route in {'view', 'clarification', 'query'}:
+            route = 'planning'
+        if route != 'planning':
+            planning_pending.discard(request.session_id)
         if route == "planning":
-            route_message = ("已识别为存钱目标／省钱规划请求。当前聊天入口只负责识别意图；"
-                             "请由后端校验计划参数后调用 /api/plans/{plan_id}/simulate 获取逐日现金流结果。"
-                             "不会把全量流水交给模型，也不会据此执行转账。")
+            pending.pop(request.session_id, None)
+            try:
+                payload = await build_chat_plan(request.question, ledger, user, model,
+                    previous=planning_context.get(request.session_id))
+            except ProviderError as exc:
+                raise HTTPException(502, {'code': 'PROVIDER_ERROR', 'message': str(exc)}) from exc
+            context = payload.pop('_planning_context', {})
+            planning_context[request.session_id] = context
+            if payload['status'] == 'clarification':
+                planning_pending.add(request.session_id)
+            else:
+                planning_pending.discard(request.session_id)
+            return payload
         if route == "execution":
             if "取消代扣" in request.question or "取消订阅" in request.question:
                 return {"status": "unsupported", "route": "execution", "message": "此演示版只实现双方账户间的转账确认；取消代扣暂不执行。"}
@@ -353,13 +426,12 @@ def create_app(*, db_path=None, provider=None, today=None):
             pending.pop(request.session_id, None)
             return {"status": route, "route": route, "message": route_message or "请重新描述。"}
 
-        previous = pending.get(request.session_id)
-        is_followup = bool(previous and len(request.question) <= 80 and not re.search(r"20\d{2}|上个?月|本月|最近\s*\d+\s*天", request.question))
-        effective_question = previous + "；补充条件：" + request.question if is_followup else request.question
         try:
             accounts = ledger.accounts(user)
             merchants = ledger.merchants(user, accounts)
             user_context = ledger.llm_context(user, accounts, limit=30)
+            if CREDENTIAL.search(json.dumps({'context': user_context, 'merchants': merchants[:160]}, ensure_ascii=False)):
+                return {'status': 'blocked', 'code': 'SENSITIVE_CONTEXT', 'message': '账本上下文包含疑似凭证，请先清理后再查询。'}
             intent = await make_intent(effective_question, clock, merchants, user_context, model)
         except ProviderError as exc:
             raise HTTPException(502, {"code": "PROVIDER_ERROR", "message": str(exc)}) from exc
@@ -380,6 +452,10 @@ def create_app(*, db_path=None, provider=None, today=None):
         try:
             plan = IntentPlan.model_validate_json(json.dumps(intent["plan"], ensure_ascii=False))
             executed = ledger.execute(plan, user)
+            comparison = compare_period(plan, ledger, user) if re.search(r'为什么|原因|为何', request.question) else None
+            if comparison:
+                executed['rows'] = comparison['rows']
+                plan = plan.model_copy(update={'group_by': 'category'})
         except ValidationError:
             return {"status": "clarification", "route": "query", "message": "查询条件、时间或指标不完整，请明确后重试。"}
         except QueryError as exc:
@@ -387,8 +463,15 @@ def create_app(*, db_path=None, provider=None, today=None):
             return {"status": status, "route": "query", "code": exc.code, "message": str(exc)}
 
         rows = executed["rows"]
+        for row in rows:
+            if plan.group_by == 'account':
+                row['group_key'] = ACCOUNT_NAMES.get(row['group_key'], '银行账户')
+            if plan.series_by == 'account':
+                row['series_key'] = ACCOUNT_NAMES.get(row['series_key'], '银行账户')
         pending.pop(request.session_id, None)
-        if plan.kind == "detail":
+        if comparison:
+            answer = comparison['answer']
+        elif plan.kind == "detail":
             answer = f"找到并展示 {len(rows)} 条符合条件的已入账流水。"
         elif plan.group_by:
             if plan.series_by:
@@ -401,12 +484,17 @@ def create_app(*, db_path=None, provider=None, today=None):
             value = rows[0]["value_cents"]
             answer = display_value(value, plan.metric)
         query_id = secrets.token_urlsafe(18)
-        queries[query_id] = {"session_id": request.session_id, "rows": rows}
+        queries[query_id] = {"session_id": request.session_id, "rows": rows,
+                           'group_label': GROUPS.get(plan.group_by, '项目'),
+                           'series_label': GROUPS.get(plan.series_by, '系列'),
+                           'value_format': 'count' if plan.metric in {'transaction_count', 'transfer_count', 'activity_count'} else 'money'}
         return {
             "status": "answer", "route": "query", "answer": answer, "rows": rows,
-            "chart": chart_for(plan, effective_question),
-            "value_format": "count" if plan.metric in {"transaction_count", "transfer_count"} else "money",
+            "chart": 'bar' if comparison else chart_for(plan, effective_question),
+            "value_format": "count" if plan.metric in {"transaction_count", "transfer_count", "activity_count"} else "money",
             "query_id": query_id,
+            'group_label': GROUPS.get(plan.group_by, '项目'),
+            'series_label': GROUPS.get(plan.series_by, '系列'),
         }
 
     @app.post("/api/actions/{action_id}/authorize")
@@ -435,6 +523,11 @@ def create_app(*, db_path=None, provider=None, today=None):
         authorization = action_authorizations.get(request.authorization_id)
         if user is None or action is None or action["session_id"] != request.session_id:
             raise HTTPException(404, {"code": "ACTION_NOT_FOUND", "message": "这项待确认操作不存在或已过期"})
+        if action['status'] == 'SUCCEEDED':
+            if (action.get('completed_authorization_id') == request.authorization_id
+                    and action.get('category') == request.category):
+                return {'status': 'transfer_complete', 'route': 'execution', 'message': '这笔演示转账已经完成，不会重复执行。'}
+            raise HTTPException(409, {'code': 'ACTION_ALREADY_COMPLETED', 'message': '操作已完成，不能修改参数或再次扣款。'})
         if (authorization is None or authorization["action_id"] != action_id or
                 authorization["session_id"] != request.session_id or authorization["expires_at"] < datetime.now().timestamp()):
             action_authorizations.pop(request.authorization_id, None)
@@ -451,6 +544,8 @@ def create_app(*, db_path=None, provider=None, today=None):
         except QueryError as exc:
             raise HTTPException(409, {"code": exc.code, "message": str(exc)}) from exc
         action["status"] = result["status"]
+        action['completed_authorization_id'] = request.authorization_id
+        action['category'] = request.category
         action_authorizations.pop(request.authorization_id, None)
         if action["status"] == "SUCCEEDED":
             labels = {"test_user": "测试用户A", "isolation_user": "测试用户B"}
@@ -470,7 +565,12 @@ def create_app(*, db_path=None, provider=None, today=None):
         fields = list(rows[0]) if rows else ["value_cents"]
         output = io.StringIO()
         writer = csv.writer(output)
-        writer.writerow(fields)
+        labels = {'posted_at': '入账时间', 'category': '类别', 'merchant': '商户', 'kind': '类型',
+                  'direction': '方向', 'amount_cents': '金额（分）', 'balance_cents': '余额（分）',
+                  'account_name': '账户', 'group_key': item.get('group_label', '项目'),
+                  'series_key': item.get('series_label', '系列'),
+                  'value_cents': '笔数' if item.get('value_format') == 'count' else '金额（分）'}
+        writer.writerow([labels.get(field, field) for field in fields])
         for row in rows:
             writer.writerow([csv_safe(row.get(field)) for field in fields])
         return Response("\ufeff" + output.getvalue(), media_type="text/csv; charset=utf-8",
